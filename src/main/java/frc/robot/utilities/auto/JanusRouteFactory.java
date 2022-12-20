@@ -26,21 +26,30 @@ public class JanusRouteFactory {
     }
 
     public JanusRouteFactory run(Command command){
-        route.add(new JanusWaypoint(command));
+        return run(command, false);
+    }
+
+    public JanusRouteFactory run(Command command, boolean keepMoving){
+        route.add(new JanusWaypoint(command, keepMoving));
         return this;
     }
 
     public JanusRoute build(){
         correctWaypoints(route);
-
-        return new JanusRoute();
+        ArrayList<JanusPath> path = createPath(route);
+        return new JanusRoute(path, config);
     }
 
     private void correctWaypoints(ArrayList<JanusWaypoint> waypoints){
         for (int i = 0; i < waypoints.size(); i++) {
             JanusWaypoint point = waypoints.get(i);
             //skips Commands
-            if(point.isCommand()) continue;
+            if(point.isCommand()) {
+                JanusWaypoint previousPoint = getPreviousWaypoint(i, waypoints);
+                if (previousPoint != null) point.setPose(previousPoint);
+                else point.setPose(0, 0, 0);
+                continue;
+            }
             // adds theta to any points missing it
             if(point.getTheta() == Double.NEGATIVE_INFINITY){
                 JanusWaypoint previousPoint = getPreviousWaypoint(i, waypoints);
@@ -50,11 +59,34 @@ public class JanusRouteFactory {
         }
     }
     
+    //tbh never thought I would ever use recursion, Ms.P was right
     private JanusWaypoint getPreviousWaypoint(int id, ArrayList<JanusWaypoint> waypoints){
         if(id < 0) return null;
         JanusWaypoint point = waypoints.get(id);
         if(point.isCommand()) return getPreviousWaypoint(id--, waypoints);
         else return point;
+    }
+
+    //takes the inputed points and splits them into section, commands are the dividing point
+    //Also converts them into JanusPath to have the path calulated
+    private ArrayList<JanusPath> createPath(ArrayList<JanusWaypoint> waypoints){
+        ArrayList<JanusPath> paths = new ArrayList<>();
+
+
+        ArrayList<JanusWaypoint> section = new ArrayList<>();
+        for (int i = 0; i < waypoints.size(); i++) {
+            JanusWaypoint point = waypoints.get(i);
+            if(point.isCommand()){
+                if(section.size() > 0) paths.add(new JanusPath(section));
+                section.clear();
+                paths.add(new JanusPath(point));
+                continue;
+            }
+            section.add(point);
+        }
+        
+        return paths;
+
     }
 
 }

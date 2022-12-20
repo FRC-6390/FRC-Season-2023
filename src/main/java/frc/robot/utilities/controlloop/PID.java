@@ -11,16 +11,20 @@ import edu.wpi.first.wpilibj.Timer;
 public class PID implements Sendable {
 
     private static int instances = 0;
-    private DoubleSupplier measuremnt, setpoint;
+    private DoubleSupplier measurement, setpoint;
     private PIDConfig config;
     private double error, previousError, errorSum, previousTime;
+
+    public PID(PIDConfig config){
+        this(null, null, config);
+    }
 
     public PID(DoubleSupplier measuremnt, double setpoint, PIDConfig config){
         this(measuremnt, ()->setpoint, config);
     }
     
     public PID(DoubleSupplier measuremnt, DoubleSupplier setpoint, PIDConfig config){
-        this.measuremnt = measuremnt;
+        this.measurement = measuremnt;
         this.setpoint = setpoint;
         this.config = config;
         instances++;
@@ -44,7 +48,7 @@ public class PID implements Sendable {
     }
 
     private double calculateError(){
-        return setpoint.getAsDouble() - measuremnt.getAsDouble();
+        return setpoint.getAsDouble() - measurement.getAsDouble();
     }
 
     private double calculateContinuousError(){
@@ -54,6 +58,11 @@ public class PID implements Sendable {
     public DoubleSupplier getSupplier(){
         return () -> calculate();
     }
+
+   public PID setMeasurement(DoubleSupplier measurement) {
+       this.measurement = measurement;
+       return this;
+   }
 
     public PID setSetpoint(double setpoint){
         this.setpoint = () -> setpoint;
@@ -67,7 +76,7 @@ public class PID implements Sendable {
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("PID");
-        builder.addDoubleProperty("measurement", measuremnt::getAsDouble,  null);
+        builder.addDoubleProperty("measurement", measurement::getAsDouble,  null);
         builder.addDoubleProperty("value", () -> getSupplier().getAsDouble(), null);
         builder.addDoubleProperty("setpoint", this::getSetpoint, this::setSetpoint);
     }
