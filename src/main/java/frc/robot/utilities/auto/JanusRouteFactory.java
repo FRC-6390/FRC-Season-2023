@@ -72,7 +72,6 @@ public class JanusRouteFactory {
     private ArrayList<JanusPath> createPath(ArrayList<JanusWaypoint> waypoints){
         ArrayList<JanusPath> paths = new ArrayList<>();
 
-
         ArrayList<JanusWaypoint> section = new ArrayList<>();
         for (int i = 0; i < waypoints.size(); i++) {
             JanusWaypoint point = waypoints.get(i);
