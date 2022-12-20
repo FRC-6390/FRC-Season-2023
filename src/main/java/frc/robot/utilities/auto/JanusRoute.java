@@ -49,15 +49,12 @@ public class JanusRoute {
             timer.reset();
             timer.start();
         }
-        
+
         double time = timer.get();
 
         ChassisSpeeds speeds = currentSection.getSpeedsAtTime(time);
         
-
         applyPIDCorrection(currentSection.getPoseAtTime(time), speeds);
-
-
 
         return speeds;
     }
