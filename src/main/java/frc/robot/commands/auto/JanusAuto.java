@@ -26,7 +26,7 @@ public class JanusAuto extends CommandBase {
         if(route.isCommand()){
             route.runCommand();
         }else{
-            driveTrain.drive(route.calculate());
+            //driveTrain.drive(route.calculate());
         }
     }
   

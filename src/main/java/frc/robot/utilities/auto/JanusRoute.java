@@ -20,7 +20,7 @@ public class JanusRoute {
     private JanusPath currentSection;
     private JanusConfig config;
     private PID xPID, yPID, thetaPID;
-    private Timer timer;
+    //private Timer timer;
     private Supplier<Pose2d> odometry;
 
     public JanusRoute(ArrayList<JanusPath> path, JanusConfig config){
@@ -28,8 +28,8 @@ public class JanusRoute {
         this.config = config;
         xPID = new PID(config.xyPIDConfig());
         yPID = new PID(config.xyPIDConfig());
-        thetaPID = new PID(config.thetaPIDConfig());
-        timer = new Timer();
+        thetaPID = new PID(config.thetaPIDConfig()); 
+        //timer = new Timer();
     }
 
     public void init(Supplier<Pose2d> odometry){
@@ -37,24 +37,26 @@ public class JanusRoute {
         xPID.setMeasurement(() -> odometry.get().getX());
         yPID.setMeasurement(() -> odometry.get().getY());
         thetaPID.setMeasurement(() -> odometry.get().getRotation().getDegrees());
-        timer.reset(); 
-        timer.start();
+        //timer.reset(); 
+       // timer.start();
         currentSection = path.get(0);
+        currentSection.calculatePath();
     }
 
-    public ChassisSpeeds calculate(){
+    public ChassisSpeeds calculate(double time){
         if(currentSection.endOfPath(odometry.get())){
             section++;
             currentSection = path.get(section);
-            timer.reset();
-            timer.start();
+            currentSection.calculatePath();
+            //timer.reset();
+            //timer.start();
         }
 
-        double time = timer.get();
+        //double time = timer.get();
 
         ChassisSpeeds speeds = currentSection.getSpeedsAtTime(time);
         
-        applyPIDCorrection(currentSection.getPoseAtTime(time), speeds);
+        //applyPIDCorrection(currentSection.getPoseAtTime(time), speeds);
 
         return speeds;
     }
@@ -70,6 +72,10 @@ public class JanusRoute {
 
     public boolean isCommand(){
         return currentSection.isCommand();
+    }
+
+    public Pose2d getPose(double time){
+        return currentSection.getPoseAtTime(time);
     }
 
     private void applyPIDCorrection(Pose2d desiredPose, ChassisSpeeds speeds){

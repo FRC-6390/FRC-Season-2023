@@ -14,6 +14,7 @@ public class JanusRouteFactory {
 
     public JanusRouteFactory(JanusConfig config){
         this.config = config;
+        route.add(new JanusWaypoint(0, 0, 0));
     }
 
     public JanusRouteFactory to(double x, double y){
@@ -36,7 +37,9 @@ public class JanusRouteFactory {
 
     public JanusRoute build(){
         correctWaypoints(route);
+        System.out.println(route);
         ArrayList<JanusPath> path = createPath(route);
+        System.out.println(path);
         return new JanusRoute(path, config);
     }
 
@@ -76,14 +79,15 @@ public class JanusRouteFactory {
         for (int i = 0; i < waypoints.size(); i++) {
             JanusWaypoint point = waypoints.get(i);
             if(point.isCommand()){
-                if(section.size() > 0) paths.add(new JanusPath(section));
+                if(section.size() > 0) paths.add(new JanusPath(section, config));
                 section.clear();
-                paths.add(new JanusPath(point));
+                paths.add(new JanusPath(point, config));
                 continue;
             }
             section.add(point);
         }
         
+        paths.add(new JanusPath(section, config));
         return paths;
 
     }

@@ -71,7 +71,11 @@ public class JanusWaypoint {
     }
 
     public double distanceFrom(JanusWaypoint point){
-        return Math.sqrt(Math.pow((point.getX() - getX()),2) + Math.pow((point.getX() - getX()),2));
+        return Math.sqrt(Math.pow((point.getY() - getY()),2) + Math.pow((point.getX() - getX()),2));
+    }
+
+    public double angleFrom(JanusWaypoint point){
+        return Math.atan2((point.getY() - getY()),  (point.getX() - getX()));
     }
 
 }
