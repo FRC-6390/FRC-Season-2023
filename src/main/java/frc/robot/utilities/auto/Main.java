@@ -16,7 +16,7 @@ public class Main {
         route.init(Pose2d::new);
         
         //System.out.println("Time: "+0.1+" - "+ route.calculate(0.05)); 
-        for (double i = 0d; i <= 5d; i+=0.1d) {
+        for (double i = 0d; i <= 2.6d; i+=0.1d) {
             System.out.printf("Time: %.2f - %s - %s%n",i,route.calculate(i), route.getPose(i)); 
         }
     }
