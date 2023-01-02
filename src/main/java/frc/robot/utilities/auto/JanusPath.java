@@ -4,12 +4,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import javax.transaction.xa.Xid;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import frc.robot.utilities.auto.JanusVector.JanusValueSupplier;
 
 public class JanusPath {
 
@@ -29,75 +34,227 @@ public class JanusPath {
     }
 
     public void calculatePath(){
-        states = new ArrayList<>();
-        double totalTime = 0;
-        JanusVector vi = new JanusVector(0, 0);
-        JanusVector vf = new JanusVector(0, 0);
-        Pose2d pose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
-        for (int i = 0; i < waypoints.size()-1; i++) {
+        states = calculateOptimalSpeedsAndTime(waypoints, config);
 
-            JanusWaypoint init = waypoints.get(i);
-            JanusWaypoint end = waypoints.size() <= i+1 ? init : waypoints.get(i+1);
-            double angle = init.angleFrom(end);
-            JanusVector a = JanusVector.fromResultant(config.maxAccelerationMeters(), angle);
-            
-            JanusVector d = JanusVector.fromResultant(init.distanceFrom(end), angle);
-
-            double t = solveTime(d.resultant(), a.resultant(), vi.resultant());
-            double vfx = calculateFinalVelocity(vi.xComp(), d.xComp(), a.xComp(), t);
-            double vfy = calculateFinalVelocity(vi.yComp(), d.yComp(), a.yComp(), t);
-            vf = new JanusVector(vfx, vfy);
-            if(vf.resultant() > config.maxSpeedMeters()){
-                vf = JanusVector.fromResultant(config.maxSpeedMeters(), angle);
-                
-                double tx = timeAtMaxSpeed(vf.xComp(), a.xComp(), vi.xComp());
-                double ty = timeAtMaxSpeed(vf.yComp(), a.yComp(), vi.yComp());
-                
-
-                double timeAtMax = tx > ty ? tx : ty;
-
-                
-                double dx = distanceAtMaxSpeed(vi.xComp(), vf.xComp(), timeAtMax);
-                double dy = distanceAtMaxSpeed(vi.yComp(), vf.yComp(), timeAtMax);
-
-                JanusVector distanceAtMax = new JanusVector(dx, dy);
-                
-                JanusState state = new JanusState(pose, totalTime, distanceAtMax,  a, timeAtMax, vi, vf, angle);
-                totalTime += timeAtMax;
-                pose = state.getPoseAtTime(totalTime);
-                states.add(state);
-                d = JanusVector.fromResultant(d.resultant() - distanceAtMax.resultant(), angle);
-                vi = vf;
-                a = new JanusVector(0, 0);
-                t = d.resultant()/((vf.resultant()+vi.resultant())/2);
-            }
-            
-            JanusState state = new JanusState(pose, totalTime,d, a, t, vi, vf, angle);
-            totalTime += t;
-            pose = state.getPoseAtTime(totalTime);
-            states.add(state);
-            
-            vi = vf;
+        for (JanusState js : states) {
+            System.out.println(js.toString());
         }
-    
+
+        states = calculateAcclerationRamps(states);
+
         Collections.reverse(states);
-       for (JanusState js : states) {
-           System.out.println(js.toString());
-       }
+        for (JanusState js : states) {
+            System.out.println(js.toString());
+        }
         
     }
 
-    public double calculateFinalVelocity(double vi, double d, double a, double t){
-        return Math.sqrt(Math.pow(vi,2) + 2*a*d);
+    public ArrayList<JanusState> calculateOptimalSpeedsAndTime(ArrayList<JanusWaypoint> waypoints, JanusConfig config){
+        ArrayList<JanusState> states = new ArrayList<>();
+        for (int i = 0; i < waypoints.size()-1; i++) {
+            JanusWaypoint start = waypoints.get(i);
+            JanusWaypoint end = waypoints.size() <= i+1 ? start : waypoints.get(i+1);
+            double angle = start.angleFrom(end);
+            JanusVector d = JanusVector.fromResultant(start.distanceFrom(end), angle);
+            double t = solveTime(d.resultant(), config.maxSpeedMeters(), config.maxSpeedMeters());
+            JanusVector vf = JanusVector.fromResultant(config.maxSpeedMeters(), angle);
+            JanusVector a = JanusVector.fromResultant(config.maxAccelerationMeters(), angle);
+            JanusComponent xComp = new JanusComponent(0, 0, d.xComp(), a.xComp(), t, 0, vf.xComp());
+            JanusComponent yComp = new JanusComponent(0, 0, d.yComp(), a.yComp(), t, 0, vf.yComp());
+           
+            states.add(new JanusState(xComp, yComp));
+        }
+        states.add(JanusState.empty());
+        return states;
     }
 
-    private double timeAtMaxSpeed(double maxSpeed, double acceleration, double intialSpeed){
-        double val = (maxSpeed - intialSpeed)/acceleration;
+    public ArrayList<JanusState> calculateAcclerationRamps(ArrayList<JanusState> states){
+        ArrayList<JanusState> modifiedStates = new ArrayList<>();
+        double timestamp = 0;
+
+        Pose2d pose = new Pose2d(0,0, Rotation2d.fromDegrees(0));
+        for (int i = 0; i < states.size(); i++) {
+            JanusState start = states.get(i);
+            JanusState end = states.size() <= i+1 ? JanusState.empty() : states.get(i+1);
+            ArrayList<JanusComponent> xStates = getPathComponentValues(start.xComps().get(0), end.xComps().get(0));
+            ArrayList<JanusComponent> yStates = getPathComponentValues(start.yComps().get(0), end.yComps().get(0));
+
+            double tx = 0;
+            double ty = 0;
+            double tt = 0;
+            for (int j = 0; j < xStates.size(); j++) {
+                JanusComponent state = xStates.get(j);
+                state.timestamp = tx;
+                tx += state.t;
+            }
+
+            for (int j = 0; j < yStates.size(); j++) {
+                JanusComponent state = yStates.get(j);
+                state.timestamp = ty;
+                ty += state.t;
+            }
+
+            tt = tx > ty ? tx : ty;
+        
+            double x = 0;
+            double y = 0;
+
+            for (JanusComponent state : xStates) {
+                state.a = solveAcceleration(state.d, state.vi, state.t);
+                state.startingPose = x;
+                x += state.d;
+            }
+
+            for (JanusComponent state : yStates) {
+                state.a = solveAcceleration(state.d, state.vi, state.t);
+                state.startingPose = y;
+                y += state.d;
+            }
+
+            int index = states.indexOf(end);
+            if(index >= 0){
+                JanusComponent newXComp = end.xComps().get(0);
+                newXComp.vi = xStates.get(xStates.size()-1).vf;
+                JanusComponent newYComp = end.yComps().get(0);
+                newYComp.vi = yStates.get(yStates.size()-1).vf;
+                states.set(index, new JanusState(newXComp, newYComp));
+            }
+            
+            xStates.add(JanusComponent.empty(x, tx));
+            yStates.add(JanusComponent.empty(y, ty));
+
+            Collections.reverse(xStates);
+            Collections.reverse(yStates);
+            modifiedStates.add(new JanusState(pose, timestamp, xStates, yStates));
+            timestamp += tt;
+            pose = new Pose2d(pose.getX()+x, pose.getY()+y, pose.getRotation());
+        }
+        return modifiedStates;
+    }
+
+    boolean isX = true;
+    public ArrayList<JanusComponent> getPathComponentValues(JanusComponent start, JanusComponent end){
+        String title = (isX == true) ? "X" : "Y";
+        System.out.println("======="+title+"=======");
+        isX = !isX;
+        ArrayList<JanusComponent> states = new ArrayList<>();
+        double m1, m2;
+        double b1, b2;
+        double t1 = Math.abs((start.vf - start.vi) / start.a);
+
+        m1 = calculateSlope(0.0, t1, start.vi, start.vf);
+        b1 = calculateSlopeYIntercept(0.0, start.vi, m1);
+
+        double endvf = (start.vf * end.vf <= 0) ? 0 : end.vf;
+        double t2 = Math.abs((endvf - start.vf) / start.a);
+        double t3 = calculateTime(start.d, start.a, start.vi);
+        System.out.println("endvf:"+endvf);
+        System.out.println("t2:"+t2);
+
+        m2 = calculateSlope(0+t1, t2+t1, start.vf, endvf);
+        b2 = calculateSlopeYIntercept(0+t1,start.vf, m2);
+
+        //System.out.println(t2);
+
+        double xInt = calculateLineXIntercept(m1, m2, b1, b2);
+        //xInt += start.d;
+        double yInt = calculateLineYIntercept(m1, b1, xInt);
+
+        System.out.println( "y="+m1 + "(x)+"+ b1 + "|y="+m2 + "(x)+"+ b2);
+
+
+
+        if(distanceAtMaxSpeed(start.vi, yInt, t1) > start.d){
+            double vf2 = Math.pow(start.vi, 2) + 2*m1*start.d;
+            yInt = Math.pow(vf2, 1/2);
+           
+        }
+
+        if(Math.abs(yInt) >= Math.abs(start.vf)){
+            yInt = start.vf;
+        }
+
+        if(Math.abs(endvf) >= Math.abs(yInt)){
+            endvf = yInt;
+        }
+        System.out.println("endvf:"+endvf);
+        System.out.println("yint:"+yInt);
+
+        JanusComponent forward;
+        JanusComponent sustained;
+        JanusComponent reverse;
+
+        double tf = Math.abs(timeAtMaxSpeed(yInt, start.a, start.vi));
+        System.out.println("tf:"+tf);
+        System.out.println("a:"+start.a);
+        System.out.println("vi:"+start.vi);
+        System.out.println("d:"+start.d);
+        double df = distanceAtMaxSpeed(start.vi, yInt, tf);
+        if(df != 0){
+            yInt = calculateFinalVelocity(start.vi, df, tf);
+        }
+        forward = new JanusComponent(0, 0, df, 0, tf, start.vi, yInt);
+        states.add(forward);
+        System.out.println("yint:" +yInt);
+        double ds = start.d - df;
+        System.out.println("ds:" +ds);
+        
+        if(ds > 0){
+            double tr = Math.abs(timeAtMaxSpeed(endvf, start.a, yInt));
+            double dr = distanceAtMaxSpeed(yInt, endvf, tr);
+            reverse = new JanusComponent(0, 0, dr, 0, tr, yInt, endvf);
+            
+            ds -= dr;
+
+            if(ds > 0){
+                double ts = Math.abs(solveTime(ds, yInt, yInt));
+                sustained = new JanusComponent(0, 0, ds, Double.NaN, ts, yInt, yInt);
+                states.add(sustained);
+            }
+            
+            states.add(reverse);
+        }        
+        
+        return states;
+    }
+
+    private double calculateLineXIntercept(double m1, double m2, double b1, double b2){
+        return ((b2-b1)/(m1-m2));
+    }
+
+    private double calculateLineYIntercept(double m1, double b1, double x){
+        return m1*x+b1;
+    }
+
+    private double calculateSlope(double x1, double x2, double y1, double y2){
+        double value = (y2-y1)/(x2-x1);
+        return Double.isNaN(value) ? 0 : value;
+    }
+
+    private double calculateSlopeYIntercept(double x, double y, double m){
+        double value = y-(m*x); 
+        return Double.isNaN(value) ? 0 : value;
+    }
+
+    private double calculateFinalVelocity(double vi, double d, double t){
+        double value = (2*d)/t - vi;
+        return Double.isNaN(value) ? 0 : value;
+    }
+
+    public double solveAcceleration(double d, double vi, double t){
+        double value = (2*(d-vi*t))/(t*t);
+        return Double.isNaN(value) ? 0 : value;
+
+    }
+
+    private double timeAtMaxSpeed(double vf, double a, double vi){
+        double val = (vf - vi)/a;
         return Double.isNaN(val) ? 0 : val;
     }
 
     private double distanceAtMaxSpeed(double vi, double vf, double t){
-        return  (vi + vf)/2 * t;
+        double val = (vi + vf)/2 * t;
+        return Double.isNaN(val) ? 0 : val;
     }
 
     public boolean endOfPath(Pose2d pose){
@@ -108,7 +265,7 @@ public class JanusPath {
     private JanusState findRelaventState(double time){
         for (int i = 0; i < states.size(); i++) {
             JanusState state = states.get(i);
-            if(state.time() > time) continue;
+            if(state.timestamp() > time) continue;
             return state;
         }
         return states.get(states.size()-1);
@@ -130,19 +287,24 @@ public class JanusPath {
         return findRelaventState(time).getPoseAtTime(time);
     }
 
-
-    // A = a, B = vi, C = d
-    private double solveTime(double d, double a, double vi){
-        double root1, root2;
-        double determinant = vi * vi - 4d * a * -d;
-        if (determinant == 0.0){
-            root1 = -vi/(2.0*a);
-            return root1;
-        }
-        root1 = (-vi + Math.pow(determinant,0.5)) / (2.0 * a);
-        root2 = (-vi - Math.pow(determinant,0.5)) / (2.0 * a);
-
-        return root1 > root2 ? root1 : root2;
+    private double solveTime(double d, double vi, double vf){
+        double value =  d /((vi+vf)/2);
+        return Double.isNaN(value) ? 0 : value;
     }
 
+    private double calculateTime(double d, double a, double vi){
+        double root1, root2, root;
+        double determinant = vi * vi - 4 * a * -d;
+        if (determinant == 0.0){
+            root = -vi/(2.0*a);
+           
+        }else if(determinant > 0){
+            root1 = (-vi + Math.sqrt(determinant)) / (2.0 * a);
+            root2 = (-vi - Math.sqrt(determinant)) / (2.0 * a);
+            root = root1 > root2 ? root1 : root2;
+        }else{
+            root = 0;
+        }
+        return Double.isNaN(root) ? 0 : root; 
+    }
 }

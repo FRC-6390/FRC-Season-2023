@@ -36,7 +36,7 @@ public class JanusRouteFactory {
     }
 
     public JanusRoute build(){
-        correctWaypoints(route);
+        correctWaypoints(route);        
         ArrayList<JanusPath> path = createPath(route);
         return new JanusRoute(path, config);
     }

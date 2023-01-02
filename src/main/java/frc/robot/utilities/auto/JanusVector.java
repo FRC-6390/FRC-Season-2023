@@ -1,5 +1,8 @@
 package frc.robot.utilities.auto;
 
+import java.util.function.Consumer;
+import java.util.function.DoubleSupplier;
+
 public record JanusVector(double xComp, double yComp, double resultant) {
 
     public JanusVector (double xComp, double yComp){
@@ -7,7 +10,9 @@ public record JanusVector(double xComp, double yComp, double resultant) {
     }
 
     public static JanusVector fromResultant(double resultant, double angle){
-        return new JanusVector(Math.cos(angle)*resultant, Math.sin(angle)*resultant, resultant);
+        double x = Math.cos(angle)*resultant;
+        double y = Math.sin(angle)*resultant;
+        return new JanusVector(roundTo(x, 3), roundTo(y, 3), resultant);
     }
 
     public static double getResultant(double xComp, double yComp){
@@ -22,4 +27,11 @@ public record JanusVector(double xComp, double yComp, double resultant) {
     public String toString(){
         return "x: " + xComp + " | y: " + yComp + " | r: " + resultant;
     }
+
+    public interface JanusValueSupplier {
+        
+        double getValue(JanusVector vector);
+
+    }
 }
+

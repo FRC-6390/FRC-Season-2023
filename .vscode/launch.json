@@ -8,6 +8,13 @@
       "type": "java",
       "name": "Launch Main",
       "request": "launch",
+      "mainClass": "frc.robot.Main",
+      "projectName": "FRC-Season-2023"
+    },
+    {
+      "type": "java",
+      "name": "Launch Main",
+      "request": "launch",
       "mainClass": "frc.robot.utilities.auto.Main",
       "projectName": "FRC-Season-2023"
     },
