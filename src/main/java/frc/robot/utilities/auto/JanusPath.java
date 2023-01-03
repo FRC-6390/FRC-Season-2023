@@ -145,14 +145,14 @@ public class JanusPath {
         m1 = calculateSlope(0.0, t1, start.vi, start.vf);
         b1 = calculateSlopeYIntercept(0.0, start.vi, m1);
 
-        double endvf = (start.vf * end.vf <= 0) ? 0 : end.vf;
+        double endvf = (start.vf * end.vf <= 0) ? 0 : Math.pow(Math.pow(start.vi, 2) + 2*start.a*start.d, 1/2);
         double t2 = Math.abs((endvf - start.vf) / start.a);
         double t3 = calculateTime(start.d, start.a, start.vi);
         System.out.println("endvf:"+endvf);
         System.out.println("t2:"+t2);
 
-        m2 = calculateSlope(0+t1, t2+t1, start.vf, endvf);
-        b2 = calculateSlopeYIntercept(0+t1,start.vf, m2);
+        m2 = calculateSlope(0, t2, start.vf, endvf);
+        b2 = calculateSlopeYIntercept(0,start.vf, m2);
 
         //System.out.println(t2);
 
@@ -162,14 +162,14 @@ public class JanusPath {
 
         System.out.println( "y="+m1 + "(x)+"+ b1 + "|y="+m2 + "(x)+"+ b2);
 
-
+        System.out.println("yint:"+yInt);
 
         if(distanceAtMaxSpeed(start.vi, yInt, t1) > start.d){
             double vf2 = Math.pow(start.vi, 2) + 2*m1*start.d;
-            yInt = Math.pow(vf2, 1/2);
+            yInt = Math.pow(vf2, 0.5);
            
         }
-
+        System.out.println("yint:"+yInt);
         if(Math.abs(yInt) >= Math.abs(start.vf)){
             yInt = start.vf;
         }

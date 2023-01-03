@@ -68,9 +68,13 @@ public record JanusState (Pose2d startingPose, double timestamp, ArrayList<Janus
 
         String respone = "";
         int size = xComps.size() > yComps.size() ? xComps.size() : yComps.size();
+        int xDataPrevious = 0;
+        int yDataPrevious = 0;
         for (int i = 0; i < size; i++) {
-            String xData = xComps.size() > i ? "X: "+xComps.get(i).toString(): "";
-            String yData = yComps.size() > i ? " Y: "+yComps.get(i).toString(): "";
+            String xData = xComps.size() > i ? "X: "+xComps.get(i).toString(): String.format("%"+xDataPrevious+"s", " ");
+            String yData = yComps.size() > i ? " Y: "+yComps.get(i).toString(): String.format("%"+yDataPrevious+"s", " ");
+            xDataPrevious = xData.length();
+            yDataPrevious = yData.length();
             respone += xData + yData + "\n"; 
         }
 
