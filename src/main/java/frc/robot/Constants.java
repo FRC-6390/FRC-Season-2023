@@ -12,7 +12,7 @@ public interface Constants {
 
     public interface DRIVETRAIN{
 
-        String CANBUS = "";
+        String CANBUS = null;
 
         int PIGEON = 0;
 
