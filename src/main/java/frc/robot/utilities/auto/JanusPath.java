@@ -56,16 +56,22 @@ public class JanusPath {
             JanusWaypoint end = waypoints.size() <= i+1 ? start : waypoints.get(i+1);
             double angle = start.angleFrom(end);
             JanusVector d = JanusVector.fromResultant(start.distanceFrom(end), angle);
-            double t = solveTime(d.resultant(), config.maxSpeedMeters(), config.maxSpeedMeters());
-            JanusVector vf = JanusVector.fromResultant(config.maxSpeedMeters(), angle);
             JanusVector a = JanusVector.fromResultant(config.maxAccelerationMeters(), angle);
-            JanusComponent xComp = new JanusComponent(0, 0, d.xComp(), a.xComp(), t, 0, vf.xComp());
-            JanusComponent yComp = new JanusComponent(0, 0, d.yComp(), a.yComp(), t, 0, vf.yComp());
+
+            JanusVector vf = JanusVector.fromResultant(Math.pow(2*a.resultant()*d.resultant(), 0.5), angle);
+            JanusComponent xComp = new JanusComponent(0, 0, d.xComp(), a.xComp(), 0, 0, vf.xComp());
+            JanusComponent yComp = new JanusComponent(0, 0, d.yComp(), a.yComp(), 0, 0, vf.yComp());
            
             states.add(new JanusState(xComp, yComp));
         }
         states.add(JanusState.empty());
         return states;
+    }
+
+    public JanusComponent recalculateComponent(JanusComponent comp, double vi){
+        double vf = Math.pow(Math.pow(vi,2) + 2*comp.a*comp.d, 0.5);
+        comp.vf = vf;
+        return comp;
     }
 
     public ArrayList<JanusState> calculateAcclerationRamps(ArrayList<JanusState> states){
@@ -113,10 +119,8 @@ public class JanusPath {
 
             int index = states.indexOf(end);
             if(index >= 0){
-                JanusComponent newXComp = end.xComps().get(0);
-                newXComp.vi = xStates.get(xStates.size()-1).vf;
-                JanusComponent newYComp = end.yComps().get(0);
-                newYComp.vi = yStates.get(yStates.size()-1).vf;
+                JanusComponent newXComp = recalculateComponent(end.xComps().get(0),xStates.get(xStates.size()-1).vf);
+                JanusComponent newYComp = recalculateComponent(end.yComps().get(0),yStates.get(yStates.size()-1).vf);
                 states.set(index, new JanusState(newXComp, newYComp));
             }
             
@@ -140,31 +144,37 @@ public class JanusPath {
         ArrayList<JanusComponent> states = new ArrayList<>();
         double m1, m2;
         double b1, b2;
+        System.out.println("a:"+start.a);
+        System.out.println("vf:"+start.vf);
+        System.out.println("vi:"+start.vi);
         double t1 = Math.abs((start.vf - start.vi) / start.a);
 
         m1 = calculateSlope(0.0, t1, start.vi, start.vf);
         b1 = calculateSlopeYIntercept(0.0, start.vi, m1);
 
-        double endvf = (start.vf * end.vf <= 0) ? 0 : Math.pow(Math.pow(start.vi, 2) + 2*start.a*start.d, 1/2);
+        double endvf = (start.vf * end.vf <= 0) ? 0 : end.vf;
         double t2 = Math.abs((endvf - start.vf) / start.a);
         double t3 = calculateTime(start.d, start.a, start.vi);
         System.out.println("endvf:"+endvf);
+        System.out.println("t1:"+t1);
         System.out.println("t2:"+t2);
+        System.out.println("t3:"+t3);
 
-        m2 = calculateSlope(0, t2, start.vf, endvf);
-        b2 = calculateSlopeYIntercept(0,start.vf, m2);
+        m2 = calculateSlope(t3-t2, t3, start.vf, endvf);
+        b2 = calculateSlopeYIntercept(t3-t2,start.vf, m2);
 
         //System.out.println(t2);
 
         double xInt = calculateLineXIntercept(m1, m2, b1, b2);
         //xInt += start.d;
         double yInt = calculateLineYIntercept(m1, b1, xInt);
+        yInt = Double.isNaN(yInt) ? 0 : yInt;
 
         System.out.println( "y="+m1 + "(x)+"+ b1 + "|y="+m2 + "(x)+"+ b2);
 
         System.out.println("yint:"+yInt);
 
-        if(distanceAtMaxSpeed(start.vi, yInt, t1) > start.d){
+        if(distanceAtMaxSpeed(start.vi, yInt, xInt)  > start.d){
             double vf2 = Math.pow(start.vi, 2) + 2*m1*start.d;
             yInt = Math.pow(vf2, 0.5);
            
