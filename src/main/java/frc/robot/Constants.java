@@ -21,17 +21,17 @@ public interface Constants {
         Translation2d[] SWERVE_MODULE_LOCATIONS = {ROBOT.FRONT_LEFT, ROBOT.FRONT_RIGHT, ROBOT.BACK_LEFT, ROBOT.BACK_RIGHT};
 
         int FRONT_LEFT_DRIVE = 0;
-        int FRONT_LEFT_ROTATION = 0;
-        int FRONT_LEFT_ENCODER = 0;
-        int FRONT_RIGHT_DRIVE = 0;
-        int FRONT_RIGHT_ROTATION = 0;
-        int FRONT_RIGHT_ENCODER = 0;
-        int BACK_LEFT_DRIVE = 0;
-        int BACK_LEFT_ROTATION = 0;
-        int BACK_LEFT_ENCODER = 0;
-        int BACK_RIGHT_DRIVE = 0;
-        int BACK_RIGHT_ROTATION = 0;
-        int BACK_RIGHT_ENCODER = 0;
+        int FRONT_LEFT_ROTATION = 4;
+        int FRONT_LEFT_ENCODER = 8;
+        int FRONT_RIGHT_DRIVE = 1;
+        int FRONT_RIGHT_ROTATION = 5;
+        int FRONT_RIGHT_ENCODER = 9;
+        int BACK_LEFT_DRIVE = 2;
+        int BACK_LEFT_ROTATION = 6;
+        int BACK_LEFT_ENCODER = 10;
+        int BACK_RIGHT_DRIVE = 3;
+        int BACK_RIGHT_ROTATION = 7;
+        int BACK_RIGHT_ENCODER = 11;
 
         int FRONT_LEFT_OFFSET = 0;
         int FRONT_RIGHT_OFFSET = 0;

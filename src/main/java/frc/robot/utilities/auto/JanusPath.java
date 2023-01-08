@@ -70,7 +70,9 @@ public class JanusPath {
 
     public JanusComponent recalculateComponent(JanusComponent comp, double vi){
         double vf = Math.pow(Math.pow(vi,2) + 2*comp.a*comp.d, 0.5);
+        System.out.println(vf + " " );
         comp.vf = vf;
+        comp.vi = vi;
         return comp;
     }
 
@@ -125,6 +127,7 @@ public class JanusPath {
             }
             
             xStates.add(JanusComponent.empty(x, tx));
+            
             yStates.add(JanusComponent.empty(y, ty));
 
             Collections.reverse(xStates);
@@ -174,7 +177,7 @@ public class JanusPath {
 
         System.out.println("yint:"+yInt);
 
-        if(distanceAtMaxSpeed(start.vi, yInt, xInt)  > start.d){
+        if(distanceAtMaxSpeed(start.vi, yInt, xInt)  > Math.abs(start.d)){
             double vf2 = Math.pow(start.vi, 2) + 2*m1*start.d;
             yInt = Math.pow(vf2, 0.5);
            
@@ -209,14 +212,14 @@ public class JanusPath {
         double ds = start.d - df;
         System.out.println("ds:" +ds);
         
-        if(ds > 0){
+        if(Math.abs(ds) > 0){
             double tr = Math.abs(timeAtMaxSpeed(endvf, start.a, yInt));
             double dr = distanceAtMaxSpeed(yInt, endvf, tr);
             reverse = new JanusComponent(0, 0, dr, 0, tr, yInt, endvf);
             
             ds -= dr;
 
-            if(ds > 0){
+            if(Math.abs(ds) > 0){
                 double ts = Math.abs(solveTime(ds, yInt, yInt));
                 sustained = new JanusComponent(0, 0, ds, Double.NaN, ts, yInt, yInt);
                 states.add(sustained);

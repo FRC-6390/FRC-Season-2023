@@ -21,41 +21,43 @@ import frc.robot.utilities.swerve.SwerveModule;
 public class DriveTrain extends SubsystemBase implements SystemTest{
 
   private static SwerveModule[] swerveModules;
-  private static PowerDistribution pdh;
-  private static Pigeon2 gyro;
+  //private static PowerDistribution pdh;
+  //private static Pigeon2 gyro;
   private static ChassisSpeeds chassisSpeeds;
   private static SwerveDriveKinematics kinematics;
   private static SwerveDriveOdometry odometry;
   private static Pose2d pose;
 
   static {
+    swerveModules = new SwerveModule[4];
     swerveModules[0] = new SwerveModule(DRIVETRAIN.FRONT_LEFT_MODULE_CONFIG);
     swerveModules[1] = new SwerveModule(DRIVETRAIN.FRONT_RIGHT_MODULE_CONFIG);
     swerveModules[2] = new SwerveModule(DRIVETRAIN.BACK_LEFT_MODULE_CONFIG);
     swerveModules[3] = new SwerveModule(DRIVETRAIN.BACK_RIGHT_MODULE_CONFIG);
 
-    gyro = new Pigeon2(DRIVETRAIN.PIGEON, DRIVETRAIN.CANBUS);
+   // gyro = new Pigeon2(DRIVETRAIN.PIGEON, DRIVETRAIN.CANBUS);
 
-    pdh = new PowerDistribution(DRIVETRAIN.REV_PDH, ModuleType.kRev);
+    //pdh = new PowerDistribution(DRIVETRAIN.REV_PDH, ModuleType.kRev);
     chassisSpeeds = new ChassisSpeeds();
 
     SwerveModulePosition[] SwervePositions = {swerveModules[0].getPostion(), swerveModules[1].getPostion(), swerveModules[2].getPostion(), swerveModules[3].getPostion()};
 
     kinematics = new SwerveDriveKinematics(DRIVETRAIN.SWERVE_MODULE_LOCATIONS);
-    odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(gyro.getYaw()), SwervePositions);
+    odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(0), SwervePositions);
+    pose = new Pose2d();
   }
 
   public void init(){
-    pdh.clearStickyFaults();
+   // pdh.clearStickyFaults();
     zeroHeading();
   }
 
   public void zeroHeading(){
-    gyro.setYaw(0);
+  //  gyro.setYaw(0);
   }
 
   public double getHeading(){
-    return Math.IEEEremainder(gyro.getYaw(), 360);
+    return 0.0;//Math.IEEEremainder(gyro.getYaw(), 360);
   }
 
   public Rotation2d getRotation2d(){

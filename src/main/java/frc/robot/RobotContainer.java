@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.hal.simulation.RoboRioDataJNI;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,7 +21,6 @@ public class RobotContainer {
   private SendableChooser<JanusRouteFactory> autoChooser = new SendableChooser<>();
 
   public RobotContainer() {
-
     driveTrain.setDefaultCommand(new DriverControl(driveTrain, controller.leftX, controller.leftY, controller.rightX));
 
     autoChooser.addOption("Janus X", AUTO.TEST_X_AUTO_PATH);
@@ -34,11 +34,15 @@ public class RobotContainer {
 
 
     SmartDashboard.putData("-=TEST=- Auto Selector", autoChooser);;
-    configureBindings();
+    //configureBindings();
+    createSystemTestButtonBinding();
   }
 
   private void configureBindings() {
     controller.start.whileTrue(new InstantCommand(driveTrain::zeroHeading));
+    // controller.a.whileTrue(new InstantCommand(() -> {
+    //   System.out.println("a");
+    // }));
   }
 
   public void createSystemTestButtonBinding(){
