@@ -22,7 +22,7 @@ public class JanusRouteFactory {
     }
 
     public JanusRouteFactory to(double x, double y, double theta){
-        route.add(new JanusWaypoint(x, y, theta));
+        route.add(new JanusWaypoint(x, y, Math.toRadians(theta)));
         return this;
     }
 
@@ -52,8 +52,8 @@ public class JanusRouteFactory {
                 continue;
             }
             // adds theta to any points missing it
-            if(point.getTheta() == Double.NEGATIVE_INFINITY){
-                JanusWaypoint previousPoint = getPreviousWaypoint(i, waypoints);
+            if(Double.isInfinite(point.getTheta())){
+                JanusWaypoint previousPoint = getPreviousWaypoint((i-1), waypoints);
                 if(previousPoint != null) point.setTheta(previousPoint.getTheta());
                 else point.setTheta(0);
             }

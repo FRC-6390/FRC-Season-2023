@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DRIVETRAIN;
@@ -56,6 +57,14 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   //  gyro.setYaw(0);
   }
 
+  public double getRoll(){
+    return 0.0; //gyro.getRoll(); 
+  }
+
+  public double getPitch(){
+    return 0.0; //gyro.getPitch(); 
+  }
+
   public double getHeading(){
     return 0.0;//Math.IEEEremainder(gyro.getYaw(), 360);
   }
@@ -89,6 +98,27 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
       positions[i] = swerveModules[i].getPostion();
     }
     return positions;
+  }
+
+  public void feedforwardDrive(ChassisSpeeds speeds){
+    double xSpeed = chassisSpeeds.vxMetersPerSecond + speeds.vxMetersPerSecond;
+    double ySpeed = chassisSpeeds.vyMetersPerSecond + speeds.vyMetersPerSecond;
+    double thetaSpeed = chassisSpeeds.omegaRadiansPerSecond + speeds.omegaRadiansPerSecond;
+    chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
+  }
+
+  public void lockWheels(){
+    double angle = Math.toRadians(getHeading()-90d);
+    for (int i = 0; i < swerveModules.length; i++) {
+      swerveModules[i].lock();
+      swerveModules[i].setToAngle(angle);
+    }
+  }
+
+  public void unlockWheels(){
+    for (int i = 0; i < swerveModules.length; i++) {
+      swerveModules[i].unlock();
+    }
   }
 
   @Override
