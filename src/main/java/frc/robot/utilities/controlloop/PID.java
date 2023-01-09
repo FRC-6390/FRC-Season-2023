@@ -55,8 +55,6 @@ public class PID implements Sendable {
     }
 
     private double calculateContinuousError(){
-        System.out.println("yes");
-
        return MathUtil.inputModulus(calculateError(), -config.getErrorBand(), config.getErrorBand());
     }
 

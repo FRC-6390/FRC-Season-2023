@@ -51,7 +51,9 @@ public class AutoBalance extends CommandBase {
     }
   
     @Override
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) {
+        driveTrain.unlockWheels();
+    }
   
     @Override
     public boolean isFinished() {
