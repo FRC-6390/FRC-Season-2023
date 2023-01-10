@@ -1,6 +1,7 @@
 package frc.robot.utilities.swerve;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
@@ -40,6 +41,7 @@ public class SwerveModule {
         pid = new PID(() -> getRotationMotorPosition(), null, SWERVEMODULE.ROTATION_PID);
 
         resetEncoders();
+        unlock();
     }
 
     public double getDriveMotorVelocity(){
@@ -96,6 +98,20 @@ public class SwerveModule {
     public void stop(){
         driveMotor.set(ControlMode.PercentOutput, 0);
         rotationMotor.set(ControlMode.PercentOutput, 0);
+    }
+
+    public void setToAngle(double angle){
+        rotationMotor.set(ControlMode.PercentOutput, pid.calculate(angle));
+    }
+
+    public void lock(){
+        driveMotor.setNeutralMode(NeutralMode.Brake);
+        rotationMotor.setNeutralMode(NeutralMode.Brake);
+    }
+
+    public void unlock(){
+        driveMotor.setNeutralMode(NeutralMode.Coast);
+        rotationMotor.setNeutralMode(NeutralMode.Coast);
     }
 
 }

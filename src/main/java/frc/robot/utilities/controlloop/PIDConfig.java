@@ -45,7 +45,7 @@ public class PIDConfig implements Sendable{
         this.continuous = true;
         this.max = max;
         this.min = min;
-        errorBand = (min-max)/2d;
+        errorBand = (max-min)/2d;
         return this;
     }
 

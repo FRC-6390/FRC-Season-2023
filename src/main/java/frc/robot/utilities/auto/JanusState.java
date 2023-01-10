@@ -8,10 +8,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
-public record JanusState (Pose2d startingPose, double timestamp, ArrayList<JanusComponent> xComps, ArrayList<JanusComponent> yComps){
+public record JanusState (Pose2d startingPose, double timestamp, ArrayList<JanusComponent> xComps, ArrayList<JanusComponent> yComps, ArrayList<JanusComponent> thetaComps, double angle){
     
-    public JanusState(JanusComponent xComp, JanusComponent yComp){
-        this(null, 0, new ArrayList<JanusComponent>(){{add(xComp);}}, new ArrayList<JanusComponent>(){{add(yComp);}});
+    public JanusState(JanusComponent xComp, JanusComponent yComp, JanusComponent thetaComp,double angle){
+        this(null, 0, new ArrayList<JanusComponent>(){{add(xComp);}}, new ArrayList<JanusComponent>(){{add(yComp);}}, new ArrayList<JanusComponent>(){{add(thetaComp);}}, angle);
     }
 
 
@@ -23,10 +23,12 @@ public record JanusState (Pose2d startingPose, double timestamp, ArrayList<Janus
         t1 -= timestamp;
         JanusComponent xComp = findRelaventComponent(t1, xComps);
         JanusComponent yComp = findRelaventComponent(t1, yComps);
+        JanusComponent thetaComp = findRelaventComponent(t1, thetaComps);
 
         double x = getDistanceOnPath(xComp.vi, xComp.a, (t1-xComp.timestamp)) + xComp.startingPose;
         double y = getDistanceOnPath(yComp.vi, yComp.a, (t1-yComp.timestamp)) + yComp.startingPose;
-        return new Pose2d(x+startingPose.getX(),y+startingPose.getY(), Rotation2d.fromRadians(0));
+        double theta = getDistanceOnPath(thetaComp.vi, thetaComp.a, (t1-thetaComp.timestamp)) + thetaComp.startingPose;
+        return new Pose2d(x+startingPose.getX(),y+startingPose.getY(), Rotation2d.fromRadians(startingPose.getRotation().getRadians() + theta));
     }
 
     private double calculateSpeed(double vi, double a, double t1){
@@ -37,13 +39,12 @@ public record JanusState (Pose2d startingPose, double timestamp, ArrayList<Janus
         t1 -= timestamp;
         JanusComponent xComp = findRelaventComponent(t1, xComps);
         JanusComponent yComp = findRelaventComponent(t1, yComps);
-        
+        JanusComponent thetaComp = findRelaventComponent(t1, thetaComps);
+
 
         double xSpeed = calculateSpeed(xComp.vi,xComp.a,(t1-xComp.timestamp));
         double ySpeed = calculateSpeed(yComp.vi,yComp.a, (t1-yComp.timestamp));
-        double thetaSpeed = 0;
-
-        //System.out.println(this.toString());
+        double thetaSpeed = calculateSpeed(thetaComp.vi,thetaComp.a, (t1-thetaComp.timestamp));
 
         return new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
     }
@@ -58,7 +59,7 @@ public record JanusState (Pose2d startingPose, double timestamp, ArrayList<Janus
     }
 
     public static JanusState empty(){
-        return new JanusState(new JanusComponent(0, 0, 0, 0, 0, 0, 0), new JanusComponent(0, 0, 0, 0, 0, 0, 0));
+        return new JanusState(JanusComponent.empty(0, 0), JanusComponent.empty(0, 0),JanusComponent.empty(0, 0),0);
     }
 
     @Override
@@ -73,9 +74,15 @@ public record JanusState (Pose2d startingPose, double timestamp, ArrayList<Janus
         for (int i = 0; i < size; i++) {
             String xData = xComps.size() > i ? "X: "+xComps.get(i).toString(): String.format("%"+xDataPrevious+"s", " ");
             String yData = yComps.size() > i ? " Y: "+yComps.get(i).toString(): String.format("%"+yDataPrevious+"s", " ");
+            
             xDataPrevious = xData.length();
             yDataPrevious = yData.length();
             respone += xData + yData + "\n"; 
+        }
+
+        for (int i = 0; i < thetaComps.size(); i++) {
+            String data = "R: "+thetaComps.get(i).toString();
+            respone += data + "\n"; 
         }
 
         return timeStampTitle + poseTitle + respone;

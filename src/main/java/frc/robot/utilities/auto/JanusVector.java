@@ -27,11 +27,5 @@ public record JanusVector(double xComp, double yComp, double resultant) {
     public String toString(){
         return "x: " + xComp + " | y: " + yComp + " | r: " + resultant;
     }
-
-    public interface JanusValueSupplier {
-        
-        double getValue(JanusVector vector);
-
-    }
 }
 

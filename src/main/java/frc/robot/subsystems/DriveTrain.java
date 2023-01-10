@@ -10,48 +10,66 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DRIVETRAIN;
 import frc.robot.Constants.SWERVEMODULE;
 import frc.robot.utilities.debug.SystemTest;
+import com.kauailabs.navx.frc.AHRS;
 import frc.robot.utilities.swerve.SwerveModule;
 
 public class DriveTrain extends SubsystemBase implements SystemTest{
 
   private static SwerveModule[] swerveModules;
-  private static PowerDistribution pdh;
-  private static Pigeon2 gyro;
+  //private static PowerDistribution pdh;
+  private static AHRS gyro;
   private static ChassisSpeeds chassisSpeeds;
   private static SwerveDriveKinematics kinematics;
   private static SwerveDriveOdometry odometry;
   private static Pose2d pose;
 
   static {
+    swerveModules = new SwerveModule[4];
     swerveModules[0] = new SwerveModule(DRIVETRAIN.FRONT_LEFT_MODULE_CONFIG);
     swerveModules[1] = new SwerveModule(DRIVETRAIN.FRONT_RIGHT_MODULE_CONFIG);
     swerveModules[2] = new SwerveModule(DRIVETRAIN.BACK_LEFT_MODULE_CONFIG);
     swerveModules[3] = new SwerveModule(DRIVETRAIN.BACK_RIGHT_MODULE_CONFIG);
 
-    gyro = new Pigeon2(DRIVETRAIN.PIGEON, DRIVETRAIN.CANBUS);
-
-    pdh = new PowerDistribution(DRIVETRAIN.REV_PDH, ModuleType.kRev);
+   // gyro = new Pigeon2(DRIVETRAIN.PIGEON, DRIVETRAIN.CANBUS);
+    gyro = new AHRS(Port.kMXP);
+    //pdh = new PowerDistribution(DRIVETRAIN.REV_PDH, ModuleType.kRev);
     chassisSpeeds = new ChassisSpeeds();
 
     SwerveModulePosition[] SwervePositions = {swerveModules[0].getPostion(), swerveModules[1].getPostion(), swerveModules[2].getPostion(), swerveModules[3].getPostion()};
 
+    
+
     kinematics = new SwerveDriveKinematics(DRIVETRAIN.SWERVE_MODULE_LOCATIONS);
+
+  
+
     odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(gyro.getYaw()), SwervePositions);
+    pose = new Pose2d();
   }
 
   public void init(){
-    pdh.clearStickyFaults();
+   // pdh.clearStickyFaults();
     zeroHeading();
   }
 
   public void zeroHeading(){
-    gyro.setYaw(0);
+    gyro.zeroYaw();
+  }
+
+  public double getRoll(){
+    return gyro.getRoll(); 
+  }
+
+  public double getPitch(){
+    return gyro.getPitch(); 
   }
 
   public double getHeading(){
@@ -87,6 +105,27 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
       positions[i] = swerveModules[i].getPostion();
     }
     return positions;
+  }
+
+  public void feedforwardDrive(ChassisSpeeds speeds){
+    double xSpeed = chassisSpeeds.vxMetersPerSecond + speeds.vxMetersPerSecond;
+    double ySpeed = chassisSpeeds.vyMetersPerSecond + speeds.vyMetersPerSecond;
+    double thetaSpeed = chassisSpeeds.omegaRadiansPerSecond + speeds.omegaRadiansPerSecond;
+    chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
+  }
+
+  public void lockWheels(){
+    double angle = Math.toRadians(getHeading()-45d);
+    for (int i = 0; i < swerveModules.length; i++) {
+      swerveModules[i].lock();
+      swerveModules[i].setToAngle(angle);
+    }
+  }
+
+  public void unlockWheels(){
+    for (int i = 0; i < swerveModules.length; i++) {
+      swerveModules[i].unlock();
+    }
   }
 
   @Override

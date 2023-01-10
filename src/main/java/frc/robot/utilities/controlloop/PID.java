@@ -38,13 +38,16 @@ public class PID implements Sendable {
 
     public double calculate(){
         error = config.getContinuous() ? calculateContinuousError() : calculateError();
-        double deltaTime = Timer.getFPGATimestamp() - previousTime;
+        double deltaTime = System.currentTimeMillis() - previousTime;
         if(Math.abs(error) < config.getiLimit()) errorSum += error *config.getI();
         double errorRate = (error - previousError) / deltaTime;        
         previousError = error;
-        previousTime = Timer.getFPGATimestamp();
+        previousTime = System.currentTimeMillis();
 
-        return config.getP()*error + config.getI()*errorSum + config.getD()*errorRate;
+        double p = config.getP() > 0 ? config.getP()*error : 0;
+        double i = config.getI() > 0 ? config.getI()*errorSum : 0;
+        double d = config.getD() > 0 ? config.getD()*errorRate : 0;
+        return p+i+d;
     }
 
     private double calculateError(){

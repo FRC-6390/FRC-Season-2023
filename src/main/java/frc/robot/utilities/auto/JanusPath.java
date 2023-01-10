@@ -14,7 +14,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import frc.robot.utilities.auto.JanusVector.JanusValueSupplier;
 
 public class JanusPath {
 
@@ -54,24 +53,48 @@ public class JanusPath {
         for (int i = 0; i < waypoints.size()-1; i++) {
             JanusWaypoint start = waypoints.get(i);
             JanusWaypoint end = waypoints.size() <= i+1 ? start : waypoints.get(i+1);
-            double angle = start.angleFrom(end);
-            JanusVector d = JanusVector.fromResultant(start.distanceFrom(end), angle);
-            JanusVector a = JanusVector.fromResultant(config.maxAccelerationMeters(), angle);
-
-            JanusVector vf = JanusVector.fromResultant(Math.pow(2*a.resultant()*d.resultant(), 0.5), angle);
-            JanusComponent xComp = new JanusComponent(0, 0, d.xComp(), a.xComp(), 0, 0, vf.xComp());
-            JanusComponent yComp = new JanusComponent(0, 0, d.yComp(), a.yComp(), 0, 0, vf.yComp());
-           
-            states.add(new JanusState(xComp, yComp));
+            states.add(calculateState(start, end));
         }
         states.add(JanusState.empty());
         return states;
     }
 
-    public JanusComponent recalculateComponent(JanusComponent comp, double vi){
-        double vf = Math.pow(Math.pow(vi,2) + 2*comp.a*comp.d, 0.5);
-        comp.vf = vf;
-        return comp;
+    public JanusState calculateState(JanusWaypoint start, JanusWaypoint end){
+        double angle = start.angleFrom(end);
+        JanusVector d = JanusVector.fromResultant(start.distanceFrom(end), angle);
+        JanusVector a = JanusVector.fromResultant(config.maxAccelerationMeters(), angle);
+
+        JanusVector vf = JanusVector.fromResultant(Math.pow(2*a.resultant()*d.resultant(), 0.5), angle);
+        JanusComponent xComp = new JanusComponent(0, 0, d.xComp(), a.xComp(), 0, 0, vf.xComp());
+        JanusComponent yComp = new JanusComponent(0, 0, d.yComp(), a.yComp(), 0, 0, vf.yComp());
+
+
+        double thetaD = end.getTheta() - start.getTheta();
+        double thetaA = config.maxAngularAccelerationMeters();
+        double thetaVf = Math.pow(2*thetaA*thetaD, 0.5);
+
+        JanusComponent thetaComp = new JanusComponent(0, 0, thetaD, thetaA, 0, 0, thetaVf);
+
+        return new JanusState(xComp, yComp, thetaComp, angle);
+    }
+
+    public JanusState recalculateState(JanusComponent xComp, JanusComponent yComp, JanusComponent thetaComp, double xVi, double yVi, double thetaVi, double angle){
+        xComp.vi = xVi;
+        yComp.vi = yVi;
+        thetaComp.vi = thetaVi;
+
+        double vi = JanusVector.getResultant(xVi, yVi);
+        double a = JanusVector.getResultant(xComp.a, yComp.a);
+        double d = JanusVector.getResultant(xComp.d, yComp.d);
+
+        JanusVector vf = JanusVector.fromResultant(Math.pow(Math.pow(vi,2) + 2*a*d,0.5), angle);
+        xComp.vf = vf.xComp();
+        yComp.vf = vf.yComp();
+        System.out.println(vf + " " + angle);
+
+        double thetaVf = Math.pow(Math.pow(thetaVi,2) + 2*thetaComp.a*thetaComp.d, 0.5);
+        thetaComp.vf = thetaVf;
+        return new JanusState(xComp, yComp, thetaComp, angle);
     }
 
     public ArrayList<JanusState> calculateAcclerationRamps(ArrayList<JanusState> states){
@@ -84,10 +107,13 @@ public class JanusPath {
             JanusState end = states.size() <= i+1 ? JanusState.empty() : states.get(i+1);
             ArrayList<JanusComponent> xStates = getPathComponentValues(start.xComps().get(0), end.xComps().get(0));
             ArrayList<JanusComponent> yStates = getPathComponentValues(start.yComps().get(0), end.yComps().get(0));
+            ArrayList<JanusComponent> thetaStates = getPathComponentValues(start.thetaComps().get(0), end.thetaComps().get(0));
 
             double tx = 0;
             double ty = 0;
             double tt = 0;
+
+            double totatT = 0;
             for (int j = 0; j < xStates.size(); j++) {
                 JanusComponent state = xStates.get(j);
                 state.timestamp = tx;
@@ -100,10 +126,18 @@ public class JanusPath {
                 ty += state.t;
             }
 
-            tt = tx > ty ? tx : ty;
-        
+            for (int j = 0; j < thetaStates.size(); j++) {
+                JanusComponent state = thetaStates.get(j);
+                state.timestamp = tt;
+                tt += state.t;
+            }
+
+            totatT = tx > ty ? tx : ty;
+            totatT = tt > totatT ? tt : totatT;
+
             double x = 0;
             double y = 0;
+            double theta = 0;
 
             for (JanusComponent state : xStates) {
                 state.a = solveAcceleration(state.d, state.vi, state.t);
@@ -117,30 +151,40 @@ public class JanusPath {
                 y += state.d;
             }
 
+            for (JanusComponent state : thetaStates) {
+                state.a = solveAcceleration(state.d, state.vi, state.t);
+                state.startingPose = theta;
+                theta += state.d;
+            }
+
             int index = states.indexOf(end);
             if(index >= 0){
-                JanusComponent newXComp = recalculateComponent(end.xComps().get(0),xStates.get(xStates.size()-1).vf);
-                JanusComponent newYComp = recalculateComponent(end.yComps().get(0),yStates.get(yStates.size()-1).vf);
-                states.set(index, new JanusState(newXComp, newYComp));
+                JanusState state = recalculateState(end.xComps().get(0), end.yComps().get(0), end.thetaComps().get(0), xStates.get(xStates.size()-1).vf, yStates.get(yStates.size()-1).vf, thetaStates.get(thetaStates.size()-1).vf, end.angle());
+                states.set(index, state);
             }
             
             xStates.add(JanusComponent.empty(x, tx));
+            
             yStates.add(JanusComponent.empty(y, ty));
 
+            thetaStates.add(JanusComponent.empty(theta, tt));
+            System.out.println(theta);
             Collections.reverse(xStates);
             Collections.reverse(yStates);
-            modifiedStates.add(new JanusState(pose, timestamp, xStates, yStates));
-            timestamp += tt;
-            pose = new Pose2d(pose.getX()+x, pose.getY()+y, pose.getRotation());
+            Collections.reverse(thetaStates);
+
+            modifiedStates.add(new JanusState(pose, timestamp, xStates, yStates, thetaStates, start.angle()));
+            timestamp += totatT;
+            pose = new Pose2d(pose.getX()+x, pose.getY()+y, Rotation2d.fromRadians(pose.getRotation().getRadians()+theta));
         }
         return modifiedStates;
     }
 
-    boolean isX = true;
+    int isX = 0;
     public ArrayList<JanusComponent> getPathComponentValues(JanusComponent start, JanusComponent end){
-        String title = (isX == true) ? "X" : "Y";
+        String title = (isX == 0) ? "X" : (isX == 1) ? "Y" : "R";
         System.out.println("======="+title+"=======");
-        isX = !isX;
+        isX = isX >= 3 ? 0 : isX+1;
         ArrayList<JanusComponent> states = new ArrayList<>();
         double m1, m2;
         double b1, b2;
@@ -174,7 +218,7 @@ public class JanusPath {
 
         System.out.println("yint:"+yInt);
 
-        if(distanceAtMaxSpeed(start.vi, yInt, xInt)  > start.d){
+        if(distanceAtMaxSpeed(start.vi, yInt, xInt)  > Math.abs(start.d)){
             double vf2 = Math.pow(start.vi, 2) + 2*m1*start.d;
             yInt = Math.pow(vf2, 0.5);
            
@@ -209,14 +253,14 @@ public class JanusPath {
         double ds = start.d - df;
         System.out.println("ds:" +ds);
         
-        if(ds > 0){
+        if(Math.abs(ds) > 0){
             double tr = Math.abs(timeAtMaxSpeed(endvf, start.a, yInt));
             double dr = distanceAtMaxSpeed(yInt, endvf, tr);
             reverse = new JanusComponent(0, 0, dr, 0, tr, yInt, endvf);
             
             ds -= dr;
 
-            if(ds > 0){
+            if(Math.abs(ds) > 0){
                 double ts = Math.abs(solveTime(ds, yInt, yInt));
                 sustained = new JanusComponent(0, 0, ds, Double.NaN, ts, yInt, yInt);
                 states.add(sustained);

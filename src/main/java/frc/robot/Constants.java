@@ -21,17 +21,17 @@ public interface Constants {
         Translation2d[] SWERVE_MODULE_LOCATIONS = {ROBOT.FRONT_LEFT, ROBOT.FRONT_RIGHT, ROBOT.BACK_LEFT, ROBOT.BACK_RIGHT};
 
         int FRONT_LEFT_DRIVE = 0;
-        int FRONT_LEFT_ROTATION = 0;
-        int FRONT_LEFT_ENCODER = 0;
-        int FRONT_RIGHT_DRIVE = 0;
-        int FRONT_RIGHT_ROTATION = 0;
-        int FRONT_RIGHT_ENCODER = 0;
-        int BACK_LEFT_DRIVE = 0;
-        int BACK_LEFT_ROTATION = 0;
-        int BACK_LEFT_ENCODER = 0;
-        int BACK_RIGHT_DRIVE = 0;
-        int BACK_RIGHT_ROTATION = 0;
-        int BACK_RIGHT_ENCODER = 0;
+        int FRONT_LEFT_ROTATION = 4;
+        int FRONT_LEFT_ENCODER = 8;
+        int FRONT_RIGHT_DRIVE = 1;
+        int FRONT_RIGHT_ROTATION = 5;
+        int FRONT_RIGHT_ENCODER = 9;
+        int BACK_LEFT_DRIVE = 2;
+        int BACK_LEFT_ROTATION = 6;
+        int BACK_LEFT_ENCODER = 10;
+        int BACK_RIGHT_DRIVE = 3;
+        int BACK_RIGHT_ROTATION = 7;
+        int BACK_RIGHT_ENCODER = 11;
 
         int FRONT_LEFT_OFFSET = 0;
         int FRONT_RIGHT_OFFSET = 0;
@@ -63,7 +63,7 @@ public interface Constants {
         PIDConfig XY_PID_CONFIG = new PIDConfig(0.02, 0, 0);
         PIDConfig THETA_PID_CONFIG = new PIDConfig(0.02, 0, 0).setContinuous(-Math.PI, Math.PI);
 
-        JanusConfig CONFIG = new JanusConfig(1, SWERVEMODULE.MAX_ACCELERATION_METERS_PER_SECOND, XY_PID_CONFIG, THETA_PID_CONFIG);
+        JanusConfig CONFIG = new JanusConfig(SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND, SWERVEMODULE.MAX_ACCELERATION_METERS_PER_SECOND, SWERVEMODULE.MAX_ANGULAR_SPEED_METERS_PER_SECOND, SWERVEMODULE.MAX_ACCELERATION_METERS_PER_SECOND, XY_PID_CONFIG, THETA_PID_CONFIG);
 
         JanusRouteFactory TEST_X_AUTO_PATH = new JanusRouteFactory(CONFIG).to(1, 0).to(-1, 0).to(0, 0);
         JanusRouteFactory TEST_Y_AUTO_PATH = new JanusRouteFactory(CONFIG).to(0, 1).to(0, -1).to(0, 0);
