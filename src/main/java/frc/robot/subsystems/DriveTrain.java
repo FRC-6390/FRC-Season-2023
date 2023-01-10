@@ -9,28 +9,18 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.I2C.Port;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DRIVETRAIN;
 import frc.robot.Constants.SWERVEMODULE;
 import frc.robot.utilities.debug.SystemTest;
-import com.kauailabs.navx.frc.AHRS;
 import frc.robot.utilities.swerve.SwerveModule;
 
 public class DriveTrain extends SubsystemBase implements SystemTest{
 
   private static SwerveModule[] swerveModules;
   //private static PowerDistribution pdh;
-  private static AHRS gyro;
+  private static Pigeon2 gyro;
   private static ChassisSpeeds chassisSpeeds;
   private static SwerveDriveKinematics kinematics;
   private static SwerveDriveOdometry odometry;
@@ -43,8 +33,8 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     swerveModules[2] = new SwerveModule(DRIVETRAIN.BACK_LEFT_MODULE_CONFIG);
     swerveModules[3] = new SwerveModule(DRIVETRAIN.BACK_RIGHT_MODULE_CONFIG);
 
-   // gyro = new Pigeon2(DRIVETRAIN.PIGEON, DRIVETRAIN.CANBUS);
-    gyro = new AHRS(Port.kMXP);
+    gyro = new Pigeon2(DRIVETRAIN.PIGEON, DRIVETRAIN.CANBUS);
+   
     //pdh = new PowerDistribution(DRIVETRAIN.REV_PDH, ModuleType.kRev);
     chassisSpeeds = new ChassisSpeeds();
 
@@ -66,7 +56,7 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   }
 
   public void zeroHeading(){
-    gyro.zeroYaw();
+    gyro.setYaw(0);
   }
 
   public double getRoll(){
@@ -140,8 +130,10 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     SmartDashboard.putNumber("Y", pose.getY());
 
     for (int i = 0; i < swerveModules.length; i++) {
-      SmartDashboard.putNumber("Swerve Module "+i, swerveModules[i].getAbsolutePosition());
-      swerveModules[i].setEncoderOffset(SmartDashboard.getNumber("Swerve Offset "+i, swerveModules[i].getAbsolutePosition()));
+       SmartDashboard.putData(swerveModules[i]);//("Swerve Module "+i, swerveModules[i].getEncoderRadians());
+      // swerveModules[i].setEncoderOffset(SmartDashboard.getNumber("Swerve Offset "+i, swerveModules[i].getEncoderRadians()));
+      // SmartDashboard.putNumber("Swerve Module rotation "+i, swerveModules[i].getRotationMotorPosition());
+
     }
 
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);

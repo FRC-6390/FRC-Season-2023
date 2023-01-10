@@ -36,9 +36,9 @@ public class DriverControl extends CommandBase {
     double thetaSpeed = thetaLimiter.calculate(thetaInput.getAsDouble()) * SWERVEMODULE.MAX_ANGULAR_SPEED_METERS_PER_SECOND;
 
 
-    xSpeed = 0.1;
-    ySpeed = 0;
-    thetaSpeed = 0;
+    // xSpeed = 0.5;
+    // ySpeed = 0;
+    // thetaSpeed = 0;
 
   
 

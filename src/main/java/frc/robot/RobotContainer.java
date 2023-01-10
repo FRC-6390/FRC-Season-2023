@@ -34,8 +34,8 @@ public class RobotContainer {
 
 
     SmartDashboard.putData("-=TEST=- Auto Selector", autoChooser);
-    //configureBindings();
-    createSystemTestButtonBinding();
+    configureBindings();
+    //createSystemTestButtonBinding();
   }
 
   private void configureBindings() {

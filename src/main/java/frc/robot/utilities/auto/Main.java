@@ -18,7 +18,7 @@ public class Main {
         route.init(Pose2d::new);
                
         for (double i = 0d; i <= 10; i+=0.1d) {
-           System.out.printf("Time: %.2f - %s - %s%n",i,route.calculate(i), route.getPose(i)); 
+          // System.out.printf("Time: %.2f - %s - %s%n",i,route.calculate(i), route.getPose(i)); 
         }
 
        //PIDController

@@ -12,7 +12,7 @@ public interface Constants {
 
     public interface DRIVETRAIN{
 
-        String CANBUS = null;
+        String CANBUS = "rio";
 
         int PIGEON = 0;
 
@@ -51,11 +51,11 @@ public interface Constants {
         double MAX_ANGULAR_SPEED_METERS_PER_SECOND = 4;
         double MAX_ACCELERATION_METERS_PER_SECOND = 1;
         double MAX_ANGULAR_ACCELERATION_METERS_PER_SECOND = 1;
-        double ROTATION_GEAR_RATIO = 1d/(150d/7d);
+        double ROTATION_GEAR_RATIO = 1d/(12.8d);// 1d/(150d/7d);
         double DRIVE_GEAR_RATIO = 1d/(8.14);
         double ROTATION_ENCODER_CONVERSION_RADIANS = ROTATION_GEAR_RATIO * 2 * Math.PI;
-        double DRIVE_ENCODER_CONVERSION_METERS = DRIVE_GEAR_RATIO * Math.PI * WHEEL_DIAMETER_METERS;
-        PIDConfig ROTATION_PID = new PIDConfig(0.5, 0, 0).setContinuous(-Math.PI, Math.PI);
+        double DRIVE_ENCODER_CONVERSION_METERS = (DRIVE_GEAR_RATIO * Math.PI * WHEEL_DIAMETER_METERS);
+        PIDConfig ROTATION_PID = new PIDConfig(0.3, 0, 0).setContinuous(-Math.PI, Math.PI);
     }
 
     public interface AUTO{
