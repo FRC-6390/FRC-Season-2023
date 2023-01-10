@@ -9,10 +9,15 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DRIVETRAIN;
@@ -134,6 +139,10 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     SmartDashboard.putNumber("X", pose.getX());
     SmartDashboard.putNumber("Y", pose.getY());
 
+    for (int i = 0; i < swerveModules.length; i++) {
+      SmartDashboard.putNumber("Swerve Module "+i, swerveModules[i].getAbsolutePosition());
+      swerveModules[i].setEncoderOffset(SmartDashboard.getNumber("Swerve Offset "+i, swerveModules[i].getAbsolutePosition()));
+    }
 
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
     setModuleStates(states);
@@ -169,5 +178,10 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     }
   
     return false;
+  }
+
+  @Override
+  public int getNumberOfComponents() {
+    return swerveModules.length*2;
   }
 }

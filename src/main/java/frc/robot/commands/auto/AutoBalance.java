@@ -41,6 +41,7 @@ public class AutoBalance extends CommandBase {
 
         //lock wheels
         if(xLimit && yLimit){
+            
             driveTrain.lockWheels();
         }else{
             driveTrain.unlockWheels();

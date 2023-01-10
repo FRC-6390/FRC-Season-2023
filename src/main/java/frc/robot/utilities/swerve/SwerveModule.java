@@ -60,6 +60,18 @@ public class SwerveModule {
         return rotationMotor.getSelectedSensorPosition();
     }
 
+    public double getAbsolutePosition(){
+        return encoder.getAbsolutePosition();
+    }
+
+    public double getEncoderOffset(){
+        return encoderOffset;
+    }
+
+    public void setEncoderOffset(double encoderOffset) {
+        this.encoderOffset = encoderOffset;
+    }
+
     public double getEncoderRadians(){
         return (encoder.getAbsolutePosition() * Math.PI/180d) + encoderOffset;
     }

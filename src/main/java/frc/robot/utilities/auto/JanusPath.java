@@ -1,19 +1,12 @@
 package frc.robot.utilities.auto;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-
-import javax.transaction.xa.Xid;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+
 
 public class JanusPath {
 
@@ -97,6 +90,14 @@ public class JanusPath {
         return new JanusState(xComp, yComp, thetaComp, angle);
     }
 
+    public JanusComponent timeStretch(JanusComponent comp, double time){
+        double t = time - comp.timestamp;
+        // double vf = ((2*comp.d)/t ) - comp.vi;
+       // comp.vf = vf;
+        comp.t = t;
+        return comp;
+    }
+
     public ArrayList<JanusState> calculateAcclerationRamps(ArrayList<JanusState> states){
         ArrayList<JanusState> modifiedStates = new ArrayList<>();
         double timestamp = 0;
@@ -134,6 +135,11 @@ public class JanusPath {
 
             totatT = tx > ty ? tx : ty;
             totatT = tt > totatT ? tt : totatT;
+            // System.out.println(yStates.get(yStates.size()-1));
+            // xStates.set(xStates.size()-1, timeStretch(xStates.get(xStates.size()-1), totatT));
+            // yStates.set(yStates.size()-1, timeStretch(yStates.get(yStates.size()-1), totatT));
+            // thetaStates.set(thetaStates.size()-1, timeStretch(thetaStates.get(thetaStates.size()-1), totatT));
+            // System.out.println(yStates.get(yStates.size()-1));
 
             double x = 0;
             double y = 0;
@@ -156,6 +162,8 @@ public class JanusPath {
                 state.startingPose = theta;
                 theta += state.d;
             }
+
+            
 
             int index = states.indexOf(end);
             if(index >= 0){
@@ -253,14 +261,14 @@ public class JanusPath {
         double ds = start.d - df;
         System.out.println("ds:" +ds);
         
-        if(Math.abs(ds) > 0){
+        if(Math.abs(ds) > 0.001){
             double tr = Math.abs(timeAtMaxSpeed(endvf, start.a, yInt));
             double dr = distanceAtMaxSpeed(yInt, endvf, tr);
             reverse = new JanusComponent(0, 0, dr, 0, tr, yInt, endvf);
             
             ds -= dr;
 
-            if(Math.abs(ds) > 0){
+            if(Math.abs(ds) > 0.001){
                 double ts = Math.abs(solveTime(ds, yInt, yInt));
                 sustained = new JanusComponent(0, 0, ds, Double.NaN, ts, yInt, yInt);
                 states.add(sustained);

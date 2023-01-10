@@ -2,8 +2,6 @@ package frc.robot.utilities.auto;
 
 import java.util.ArrayList;
 
-import javax.management.openmbean.ArrayType;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;

@@ -1,8 +1,5 @@
 package frc.robot.utilities.auto;
 
-import java.util.function.Consumer;
-import java.util.function.DoubleSupplier;
-
 public record JanusVector(double xComp, double yComp, double resultant) {
 
     public JanusVector (double xComp, double yComp){
