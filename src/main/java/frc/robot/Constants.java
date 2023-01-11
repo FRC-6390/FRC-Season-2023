@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.utilities.auto.JanusConfig;
 import frc.robot.utilities.auto.JanusRoute;
@@ -48,6 +49,7 @@ public interface Constants {
     public interface SWERVEMODULE {
         double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
         double MAX_SPEED_METERS_PER_SECOND = Units.feetToMeters(13.5);
+        double MAX_SPEED_METERS_PER_SECOND_SQUARED = Units.feetToMeters(13.5) * Units.feetToMeters(13.5);
         double MAX_ANGULAR_SPEED_METERS_PER_SECOND = 4;
         double MAX_ACCELERATION_METERS_PER_SECOND = 1;
         double MAX_ANGULAR_ACCELERATION_METERS_PER_SECOND = 1;
@@ -74,6 +76,7 @@ public interface Constants {
         JanusRouteFactory TEXT_COMMAND_2_AUTO_PATH = new JanusRouteFactory(CONFIG).to(1, 0, 0).run(null).to(0, 0, 0);
         JanusRouteFactory TEXT_COMMAND_3_AUTO_PATH = new JanusRouteFactory(CONFIG).to(1, 0, 0).run(null, true).to(0, 0, 0);
 
+        TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(SWERVEMODULE.MAX_ANGULAR_SPEED_METERS_PER_SECOND, SWERVEMODULE.MAX_ANGULAR_ACCELERATION_METERS_PER_SECOND);
     }
     
     public interface ROBOT {
