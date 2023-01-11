@@ -34,13 +34,14 @@ public class AutoBalance extends CommandBase {
     @Override
     public void execute() {
         double xSpeed = xLimiter.calculate(pitchPID.calculate()) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
-        double ySpeed = xLimiter.calculate(rollPID.calculate()) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
+        double ySpeed = yLimiter.calculate(rollPID.calculate()) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
         
         boolean xLimit = false;
         boolean yLimit = false;
 
         //lock wheels
         if(xLimit && yLimit){
+            
             driveTrain.lockWheels();
         }else{
             driveTrain.unlockWheels();

@@ -34,9 +34,9 @@ public class RobotContainer {
     autoChooser.addOption("Janus Command 3", AUTO.TEXT_COMMAND_3_AUTO_PATH);
 
 
-    SmartDashboard.putData("-=TEST=- Auto Selector", autoChooser);;
-    //configureBindings();
-    createSystemTestButtonBinding();
+    SmartDashboard.putData("-=TEST=- Auto Selector", autoChooser);
+    configureBindings();
+    //createSystemTestButtonBinding();
   }
 
   private void configureBindings() {

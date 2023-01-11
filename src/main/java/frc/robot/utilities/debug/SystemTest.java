@@ -4,4 +4,5 @@ public interface SystemTest {
 
     boolean testFunctionality(int id, double speed);
     
+    int getNumberOfComponents();
 }

@@ -3,15 +3,19 @@ package frc.robot.utilities.swerve;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import frc.robot.Constants.SWERVEMODULE;
 import frc.robot.utilities.controlloop.PID;
 
-public class SwerveModule {
+public class SwerveModule implements Sendable{
     private TalonFX driveMotor;
     private TalonFX rotationMotor;
 
@@ -20,8 +24,11 @@ public class SwerveModule {
 
     private double encoderOffset;
    // private REVMaglimitSwitch limitSwitch;
+    private static int instances = 0;
 
     public SwerveModule(SwerveModuleConfig config){
+        instances++;
+        SendableRegistry.addLW(this, "Swerve Module "+ instances, instances);
 
         if(config.canbus() != null){
             driveMotor = new TalonFX(config.driveMotor(), config.canbus());
@@ -36,8 +43,8 @@ public class SwerveModule {
         driveMotor.setInverted(config.driveMotorReversed());
         rotationMotor.setInverted(config.rotationMotorReversed());
 
-        driveMotor.configSelectedFeedbackCoefficient(SWERVEMODULE.DRIVE_ENCODER_CONVERSION_METERS);
-        rotationMotor.configSelectedFeedbackCoefficient(SWERVEMODULE.ROTATION_ENCODER_CONVERSION_RADIANS);
+        encoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
+
         pid = new PID(() -> getRotationMotorPosition(), null, SWERVEMODULE.ROTATION_PID);
 
         resetEncoders();
@@ -45,19 +52,27 @@ public class SwerveModule {
     }
 
     public double getDriveMotorVelocity(){
-        return driveMotor.getSelectedSensorVelocity();
+        return driveMotor.getSensorCollection().getIntegratedSensorVelocity() / 2048d /2*Math.PI * SWERVEMODULE.DRIVE_ENCODER_CONVERSION_METERS;
     }
-
-    public double getRotationMotorVelocity(){
-        return rotationMotor.getSelectedSensorVelocity();
-    }
-
+    
     public double getDriveMotorPosition(){
-        return driveMotor.getSelectedSensorPosition();
+        return driveMotor.getSensorCollection().getIntegratedSensorPosition() / 2048d /2*Math.PI * SWERVEMODULE.DRIVE_ENCODER_CONVERSION_METERS;
     }
 
     public double getRotationMotorPosition(){
-        return rotationMotor.getSelectedSensorPosition();
+        return getEncoderRadians();
+    }
+
+    public double getAbsolutePosition(){
+        return encoder.getAbsolutePosition();
+    }
+
+    public double getEncoderOffset(){
+        return encoderOffset;
+    }
+
+    public void setEncoderOffset(double encoderOffset) {
+        this.encoderOffset = encoderOffset;
     }
 
     public double getEncoderRadians(){
@@ -70,11 +85,11 @@ public class SwerveModule {
     }
 
     public SwerveModuleState getState(){
-        return new SwerveModuleState(getDriveMotorVelocity(), new Rotation2d(getRotationMotorPosition()));
+        return new SwerveModuleState(getDriveMotorVelocity(), new Rotation2d(getEncoderRadians()));
     }
 
     public SwerveModulePosition getPostion(){
-        return new SwerveModulePosition(getDriveMotorPosition(), new Rotation2d(getRotationMotorPosition()));
+        return new SwerveModulePosition(getDriveMotorPosition(), new Rotation2d(getEncoderRadians()));
     }
 
     public void setDriveMotor(double speed){
@@ -112,6 +127,12 @@ public class SwerveModule {
     public void unlock(){
         driveMotor.setNeutralMode(NeutralMode.Coast);
         rotationMotor.setNeutralMode(NeutralMode.Coast);
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("Swerve Module");
+       builder.addDoubleProperty("Offset", this::getEncoderOffset, this::setEncoderOffset);
     }
 
 }
