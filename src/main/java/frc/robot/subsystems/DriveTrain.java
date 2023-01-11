@@ -27,7 +27,7 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   //private static PowerDistribution pdh;
   private static AHRS gyro;
   private static ChassisSpeeds chassisSpeeds;
-  private static SwerveDriveKinematics kinematics;
+  public static SwerveDriveKinematics kinematics;
   private static SwerveDriveOdometry odometry;
   private static Pose2d pose;
 
@@ -38,18 +38,14 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     swerveModules[2] = new SwerveModule(DRIVETRAIN.BACK_LEFT_MODULE_CONFIG);
     swerveModules[3] = new SwerveModule(DRIVETRAIN.BACK_RIGHT_MODULE_CONFIG);
 
-   // gyro = new Pigeon2(DRIVETRAIN.PIGEON, DRIVETRAIN.CANBUS);
+    //gyro = new Pigeon2(DRIVETRAIN.PIGEON, DRIVETRAIN.CANBUS);
     gyro = new AHRS(Port.kMXP);
     //pdh = new PowerDistribution(DRIVETRAIN.REV_PDH, ModuleType.kRev);
     chassisSpeeds = new ChassisSpeeds();
 
     SwerveModulePosition[] SwervePositions = {swerveModules[0].getPostion(), swerveModules[1].getPostion(), swerveModules[2].getPostion(), swerveModules[3].getPostion()};
 
-    
-
     kinematics = new SwerveDriveKinematics(DRIVETRAIN.SWERVE_MODULE_LOCATIONS);
-
-  
 
     odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(gyro.getYaw()), SwervePositions);
     pose = new Pose2d();
@@ -92,7 +88,7 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     odometry.resetPosition(getRotation2d(), getModuelPostions(), pose);
   }
 
-  private void setModuleStates(SwerveModuleState[] states){
+  public void setModuleStates(SwerveModuleState[] states){
     SwerveDriveKinematics.desaturateWheelSpeeds(states, SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND);
     for (int i = 0; i < swerveModules.length; i++) {
       swerveModules[i].setDesiredState(states[i]);
@@ -112,6 +108,12 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     double ySpeed = chassisSpeeds.vyMetersPerSecond + speeds.vyMetersPerSecond;
     double thetaSpeed = chassisSpeeds.omegaRadiansPerSecond + speeds.omegaRadiansPerSecond;
     chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
+  }
+
+  public void stopWheels(){
+    for(int i = 0; i < swerveModules.length; i++){
+      swerveModules[i].stop();
+    }
   }
 
   public void lockWheels(){
