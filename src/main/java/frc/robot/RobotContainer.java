@@ -10,6 +10,7 @@ import frc.robot.commands.DriverControl;
 import frc.robot.commands.TestSystems;
 import frc.robot.commands.auto.JanusAuto;
 import frc.robot.commands.auto.TestRoute1;
+import frc.robot.commands.auto.TrajectoryAuto;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.utilities.auto.JanusRouteFactory;
 import frc.robot.utilities.controller.DebouncedController;
@@ -50,7 +51,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand(){
-    return new JanusAuto(driveTrain, autoChooser.getSelected().build());
+    // return new JanusAuto(driveTrain, autoChooser.getSelected().build());
+    return new TrajectoryAuto(driveTrain);
   }
 
 }
