@@ -1,23 +1,27 @@
 package frc.robot;
 
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.hal.simulation.RoboRioDataJNI;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.AUTO;
+import frc.robot.commands.AprilTagVission;
 import frc.robot.commands.DriverControl;
 import frc.robot.commands.TestSystems;
 import frc.robot.commands.auto.JanusAuto;
 import frc.robot.commands.auto.TestRoute1;
 import frc.robot.commands.auto.TrajectoryAuto;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.VissonTracking;
 import frc.robot.utilities.auto.JanusRouteFactory;
 import frc.robot.utilities.controller.DebouncedController;
 
 public class RobotContainer {
 
   private DriveTrain driveTrain = new DriveTrain();
+  private VissonTracking vission = new VissonTracking();
   private DebouncedController controller = new DebouncedController(0);
   private SendableChooser<JanusRouteFactory> autoChooser = new SendableChooser<>();
 
@@ -41,9 +45,8 @@ public class RobotContainer {
 
   private void configureBindings() {
     controller.start.whileTrue(new InstantCommand(driveTrain::zeroHeading));
-    // controller.a.whileTrue(new InstantCommand(() -> {
-    //   System.out.println("a");
-    // }));
+    controller.back.onTrue(new InstantCommand(vission::turnOFFLEDS));
+    controller.a.whileTrue(new AprilTagVission(driveTrain, vission, Constants.AUTO.XY_PID_CONFIG, Constants.AUTO.THETA_PID_CONFIG));
   }
 
   public void createSystemTestButtonBinding(){
