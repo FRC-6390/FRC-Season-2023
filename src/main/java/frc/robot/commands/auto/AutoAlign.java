@@ -65,7 +65,7 @@ public class AutoAlign extends CommandBase {
   
     @Override
     public void end(boolean interrupted) {
-        
+        driveTrain.feedbackDrive(new ChassisSpeeds());
     }
   
     @Override
