@@ -32,17 +32,17 @@ public class TrajectoryAuto extends SequentialCommandGroup{
         Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
             new Pose2d(0, 0, new Rotation2d(0)),
             List.of(
-                new Translation2d(10, 0),                    
-                new Translation2d(10, 10)),
+                new Translation2d(2, 0),                    
+                new Translation2d(2, 2)),
                 new Pose2d(10, 0, Rotation2d.fromDegrees(0)
             ),trajectoryConfig
         );
 
         // 3. Define PID controllers for tracking trajectory
-        PIDController xController = new PIDController(0.01, 0, 0);
-        PIDController yController = new PIDController(0.01, 0, 0);
+        PIDController xController = new PIDController(0.001, 0, 0);
+        PIDController yController = new PIDController(0.001, 0, 0);
         ProfiledPIDController thetaController = new ProfiledPIDController(
-            0.01, 0, 0, Constants.AUTO.THETA_CONTROLLER_CONSTRAINTS
+            1, 0, 0, Constants.AUTO.THETA_CONTROLLER_CONSTRAINTS
         );
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
 

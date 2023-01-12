@@ -47,10 +47,17 @@ public class AprilTagVission extends CommandBase {
         boolean xLimit = true;
         boolean yLimit = false;
         boolean thetaLimit = false;
+        System.out.println(vissonTracking.getXOffset());
+
+        
         //lock wheels
-        if(xLimit){
-            ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, 0, 0, driveTrain.getRotation2d());
-            driveTrain.feedbackDrive(chassisSpeeds);
+        if(vissonTracking.getXOffset() > 1){
+          System.out.println("True");
+          ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(1, 0, 0, driveTrain.getRotation2d());
+          driveTrain.drive(chassisSpeeds);
+        } else {
+          System.out.println("False");
+          driveTrain.stopWheels();
         }
 
     }
