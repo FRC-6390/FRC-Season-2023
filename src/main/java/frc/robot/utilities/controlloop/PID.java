@@ -16,7 +16,7 @@ public class PID implements Sendable {
     private boolean enabled = true;
 
     public PID(PIDConfig config){
-        this(null, null, config);
+        this(null, 0, config);
     }
 
     public PID(DoubleSupplier measuremnt, double setpoint, PIDConfig config){
@@ -92,8 +92,8 @@ public class PID implements Sendable {
         builder.addDoubleProperty("I", config::getI, config::setI);
         builder.addDoubleProperty("D", config::getD, config::setD);
         builder.addDoubleProperty("I Limit", config::getILimit, config::setILimit);
-        builder.addDoubleProperty("Setpoint", this::getSetpoint, this::setSetpoint);
-        builder.addDoubleProperty("Measurement", measurement::getAsDouble,  null);
-        builder.addDoubleProperty("Calculated", () -> getSupplier().getAsDouble(), null);
+        // builder.addDoubleProperty("Setpoint", this::getSetpoint, this::setSetpoint);
+        // builder.addDoubleProperty("Measurement", measurement::getAsDouble,  null);
+       // builder.addDoubleProperty("Calculated", () -> getSupplier().getAsDouble(), null);
     }
 }

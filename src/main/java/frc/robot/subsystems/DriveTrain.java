@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -44,6 +45,7 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
    
     //pdh = new PowerDistribution(DRIVETRAIN.REV_PDH, ModuleType.kRev);
     chassisSpeeds = new ChassisSpeeds();
+    feedbackSpeeds = new ChassisSpeeds();
 
     SwerveModulePosition[] SwervePositions = {swerveModules[0].getPostion(), swerveModules[1].getPostion(), swerveModules[2].getPostion(), swerveModules[3].getPostion()};
 
@@ -52,6 +54,10 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(gyro.getYaw()), SwervePositions);
     pose = new Pose2d();
 
+        autoTab.add(gameField);
+    autoTab.addDouble("Odometry Heading", () -> pose.getRotation().getDegrees()).withWidget(BuiltInWidgets.kTextView);
+    autoTab.addDouble("Odometry X", () -> pose.getX()).withWidget(BuiltInWidgets.kTextView);
+    autoTab.addDouble("Odometry Y", () -> pose.getY()).withWidget(BuiltInWidgets.kTextView);
   }
 
   public void init(){
@@ -146,8 +152,9 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     odometry.update(getRotation2d(), getModulePostions());
     pose = odometry.getPoseMeters();
     gameField.setRobotPose(pose);
-    autoTab.add(gameField);
-    autoTab.add("Odometry", pose);
+
+    
+
   }
 
   @Override

@@ -46,13 +46,7 @@ public class SwerveModule implements Sendable{
     }
 
     public SwerveModule(SwerveModuleConfig config, ShuffleboardTab tab){
-        if(tab != null){
-            ShuffleboardLayout layout = tab.getLayout("Swerve Module "+instances, BuiltInLayouts.kList).withSize(2, 2);
-            layout.add(pid);
-            offsetEntry = layout.add("Offset", getEncoderOffset()).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", -Math.PI, "max", Math.PI)).getEntry();
-            layout.add("Angle", getPostion().angle.getDegrees()).withWidget(BuiltInWidgets.kGyro);
-        }
-        instances++;
+       
         if(config.canbus() != null){
             driveMotor = new TalonFX(config.driveMotor(), config.canbus());
             rotationMotor = new TalonFX(config.rotationMotor(), config.canbus());
@@ -69,6 +63,15 @@ public class SwerveModule implements Sendable{
         encoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
 
         pid = new PID(() -> getRotationMotorPosition(), null, SWERVEMODULE.ROTATION_PID);
+        if(tab != null){
+            // ShuffleboardLayout layout = tab.getLayout("Swerve Module "+instances, BuiltInLayouts.kList).withSize(2, 4);
+            // //layout.add(pid);
+            offsetEntry = tab.add("Offset "+ instances, getEncoderOffset()).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", -Math.PI, "max", Math.PI)).getEntry();
+            tab.addDouble("Angle "+instances, () -> getPostion().angle.getDegrees());
+            tab.addDouble("Absolute "+instances, () -> getAbsolutePosition());
+
+        }
+        instances++;
 
         resetEncoders();
         unlock();

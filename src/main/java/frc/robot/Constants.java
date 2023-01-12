@@ -42,10 +42,10 @@ public interface Constants {
         int BACK_RIGHT_ROTATION = 7;
         int BACK_RIGHT_ENCODER = 11;
 
-        double FRONT_LEFT_OFFSET = 1.62447;
-        double FRONT_RIGHT_OFFSET = 1.57232;
-        double BACK_LEFT_OFFSET = 1.596929;
-        double BACK_RIGHT_OFFSET = 1.54779;
+        double FRONT_LEFT_OFFSET = 0.013805+Math.PI;
+        double FRONT_RIGHT_OFFSET = 0.010737+Math.PI;
+        double BACK_LEFT_OFFSET = 0.030679+Math.PI;
+        double BACK_RIGHT_OFFSET = -0.042951+Math.PI;
 
         SwerveModuleConfig FRONT_LEFT_MODULE_CONFIG = new SwerveModuleConfig(FRONT_LEFT_DRIVE, false, FRONT_LEFT_ROTATION, false, FRONT_LEFT_ENCODER, FRONT_LEFT_OFFSET, CANBUS);
         SwerveModuleConfig FRONT_RIGHT_MODULE_CONFIG = new SwerveModuleConfig(FRONT_RIGHT_DRIVE, false, FRONT_RIGHT_ROTATION, false, FRONT_RIGHT_ENCODER, FRONT_RIGHT_OFFSET, CANBUS);

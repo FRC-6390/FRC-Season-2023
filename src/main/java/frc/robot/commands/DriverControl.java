@@ -31,7 +31,7 @@ public class DriverControl extends CommandBase {
   @Override
   public void execute() {
   
-    double xSpeed = xLimiter.calculate(xInput.getAsDouble()) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
+    double xSpeed = xLimiter.calculate(-xInput.getAsDouble()) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
     double ySpeed = yLimiter.calculate(yInput.getAsDouble()) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
     double thetaSpeed = thetaLimiter.calculate(thetaInput.getAsDouble()) * SWERVEMODULE.MAX_ANGULAR_SPEED_METERS_PER_SECOND;
 
