@@ -12,14 +12,14 @@ import frc.robot.utilities.sensors.REVColour;
 
 public class AutoAlign extends CommandBase {
 
-    private VissionTracking vissonTracking;
+    private VissionTracking vissionTracking;
     private DriveTrain driveTrain;
     private PID xPID, yPID, thetaPID;
     private PIDConfig xyConfig, thetaConfig;
     private SlewRateLimiter xLimiter, yLimiter, thetaLimiter;
 
     public AutoAlign(DriveTrain driveTrain, VissionTracking vissonTracking, PIDConfig xyConfig, PIDConfig thetaConfig) {
-        this.vissonTracking = vissonTracking;
+        this.vissionTracking = vissonTracking;
         this.driveTrain = driveTrain;
         this.thetaConfig = thetaConfig;
         this.xyConfig = xyConfig;
@@ -40,11 +40,13 @@ public class AutoAlign extends CommandBase {
     @Override
     public void execute() {
 
-        double xDistance = driveTrain.getPose().getX() + vissonTracking.getXOffset();
+        double distance = vissionTracking.getDistance();
 
+        double xDistance = Math.cos(vissionTracking.getXOffset()) * distance;
+        double yDistance = Math.sin(vissionTracking.getXOffset()) * distance;
 
-        double xSpeed = xLimiter.calculate(xPID.calculate()) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
-        double ySpeed = yLimiter.calculate(yPID.calculate()) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
+        double xSpeed = xLimiter.calculate(xPID.calculate(xDistance + driveTrain.getPose().getX())) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
+        double ySpeed = yLimiter.calculate(yPID.calculate(yDistance + driveTrain.getPose().getY())) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
         double thetaSpeed = thetaLimiter.calculate(thetaPID.calculate()) * SWERVEMODULE.MAX_ANGULAR_SPEED_METERS_PER_SECOND;
 
         boolean xLimit = false;
@@ -52,9 +54,9 @@ public class AutoAlign extends CommandBase {
         boolean thetaLimit = false;
         //lock wheels
         if(xLimit && yLimit && thetaLimit){
-            vissonTracking.setLEDColour(REVColour.Strobe_White);
+            vissionTracking.setLEDColour(REVColour.Strobe_White);
         }else{
-            vissonTracking.setLEDColour(REVColour.White);
+            vissionTracking.setLEDColour(REVColour.White);
             ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, thetaSpeed, driveTrain.getRotation2d());
             driveTrain.feedbackDrive(chassisSpeeds);
         }

@@ -17,6 +17,11 @@ public class VissionTracking extends SubsystemBase{
         limelight = new LimeLight();
 
     }
+
+    public double getDistance(){
+        return limelight.getDistanceFromTarget(10);
+    }
+
     public void turnOFFLEDS(){
         limelight.setLedMode(LedMode.OFF);
     }
