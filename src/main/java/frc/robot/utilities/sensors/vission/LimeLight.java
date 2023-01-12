@@ -9,7 +9,7 @@ public class LimeLight {
     private NetworkTable limelightTable;
     public NetworkTableEntry tv, tx, ty, ta, ts, tl, tshort, tlong, thor, getpipe, camtran, tc, ledMode, camMode, pipeline, stream, snapshot, crop, tx0, ty0, ta0, ts0, tx1, ty1, ta1, ts1, tx2, ty2, ta2, ts2, cx0, cy0, cx1, cy1;
 
-    enum LedMode{
+    public enum LedMode{
         PIPELINE(0),
         OFF(1),
         BLINK(2),
@@ -24,7 +24,7 @@ public class LimeLight {
         }
     }
 
-    enum CameraMode{
+    public enum CameraMode{
         VISION_PROCESSOR(0),
         DRIVER(1);
         private int id;
@@ -37,7 +37,7 @@ public class LimeLight {
         }
     }
 
-    enum StreamMode{
+    public enum StreamMode{
         STANDARD(0),
         PIP_MAIN(1),
         PIP_SECONDARY(2);
@@ -51,7 +51,7 @@ public class LimeLight {
         }
     }
 
-    enum SnapshotMode{
+    public enum SnapshotMode{
         RESET(0),
         ONCE(1);
         private int id;

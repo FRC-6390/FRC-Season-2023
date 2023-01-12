@@ -12,6 +12,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.SWERVEMODULE;
 import frc.robot.utilities.controlloop.PID;
 
@@ -21,6 +22,7 @@ public class SwerveModule implements Sendable{
 
     private CANCoder encoder;
     private PID pid;
+    private SwerveModuleState state = new SwerveModuleState();
 
     private double encoderOffset;
    // private REVMaglimitSwitch limitSwitch;
@@ -39,7 +41,7 @@ public class SwerveModule implements Sendable{
             rotationMotor = new TalonFX(config.rotationMotor());
             encoder = new CANCoder(config.encoder());
         }
-
+        encoderOffset = config.encoderOffset();
         driveMotor.setInverted(config.driveMotorReversed());
         rotationMotor.setInverted(config.rotationMotorReversed());
 
@@ -64,7 +66,7 @@ public class SwerveModule implements Sendable{
     }
 
     public double getAbsolutePosition(){
-        return encoder.getAbsolutePosition();
+        return encoder.getAbsolutePosition()* Math.PI/180d;
     }
 
     public double getEncoderOffset(){
@@ -76,7 +78,7 @@ public class SwerveModule implements Sendable{
     }
 
     public double getEncoderRadians(){
-        return (encoder.getAbsolutePosition() * Math.PI/180d) + encoderOffset;
+        return (encoder.getAbsolutePosition() * Math.PI/180d) - encoderOffset;
     }
 
     public void resetEncoders(){
@@ -105,9 +107,13 @@ public class SwerveModule implements Sendable{
             stop();
             return;
         }
+       // System.out.println(state.angle.getRadians() + " " + pid.calculate(state.angle.getRadians()));
+        //pid.setMeasurement(this::getEncoderRadians);
         state = SwerveModuleState.optimize(state, getState().angle);
         driveMotor.set(ControlMode.PercentOutput, state.speedMetersPerSecond / SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND);
         rotationMotor.set(ControlMode.PercentOutput, pid.calculate(state.angle.getRadians()));
+        this.state = state;
+
     }
 
     public void stop(){
@@ -132,7 +138,10 @@ public class SwerveModule implements Sendable{
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Swerve Module");
-       builder.addDoubleProperty("Offset", this::getEncoderOffset, this::setEncoderOffset);
+        builder.addDoubleProperty("Radians", this::getAbsolutePosition, null);
+
+        builder.addDoubleProperty("Offset", this::getEncoderOffset, this::setEncoderOffset);
+        builder.addStringProperty("SwerveModule", state::toString, null);
     }
 
 }

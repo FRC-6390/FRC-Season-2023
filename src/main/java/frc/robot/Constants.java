@@ -34,10 +34,10 @@ public interface Constants {
         int BACK_RIGHT_ROTATION = 7;
         int BACK_RIGHT_ENCODER = 11;
 
-        int FRONT_LEFT_OFFSET = 0;
-        int FRONT_RIGHT_OFFSET = 0;
-        int BACK_LEFT_OFFSET = 0;
-        int BACK_RIGHT_OFFSET = 0;
+        double FRONT_LEFT_OFFSET = 1.62447;
+        double FRONT_RIGHT_OFFSET = 1.57232;
+        double BACK_LEFT_OFFSET = 1.596929;
+        double BACK_RIGHT_OFFSET = 1.54779;
 
         SwerveModuleConfig FRONT_LEFT_MODULE_CONFIG = new SwerveModuleConfig(FRONT_LEFT_DRIVE, false, FRONT_LEFT_ROTATION, false, FRONT_LEFT_ENCODER, FRONT_LEFT_OFFSET, CANBUS);
         SwerveModuleConfig FRONT_RIGHT_MODULE_CONFIG = new SwerveModuleConfig(FRONT_RIGHT_DRIVE, false, FRONT_RIGHT_ROTATION, false, FRONT_RIGHT_ENCODER, FRONT_RIGHT_OFFSET, CANBUS);
@@ -57,7 +57,7 @@ public interface Constants {
         double DRIVE_GEAR_RATIO = 1d/(8.14);
         double ROTATION_ENCODER_CONVERSION_RADIANS = ROTATION_GEAR_RATIO * 2 * Math.PI;
         double DRIVE_ENCODER_CONVERSION_METERS = (DRIVE_GEAR_RATIO * Math.PI * WHEEL_DIAMETER_METERS);
-        PIDConfig ROTATION_PID = new PIDConfig(0.3, 0, 0).setContinuous(-Math.PI, Math.PI);
+        PIDConfig ROTATION_PID = new PIDConfig(0.5, 0, 0).setContinuous(-Math.PI, Math.PI);
     }
 
     public interface AUTO{
@@ -80,8 +80,8 @@ public interface Constants {
     }
     
     public interface ROBOT {
-        double TRACKWIDTH_METERS = 0;
-        double WHEELBASE_METERS = 0;
+        double TRACKWIDTH_METERS = 0.61;
+        double WHEELBASE_METERS = 0.61;
         Translation2d FRONT_LEFT = new Translation2d(TRACKWIDTH_METERS/2, WHEELBASE_METERS/2);
         Translation2d FRONT_RIGHT = new Translation2d(TRACKWIDTH_METERS/2, -WHEELBASE_METERS/2);
         Translation2d BACK_LEFT = new Translation2d(-TRACKWIDTH_METERS/2, WHEELBASE_METERS/2);

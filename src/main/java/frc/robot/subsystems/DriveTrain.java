@@ -80,7 +80,7 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   }
 
   public void resetOdometry(Pose2d pose){
-    odometry.resetPosition(getRotation2d(), getModuelPostions(), pose);
+    odometry.resetPosition(getRotation2d(), getModulePostions(), pose);
   }
 
   public void setModuleStates(SwerveModuleState[] states){
@@ -90,7 +90,7 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     }
   }
 
-  private SwerveModulePosition[] getModuelPostions(){
+  private SwerveModulePosition[] getModulePostions(){
     SwerveModulePosition[] positions = new SwerveModulePosition[swerveModules.length];
     for (int i = 0; i < swerveModules.length; i++) {
       positions[i] = swerveModules[i].getPostion();
@@ -139,10 +139,11 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     }
 
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
+    
     setModuleStates(states);
 
 
-    odometry.update(getRotation2d(), getModuelPostions());
+    odometry.update(getRotation2d(), getModulePostions());
     pose = odometry.getPoseMeters();
   }
 
