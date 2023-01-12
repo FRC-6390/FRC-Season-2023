@@ -4,6 +4,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.utilities.controlloop.PID;
 import frc.robot.utilities.controlloop.PIDConfig;
+import frc.robot.utilities.controlloop.motionprofile.MotionProfile;
+import frc.robot.utilities.controlloop.motionprofile.MotionProfileComponent;
+import frc.robot.utilities.controlloop.motionprofile.MotionProfileConfig;
+import frc.robot.utilities.controlloop.motionprofile.MotionProfileState;
 
 public class Main {
 
@@ -13,9 +17,21 @@ public class Main {
     static JanusRouteFactory factory = new JanusRouteFactory(config).to(2,1).to(0,0).to(-3,3,180);
     static double pos = 160;
     public static void main(String[] args) {
-        JanusRoute route = factory.build();
+        //JanusRoute route = factory.build();
 
-        route.init(Pose2d::new);
+        //route.init(Pose2d::new);
+
+        MotionProfileConfig config = new MotionProfileConfig(1, 0.5, thetaconfig);
+
+        MotionProfile motionProfile = new MotionProfile(config);
+
+        MotionProfileState currenState = new MotionProfileState(new MotionProfileComponent(0, 0, 0, 0, 0, 0, 0));
+
+        motionProfile.calculate(currenState, 1);
+
+        for (double i = 0d; i <= 10; i+=0.1d) {
+            System.out.printf("Time: %.2f - %s - %s%n",i,motionProfile.getSpeedsAtTime(i), motionProfile.getPoseAtTime(i)); 
+        }
                
         // for (double i = 0d; i <= 10; i+=0.1d) {
         //     System.out.printf("Time: %.2f - %s - %s%n",i,route.calculate(i), route.getPose(i)); 

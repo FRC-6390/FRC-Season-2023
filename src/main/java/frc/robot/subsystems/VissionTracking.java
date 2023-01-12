@@ -7,7 +7,7 @@ import frc.robot.utilities.sensors.REVColour;
 import frc.robot.utilities.sensors.vission.LimeLight;
 import frc.robot.utilities.sensors.vission.LimeLight.LedMode;
 
-public class VissonTracking extends SubsystemBase{
+public class VissionTracking extends SubsystemBase{
 
     private static REVBlinkin blinkin;
     private static LimeLight limelight;

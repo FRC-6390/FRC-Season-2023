@@ -61,7 +61,7 @@ public class PIDConfig implements Sendable{
         return d;
     }
     
-    public double getiLimit() {
+    public double getILimit() {
         return iLimit;
     }
 
@@ -87,7 +87,7 @@ public class PIDConfig implements Sendable{
         builder.addDoubleProperty("p", this::getP, this::setP);
         builder.addDoubleProperty("i", this::getI, this::setI);
         builder.addDoubleProperty("d", this::getD, this::setD);
-        builder.addDoubleProperty("iLimit", this::getiLimit, this::setILimit);
+        builder.addDoubleProperty("iLimit", this::getILimit, this::setILimit);
         builder.addBooleanProperty("continuous", this::getContinuous, this::setContinuous);
     }
 

@@ -5,21 +5,20 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.SWERVEMODULE;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.VissonTracking;
-import frc.robot.utilities.auto.JanusRoute;
+import frc.robot.subsystems.VissionTracking;
 import frc.robot.utilities.controlloop.PID;
 import frc.robot.utilities.controlloop.PIDConfig;
 import frc.robot.utilities.sensors.REVColour;
 
 public class AutoAlign extends CommandBase {
 
-    private VissonTracking vissonTracking;
+    private VissionTracking vissonTracking;
     private DriveTrain driveTrain;
     private PID xPID, yPID, thetaPID;
     private PIDConfig xyConfig, thetaConfig;
     private SlewRateLimiter xLimiter, yLimiter, thetaLimiter;
 
-    public AutoAlign(DriveTrain driveTrain, VissonTracking vissonTracking, PIDConfig xyConfig, PIDConfig thetaConfig) {
+    public AutoAlign(DriveTrain driveTrain, VissionTracking vissonTracking, PIDConfig xyConfig, PIDConfig thetaConfig) {
         this.vissonTracking = vissonTracking;
         this.driveTrain = driveTrain;
         this.thetaConfig = thetaConfig;
@@ -53,7 +52,7 @@ public class AutoAlign extends CommandBase {
         }else{
             vissonTracking.setLEDColour(REVColour.White);
             ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, thetaSpeed, driveTrain.getRotation2d());
-            driveTrain.feedforwardDrive(chassisSpeeds);
+            driveTrain.feedbackDrive(chassisSpeeds);
         }
 
     }

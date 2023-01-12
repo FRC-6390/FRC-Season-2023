@@ -6,7 +6,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj.Timer;
 
 public class PID implements Sendable {
 
@@ -14,6 +13,7 @@ public class PID implements Sendable {
     private DoubleSupplier measurement, setpoint;
     private PIDConfig config;
     private double error, previousError, errorSum, previousTime;
+    private boolean enabled = true;
 
     public PID(PIDConfig config){
         this(null, null, config);
@@ -39,7 +39,7 @@ public class PID implements Sendable {
     public double calculate(){
         error = config.getContinuous() ? calculateContinuousError() : calculateError();
         double deltaTime = System.currentTimeMillis() - previousTime;
-        if(Math.abs(error) < config.getiLimit()) errorSum += error *config.getI();
+        if(Math.abs(error) < config.getILimit()) errorSum += error *config.getI();
         double errorRate = (error - previousError) / deltaTime;        
         previousError = error;
         previousTime = System.currentTimeMillis();
@@ -47,7 +47,7 @@ public class PID implements Sendable {
         double p = config.getP() > 0 ? config.getP()*error : 0;
         double i = config.getI() > 0 ? config.getI()*errorSum : 0;
         double d = config.getD() > 0 ? config.getD()*errorRate : 0;
-        return p+i+d;
+        return enabled ? p+i+d : 0;
     }
 
     private double calculateError(){
@@ -76,11 +76,24 @@ public class PID implements Sendable {
         return setpoint.getAsDouble();
     }
 
+    private boolean getEnable(){
+        return enabled;
+    }
+
+    private void setEnable(boolean enabled){
+        this.enabled = enabled;
+    }
+
     @Override
     public void initSendable(SendableBuilder builder) {
-        builder.setSmartDashboardType("PID");
-        builder.addDoubleProperty("measurement", measurement::getAsDouble,  null);
-        builder.addDoubleProperty("value", () -> getSupplier().getAsDouble(), null);
-        builder.addDoubleProperty("setpoint", this::getSetpoint, this::setSetpoint);
+        //builder.setSmartDashboardType("PID");
+        builder.addBooleanProperty("Enabled", this::getEnable, this::setEnable);
+        builder.addDoubleProperty("P", config::getP, config::setP);
+        builder.addDoubleProperty("I", config::getI, config::setI);
+        builder.addDoubleProperty("D", config::getD, config::setD);
+        builder.addDoubleProperty("I Limit", config::getILimit, config::setILimit);
+        builder.addDoubleProperty("Setpoint", this::getSetpoint, this::setSetpoint);
+        builder.addDoubleProperty("Measurement", measurement::getAsDouble,  null);
+        builder.addDoubleProperty("Calculated", () -> getSupplier().getAsDouble(), null);
     }
 }

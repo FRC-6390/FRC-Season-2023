@@ -1,18 +1,30 @@
 package frc.robot.utilities.swerve;
 
+import java.util.Map;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants.SWERVEMODULE;
 import frc.robot.utilities.controlloop.PID;
 
@@ -22,6 +34,7 @@ public class SwerveModule implements Sendable{
 
     private CANCoder encoder;
     private PID pid;
+    private GenericEntry offsetEntry;
     private SwerveModuleState state = new SwerveModuleState();
 
     private double encoderOffset;
@@ -29,9 +42,17 @@ public class SwerveModule implements Sendable{
     private static int instances = 0;
 
     public SwerveModule(SwerveModuleConfig config){
-        instances++;
-        SendableRegistry.addLW(this, "Swerve Module "+ instances, instances);
+        this(config, null);
+    }
 
+    public SwerveModule(SwerveModuleConfig config, ShuffleboardTab tab){
+        if(tab != null){
+            ShuffleboardLayout layout = tab.getLayout("Swerve Module "+instances, BuiltInLayouts.kList).withSize(2, 2);
+            layout.add(pid);
+            offsetEntry = layout.add("Offset", getEncoderOffset()).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", -Math.PI, "max", Math.PI)).getEntry();
+            layout.add("Angle", getPostion().angle.getDegrees()).withWidget(BuiltInWidgets.kGyro);
+        }
+        instances++;
         if(config.canbus() != null){
             driveMotor = new TalonFX(config.driveMotor(), config.canbus());
             rotationMotor = new TalonFX(config.rotationMotor(), config.canbus());
@@ -78,6 +99,8 @@ public class SwerveModule implements Sendable{
     }
 
     public double getEncoderRadians(){
+        if(offsetEntry != null) encoderOffset = offsetEntry.getDouble(0.0);
+
         return (encoder.getAbsolutePosition() * Math.PI/180d) - encoderOffset;
     }
 
@@ -107,8 +130,6 @@ public class SwerveModule implements Sendable{
             stop();
             return;
         }
-       // System.out.println(state.angle.getRadians() + " " + pid.calculate(state.angle.getRadians()));
-        //pid.setMeasurement(this::getEncoderRadians);
         state = SwerveModuleState.optimize(state, getState().angle);
         driveMotor.set(ControlMode.PercentOutput, state.speedMetersPerSecond / SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND);
         rotationMotor.set(ControlMode.PercentOutput, pid.calculate(state.angle.getRadians()));
@@ -122,7 +143,9 @@ public class SwerveModule implements Sendable{
     }
 
     public void setToAngle(double angle){
-        rotationMotor.set(ControlMode.PercentOutput, pid.calculate(angle));
+        SwerveModuleState state = new SwerveModuleState(0, new Rotation2d(angle));
+        setDesiredState(state);
+       //rotationMotor.set(ControlMode.PercentOutput, pid.calculate(angle));
     }
 
     public void lock(){

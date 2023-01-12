@@ -46,7 +46,7 @@ public class AutoBalance extends CommandBase {
         }else{
             driveTrain.unlockWheels();
             ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, 0, driveTrain.getRotation2d());
-            driveTrain.feedforwardDrive(chassisSpeeds);
+            driveTrain.feedbackDrive(chassisSpeeds);
         }
 
     }
