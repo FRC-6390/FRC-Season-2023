@@ -337,7 +337,7 @@ public class JanusPath {
         return findRelaventState(time).getChassisSpeedsAtTime(time);
     }
 
-    public void runComman(){
+    public void runCommand(){
         if(isCommand()) waypoints.get(0).getCommand().schedule();
     }
 

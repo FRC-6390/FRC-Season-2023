@@ -4,6 +4,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ELEVATOR;
 import frc.robot.utilities.controlloop.motionprofile.MotionProfileComponent;
@@ -13,10 +15,13 @@ public class Elevator extends SubsystemBase {
 
     private static CANCoder encoder;
     private static TalonFX motor;
+    private static ShuffleboardTab tab;
 
     static{
+        tab = Shuffleboard.getTab("Elevator");
         motor = new TalonFX(ELEVATOR.DRIVE_MOTOR);
         encoder = new CANCoder(ELEVATOR.ENCODER);
+
     }
 
     public MotionProfileState getCurrentState(){
@@ -38,6 +43,7 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void periodic() {
-
+        tab.addDouble("Postion", () -> getPosition());
+        
     }
 }

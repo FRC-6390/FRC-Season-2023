@@ -5,9 +5,10 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class LimeLight {
-    private static final String DEFUALT_TABLE = "limelight";
+    private static final LimelightConfig DEFUALT_CONFIG = new LimelightConfig("limelight",0,0);
+    private LimelightConfig config;
     private NetworkTable limelightTable;
-    public NetworkTableEntry tv, tx, ty, ta, ts, tl, tshort, tlong, thor, getpipe, camtran, tc, ledMode, camMode, pipeline, stream, snapshot, crop, tx0, ty0, ta0, ts0, tx1, ty1, ta1, ts1, tx2, ty2, ta2, ts2, cx0, cy0, cx1, cy1;
+    public NetworkTableEntry tv, tx, ty, ta, ts, tl, tshort, tlong, thor, getpipe, camtran, tid, json, botpose, tclass, tc, ledMode, camMode, pipeline, stream, snapshot, crop, tx0, ty0, ta0, ts0, tx1, ty1, ta1, ts1, tx2, ty2, ta2, ts2, cx0, cy0, cx1, cy1;
 
     public enum LedMode{
         PIPELINE(0),
@@ -65,11 +66,12 @@ public class LimeLight {
     }
 
     public LimeLight(){
-        this(DEFUALT_TABLE);
+        this(DEFUALT_CONFIG);
     }
 
-    public LimeLight(String table){
-        limelightTable = NetworkTableInstance.getDefault().getTable(table);
+    public LimeLight(LimelightConfig config){
+        this.config = config;
+        limelightTable = NetworkTableInstance.getDefault().getTable(config.table());
         tv = limelightTable.getEntry("tv");
         tx = limelightTable.getEntry("tx");
         ty = limelightTable.getEntry("ty");
@@ -81,6 +83,10 @@ public class LimeLight {
         thor = limelightTable.getEntry("thor");
         getpipe = limelightTable.getEntry("getpipe");
         camtran = limelightTable.getEntry("camtran");
+        tid = limelightTable.getEntry("tid");
+        json = limelightTable.getEntry("json");
+        botpose = limelightTable.getEntry("botpose");
+        tclass = limelightTable.getEntry("tclass");
         tc = limelightTable.getEntry("tc");
         ledMode = limelightTable.getEntry("ledMode");
         camMode = limelightTable.getEntry("camMode");
@@ -185,10 +191,38 @@ public class LimeLight {
     }
 
      /**
-     * Results of a 3D position solution, NumberArray: Translation (x,y,z) Rotation(pitch,yaw,roll)
+     * Camera transform in target space of primary apriltag or solvepnp target, NumberArray: Translation (x,y,z) Rotation(pitch,yaw,roll)
      */
-    public Number[] get3DPosition(){
+    public Number[] getCameraTransform(){
         return camtran.getNumberArray(null);
+    }
+
+    /**
+     * ID of primary AprilTag
+     */
+    public long getAprilTagID(){
+        return tid.getInteger(0);
+    }
+
+     /**
+     * Full JSON dump of targeting results
+     */
+    public String getJSON(){
+        return json.getString("");
+    }
+
+     /**
+     * Robot transform in field-space. Translation (X,Y,Z) Rotation(X,Y,Z)
+     */
+    public Number[] getBotPosition(){
+        return botpose.getNumberArray(null);
+    }
+
+    /**
+     * Class ID of primary neural detector result or neural classifier result
+     */
+    public long getNeuralClassID(){
+        return tid.getInteger(0);
     }
 
     /**
@@ -231,6 +265,15 @@ public class LimeLight {
      */
     public void setSnapshots(int mode){
         snapshot.setNumber(mode);
+    }
+
+    public double getDistanceFromTarget(double targetHeightMeters){
+        return getDistanceFromTarget(config.mountingAngle(), config.mountingHeightMeters(), targetHeightMeters);
+    }
+
+    public double getDistanceFromTarget(double mountingAngle, double mountingHeightMeters, double targetHeightMeters){
+        double angleToTargetRadains =  (mountingAngle + getTargetVerticalOffset()) * (Math.PI/180); 
+        return (targetHeightMeters - mountingHeightMeters)/Math.tan(angleToTargetRadains);
     }
 
 }

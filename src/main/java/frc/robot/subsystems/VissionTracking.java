@@ -21,8 +21,12 @@ public class VissionTracking extends SubsystemBase{
         limelight.setLedMode(LedMode.OFF);
     }
 
-    public double getOffset(){
+    public double getXOffset(){
         return limelight.getTargetHorizontalOffset();
+    }
+
+    public double getYOffset(){
+        return limelight.getTargetVerticalOffset();
     }
 
     public void setLEDColour(int colour){

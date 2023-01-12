@@ -8,6 +8,7 @@ import frc.robot.utilities.controlloop.motionprofile.MotionProfile;
 import frc.robot.utilities.controlloop.motionprofile.MotionProfileComponent;
 import frc.robot.utilities.controlloop.motionprofile.MotionProfileConfig;
 import frc.robot.utilities.controlloop.motionprofile.MotionProfileState;
+import frc.robot.utilities.sensors.REVColour;
 
 public class Main {
 
@@ -29,9 +30,9 @@ public class Main {
 
         motionProfile.calculate(currenState, 1);
 
-        for (double i = 0d; i <= 10; i+=0.1d) {
-            System.out.printf("Time: %.2f - %s - %s%n",i,motionProfile.getSpeedsAtTime(i), motionProfile.getPoseAtTime(i)); 
-        }
+        // for (double i = 0d; i <= 10; i+=0.1d) {
+        //     System.out.printf("Time: %.2f - %s - %s%n",i,motionProfile.getSpeedsAtTime(i), motionProfile.getPoseAtTime(i)); 
+        // }
                
         // for (double i = 0d; i <= 10; i+=0.1d) {
         //     System.out.printf("Time: %.2f - %s - %s%n",i,route.calculate(i), route.getPose(i)); 

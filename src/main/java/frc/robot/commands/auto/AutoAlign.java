@@ -32,13 +32,17 @@ public class AutoAlign extends CommandBase {
   
     @Override
     public void initialize() {
-        xPID = new PID(() -> driveTrain.getPose().getX(), vissonTracking::getOffset ,xyConfig);
-        yPID = new PID(() -> driveTrain.getPose().getY(), 0, xyConfig);
+        xPID = new PID(() -> driveTrain.getPose().getX(), null ,xyConfig);
+        yPID = new PID(() -> driveTrain.getPose().getY(), null, xyConfig);
         thetaPID = new PID(() -> driveTrain.getPose().getRotation().getRadians(), 0, thetaConfig);
     }
   
     @Override
     public void execute() {
+
+        double xDistance = driveTrain.getPose().getX() + vissonTracking.getXOffset();
+
+
         double xSpeed = xLimiter.calculate(xPID.calculate()) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
         double ySpeed = yLimiter.calculate(yPID.calculate()) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
         double thetaSpeed = thetaLimiter.calculate(thetaPID.calculate()) * SWERVEMODULE.MAX_ANGULAR_SPEED_METERS_PER_SECOND;

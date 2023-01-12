@@ -33,7 +33,7 @@ public class AprilTagVission extends CommandBase {
   
     @Override
     public void initialize() {
-        xPID = new PID(() -> driveTrain.getPose().getX(), vissonTracking::getOffset ,xyConfig);
+        xPID = new PID(() -> driveTrain.getPose().getX(), vissonTracking::getXOffset ,xyConfig);
         yPID = new PID(() -> driveTrain.getPose().getY(), 0, xyConfig);
         thetaPID = new PID(() -> driveTrain.getPose().getRotation().getRadians(), 0, thetaConfig);
     }

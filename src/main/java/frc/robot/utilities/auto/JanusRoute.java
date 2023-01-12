@@ -57,7 +57,7 @@ public class JanusRoute {
     }
 
     public void runCommand(){
-        if(isCommand()) currentSection.runComman();
+        if(isCommand()) currentSection.runCommand();
     }
 
     public boolean isFinished(){
