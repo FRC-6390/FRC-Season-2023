@@ -5,7 +5,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.SWERVEMODULE;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.utilities.auto.JanusRoute;
 import frc.robot.utilities.controlloop.PID;
 import frc.robot.utilities.controlloop.PIDConfig;
 
@@ -41,12 +40,11 @@ public class AutoBalance extends CommandBase {
 
         //lock wheels
         if(xLimit && yLimit){
-            
             driveTrain.lockWheels();
         }else{
             driveTrain.unlockWheels();
             ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, 0, driveTrain.getRotation2d());
-            driveTrain.feedforwardDrive(chassisSpeeds);
+            driveTrain.feedbackDrive(chassisSpeeds);
         }
 
     }

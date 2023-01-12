@@ -5,7 +5,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.SWERVEMODULE;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.VissonTracking;
+import frc.robot.subsystems.VissionTracking;
 import frc.robot.utilities.auto.JanusRoute;
 import frc.robot.utilities.controlloop.PID;
 import frc.robot.utilities.controlloop.PIDConfig;
@@ -13,13 +13,13 @@ import frc.robot.utilities.sensors.REVColour;
 
 public class AprilTagVission extends CommandBase {
 
-    private VissonTracking vissonTracking;
+    private VissionTracking vissonTracking;
     private DriveTrain driveTrain;
     private PID xPID, yPID, thetaPID;
     private PIDConfig xyConfig, thetaConfig;
     private SlewRateLimiter xLimiter, yLimiter, thetaLimiter;
 
-    public AprilTagVission(DriveTrain driveTrain, VissonTracking vissonTracking, PIDConfig xyConfig, PIDConfig thetaConfig) {
+    public AprilTagVission(DriveTrain driveTrain, VissionTracking vissonTracking, PIDConfig xyConfig, PIDConfig thetaConfig) {
         this.vissonTracking = vissonTracking;
         this.driveTrain = driveTrain;
         this.thetaConfig = thetaConfig;
@@ -33,7 +33,7 @@ public class AprilTagVission extends CommandBase {
   
     @Override
     public void initialize() {
-        xPID = new PID(() -> driveTrain.getPose().getX(), vissonTracking::getOffset ,xyConfig);
+        xPID = new PID(() -> driveTrain.getPose().getX(), vissonTracking::getXOffset ,xyConfig);
         yPID = new PID(() -> driveTrain.getPose().getY(), 0, xyConfig);
         thetaPID = new PID(() -> driveTrain.getPose().getRotation().getRadians(), 0, thetaConfig);
     }
@@ -47,9 +47,11 @@ public class AprilTagVission extends CommandBase {
         boolean xLimit = true;
         boolean yLimit = false;
         boolean thetaLimit = false;
-        System.out.println(vissonTracking.getOffset());
+        System.out.println(vissonTracking.getXOffset());
+
+        
         //lock wheels
-        if(vissonTracking.getOffset() > 1){
+        if(vissonTracking.getXOffset() > 1){
           System.out.println("True");
           ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(1, 0, 0, driveTrain.getRotation2d());
           driveTrain.drive(chassisSpeeds);

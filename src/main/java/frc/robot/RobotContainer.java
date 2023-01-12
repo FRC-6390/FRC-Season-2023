@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.hal.simulation.RoboRioDataJNI;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,14 +15,14 @@ import frc.robot.commands.auto.JanusAuto;
 import frc.robot.commands.auto.TestRoute1;
 import frc.robot.commands.auto.TrajectoryAuto;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.VissonTracking;
+import frc.robot.subsystems.VissionTracking;
 import frc.robot.utilities.auto.JanusRouteFactory;
 import frc.robot.utilities.controller.DebouncedController;
 
 public class RobotContainer {
 
   private DriveTrain driveTrain = new DriveTrain();
-  private VissonTracking vission = new VissonTracking();
+  private VissionTracking vission = new VissionTracking();
   private DebouncedController controller = new DebouncedController(0);
   private SendableChooser<JanusRouteFactory> autoChooser = new SendableChooser<>();
 
@@ -37,8 +38,8 @@ public class RobotContainer {
     autoChooser.addOption("Janus Command 2", AUTO.TEXT_COMMAND_2_AUTO_PATH);
     autoChooser.addOption("Janus Command 3", AUTO.TEXT_COMMAND_3_AUTO_PATH);
 
-
-    SmartDashboard.putData("-=TEST=- Auto Selector", autoChooser);
+    Shuffleboard.getTab("Auto").add(autoChooser);
+    // SmartDashboard.putData("-=TEST=- Auto Selector", autoChooser);
     configureBindings();
     //createSystemTestButtonBinding();
   }

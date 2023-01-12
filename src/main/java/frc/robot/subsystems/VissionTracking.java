@@ -7,7 +7,7 @@ import frc.robot.utilities.sensors.REVColour;
 import frc.robot.utilities.sensors.vission.LimeLight;
 import frc.robot.utilities.sensors.vission.LimeLight.LedMode;
 
-public class VissonTracking extends SubsystemBase{
+public class VissionTracking extends SubsystemBase{
 
     private static REVBlinkin blinkin;
     private static LimeLight limelight;
@@ -17,12 +17,21 @@ public class VissonTracking extends SubsystemBase{
         limelight = new LimeLight();
 
     }
+
+    public double getDistance(){
+        return limelight.getDistanceFromTarget(0);
+    }
+
     public void turnOFFLEDS(){
         limelight.setLedMode(LedMode.OFF);
     }
 
-    public double getOffset(){
+    public double getXOffset(){
         return limelight.getTargetHorizontalOffset();
+    }
+
+    public double getYOffset(){
+        return limelight.getTargetVerticalOffset();
     }
 
     public void setLEDColour(int colour){

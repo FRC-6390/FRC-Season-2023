@@ -11,6 +11,14 @@ import frc.robot.utilities.swerve.SwerveModuleConfig;
 
 public interface Constants {
 
+    public interface ELEVATOR {
+        
+        int DRIVE_MOTOR = 0;
+        int ENCODER = 0;
+        double GEARBOX_RATIO = 0;
+        
+    }
+
     public interface DRIVETRAIN{
 
         String CANBUS = "rio";

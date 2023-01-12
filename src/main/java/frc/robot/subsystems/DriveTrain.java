@@ -9,7 +9,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DRIVETRAIN;
 import frc.robot.Constants.SWERVEMODULE;
@@ -21,17 +23,22 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   private static SwerveModule[] swerveModules;
   //private static PowerDistribution pdh;
   private static Pigeon2 gyro;
-  private static ChassisSpeeds chassisSpeeds;
+  private static ChassisSpeeds chassisSpeeds, feedbackSpeeds;
   public static SwerveDriveKinematics kinematics;
   private static SwerveDriveOdometry odometry;
   private static Pose2d pose;
+  private static ShuffleboardTab tab, autoTab;
+  private static Field2d gameField;
 
   static {
+    tab = Shuffleboard.getTab("Drive Train");
+    autoTab = Shuffleboard.getTab("Auto");
+    gameField = new Field2d();
     swerveModules = new SwerveModule[4];
-    swerveModules[0] = new SwerveModule(DRIVETRAIN.FRONT_LEFT_MODULE_CONFIG);
-    swerveModules[1] = new SwerveModule(DRIVETRAIN.FRONT_RIGHT_MODULE_CONFIG);
-    swerveModules[2] = new SwerveModule(DRIVETRAIN.BACK_LEFT_MODULE_CONFIG);
-    swerveModules[3] = new SwerveModule(DRIVETRAIN.BACK_RIGHT_MODULE_CONFIG);
+    swerveModules[0] = new SwerveModule(DRIVETRAIN.FRONT_LEFT_MODULE_CONFIG, tab);
+    swerveModules[1] = new SwerveModule(DRIVETRAIN.FRONT_RIGHT_MODULE_CONFIG, tab);
+    swerveModules[2] = new SwerveModule(DRIVETRAIN.BACK_LEFT_MODULE_CONFIG, tab);
+    swerveModules[3] = new SwerveModule(DRIVETRAIN.BACK_RIGHT_MODULE_CONFIG, tab);
 
     gyro = new Pigeon2(DRIVETRAIN.PIGEON, DRIVETRAIN.CANBUS);
    
@@ -44,6 +51,7 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
 
     odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(gyro.getYaw()), SwervePositions);
     pose = new Pose2d();
+
   }
 
   public void init(){
@@ -98,11 +106,8 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     return positions;
   }
 
-  public void feedforwardDrive(ChassisSpeeds speeds){
-    double xSpeed = chassisSpeeds.vxMetersPerSecond + speeds.vxMetersPerSecond;
-    double ySpeed = chassisSpeeds.vyMetersPerSecond + speeds.vyMetersPerSecond;
-    double thetaSpeed = chassisSpeeds.omegaRadiansPerSecond + speeds.omegaRadiansPerSecond;
-    chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
+  public void feedbackDrive(ChassisSpeeds speeds){
+    feedbackSpeeds = speeds;
   }
 
   public void stopWheels(){
@@ -127,24 +132,22 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Heading", getHeading());
-    SmartDashboard.putNumber("X", pose.getX());
-    SmartDashboard.putNumber("Y", pose.getY());
+    
 
-    for (int i = 0; i < swerveModules.length; i++) {
-       SmartDashboard.putData(swerveModules[i]);//("Swerve Module "+i, swerveModules[i].getEncoderRadians());
-      // swerveModules[i].setEncoderOffset(SmartDashboard.getNumber("Swerve Offset "+i, swerveModules[i].getEncoderRadians()));
-      // SmartDashboard.putNumber("Swerve Module rotation "+i, swerveModules[i].getRotationMotorPosition());
-
-    }
+    double xSpeed = chassisSpeeds.vxMetersPerSecond + feedbackSpeeds.vxMetersPerSecond;
+    double ySpeed = chassisSpeeds.vyMetersPerSecond + feedbackSpeeds.vyMetersPerSecond;
+    double thetaSpeed = chassisSpeeds.omegaRadiansPerSecond + feedbackSpeeds.omegaRadiansPerSecond;
+    chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
 
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
     
     setModuleStates(states);
 
-
     odometry.update(getRotation2d(), getModulePostions());
     pose = odometry.getPoseMeters();
+    gameField.setRobotPose(pose);
+    autoTab.add(gameField);
+    autoTab.add("Odometry", pose);
   }
 
   @Override
