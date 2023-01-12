@@ -19,7 +19,7 @@ public class VissionTracking extends SubsystemBase{
     }
 
     public double getDistance(){
-        return limelight.getDistanceFromTarget(10);
+        return limelight.getDistanceFromTarget(0);
     }
 
     public void turnOFFLEDS(){
