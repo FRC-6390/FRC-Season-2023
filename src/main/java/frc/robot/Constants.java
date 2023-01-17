@@ -70,7 +70,7 @@ public interface Constants {
 
     public interface AUTO{
         
-        PIDConfig XY_PID_CONFIG = new PIDConfig(0.02, 0, 0);
+        PIDConfig XY_PID_CONFIG = new PIDConfig(0.5, 0, 0);
         PIDConfig THETA_PID_CONFIG = new PIDConfig(0.02, 0, 0).setContinuous(-Math.PI, Math.PI);
 
         JanusConfig CONFIG = new JanusConfig(SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND, SWERVEMODULE.MAX_ACCELERATION_METERS_PER_SECOND, SWERVEMODULE.MAX_ANGULAR_SPEED_METERS_PER_SECOND, SWERVEMODULE.MAX_ACCELERATION_METERS_PER_SECOND, XY_PID_CONFIG, THETA_PID_CONFIG);

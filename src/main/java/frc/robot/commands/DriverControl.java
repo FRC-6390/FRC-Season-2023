@@ -39,7 +39,7 @@ public class DriverControl extends CommandBase {
     // ySpeed = 0;
     // thetaSpeed = 0;
 
-    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, thetaSpeed, driveTrain.getRotation2d());
+    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, -thetaSpeed, driveTrain.getRotation2d());
 
     driveTrain.drive(chassisSpeeds);
   }

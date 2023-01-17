@@ -42,8 +42,8 @@ public class AutoAlign extends CommandBase {
 
         double distance = vissionTracking.getDistance();
 
-        double xDistance = Math.cos(vissionTracking.getXOffset()) * distance;
-        double yDistance = Math.sin(vissionTracking.getXOffset()) * distance;
+        double xDistance = Math.cos(Math.toRadians(vissionTracking.getXOffset())) * distance;
+        double yDistance = Math.sin(Math.toRadians(vissionTracking.getXOffset())) * distance;
 
         double xSpeed = xLimiter.calculate(xPID.calculate(xDistance + driveTrain.getPose().getX())) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
         double ySpeed = yLimiter.calculate(yPID.calculate(yDistance + driveTrain.getPose().getY())) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
