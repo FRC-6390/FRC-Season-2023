@@ -11,18 +11,19 @@ import frc.robot.Constants.AUTO;
 import frc.robot.commands.AprilTagVission;
 import frc.robot.commands.DriverControl;
 import frc.robot.commands.TestSystems;
+import frc.robot.commands.auto.AutoPathPlanner;
 import frc.robot.commands.auto.JanusAuto;
-import frc.robot.commands.auto.TestRoute1;
 import frc.robot.commands.auto.TrajectoryAuto;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.VissionTracking;
 import frc.robot.utilities.auto.JanusRouteFactory;
 import frc.robot.utilities.controller.DebouncedController;
+import frc.robot.utilities.sensors.vission.LimeLight;
 
 public class RobotContainer {
 
-  private DriveTrain driveTrain = new DriveTrain();
-  private VissionTracking vission = new VissionTracking();
+  public static DriveTrain driveTrain = new DriveTrain();
+  private LimeLight limelight = new LimeLight();
   private DebouncedController controller = new DebouncedController(0);
   private SendableChooser<JanusRouteFactory> autoChooser = new SendableChooser<>();
 
@@ -46,8 +47,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     controller.start.whileTrue(new InstantCommand(driveTrain::zeroHeading));
-    controller.back.onTrue(new InstantCommand(vission::turnOFFLEDS));
-    controller.a.whileTrue(new AprilTagVission(driveTrain, vission, Constants.AUTO.XY_PID_CONFIG, Constants.AUTO.THETA_PID_CONFIG));
+    controller.a.whileTrue(new AprilTagVission(driveTrain, limelight, Constants.AUTO.XY_PID_CONFIG, Constants.AUTO.THETA_PID_CONFIG));
   }
 
   public void createSystemTestButtonBinding(){
@@ -56,7 +56,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand(){
     // return new JanusAuto(driveTrain, autoChooser.getSelected().build());
-    return new TrajectoryAuto(driveTrain);
+    return AutoPathPlanner.runAuto("Right Side 2 Game Piece");
   }
 
 }
