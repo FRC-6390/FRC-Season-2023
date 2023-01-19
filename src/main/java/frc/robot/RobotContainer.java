@@ -26,6 +26,7 @@ public class RobotContainer {
   private LimeLight limelight = new LimeLight();
   private DebouncedController controller = new DebouncedController(0);
   private SendableChooser<JanusRouteFactory> autoChooser = new SendableChooser<>();
+  private SendableChooser<String> autoPathChooser = new SendableChooser<>(); //this one is a string as the Path Planner calls on a file instead of command
 
   public RobotContainer() {
     driveTrain.setDefaultCommand(new DriverControl(driveTrain, controller.leftX, controller.leftY, controller.rightX));
@@ -39,7 +40,10 @@ public class RobotContainer {
     autoChooser.addOption("Janus Command 2", AUTO.TEXT_COMMAND_2_AUTO_PATH);
     autoChooser.addOption("Janus Command 3", AUTO.TEXT_COMMAND_3_AUTO_PATH);
 
+    autoPathChooser.addOption("Right Side 2 Game Piece", "Right Side 2 Game Piece");
+
     Shuffleboard.getTab("Auto").add(autoChooser);
+    Shuffleboard.getTab("Auto Path Planner").add(autoChooser);
     // SmartDashboard.putData("-=TEST=- Auto Selector", autoChooser);
     configureBindings();
     //createSystemTestButtonBinding();
@@ -56,7 +60,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand(){
     // return new JanusAuto(driveTrain, autoChooser.getSelected().build());
-    return AutoPathPlanner.runAuto("Right Side 2 Game Piece");
+    return AutoPathPlanner.runAuto(autoPathChooser.getSelected());
   }
 
 }
