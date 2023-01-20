@@ -13,14 +13,11 @@ public class AutoBalance extends CommandBase {
     private DriveTrain driveTrain;
     private PID pitchPID, rollPID;
     private PIDConfig pitchConfig, rollConfig;
-    private SlewRateLimiter xLimiter, yLimiter;
 
     public AutoBalance(DriveTrain driveTrain, PIDConfig pitchConfig, PIDConfig rollConfig) {
         this.driveTrain = driveTrain;
         this.pitchConfig = pitchConfig;
         this.rollConfig = rollConfig;
-        xLimiter = new SlewRateLimiter(SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND);
-        yLimiter = new SlewRateLimiter(SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND);
         addRequirements(driveTrain);
     }
   
@@ -32,11 +29,13 @@ public class AutoBalance extends CommandBase {
   
     @Override
     public void execute() {
-        double xSpeed = xLimiter.calculate(pitchPID.calculate()) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
-        double ySpeed = yLimiter.calculate(rollPID.calculate()) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
+        double xSpeed = pitchPID.calculate(); 
+        double ySpeed = rollPID.calculate();
         
-        boolean xLimit = false;
-        boolean yLimit = false;
+        boolean xLimit = Math.abs(xSpeed) < 0.05;
+        boolean yLimit = Math.abs(ySpeed) < 0.05;
+
+        System.out.println("Pitch("+xLimit+"): "+driveTrain.getPitch()+" - "+xSpeed+" | Roll:("+yLimit+") "+driveTrain.getRoll() + " - "+ySpeed);
 
         //lock wheels
         if(xLimit && yLimit){
@@ -44,7 +43,7 @@ public class AutoBalance extends CommandBase {
         }else{
             driveTrain.unlockWheels();
             ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, 0, driveTrain.getRotation2d());
-            driveTrain.feedbackDrive(chassisSpeeds);
+            //driveTrain.feedbackDrive(chassisSpeeds);
         }
 
     }
