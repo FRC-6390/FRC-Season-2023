@@ -34,6 +34,8 @@ public class ElevatorControl extends CommandBase {
     @Override
     public void execute() {
         double speed = motionProfile.getSpeedsAtTime(timer.get());
+        System.out.println(elevator.getPosition());
+        if(Math.abs(speed) > elevatorConfig.maxSpeedMeters()) speed = 0;
         elevator.set(speed);
     }
 

@@ -3,6 +3,10 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -13,15 +17,17 @@ import frc.robot.utilities.controlloop.motionprofile.MotionProfileState;
 
 public class Elevator extends SubsystemBase {
 
-    private static CANCoder encoder;
-    private static TalonFX motor;
+    private static RelativeEncoder encoder;
+    private static CANSparkMax motor;
     private static ShuffleboardTab tab;
 
     static{
         tab = Shuffleboard.getTab("Elevator");
-        motor = new TalonFX(ELEVATOR.DRIVE_MOTOR);
-        encoder = new CANCoder(ELEVATOR.ENCODER);
-
+        motor = new CANSparkMax(12, MotorType.kBrushless);
+       // motor = new TalonFX(ELEVATOR.DRIVE_MOTOR);
+        encoder =  motor.getEncoder();
+        encoder.setPosition(0);
+        motor.setIdleMode(IdleMode.kBrake);
     }
 
     public MotionProfileState getCurrentState(){
@@ -30,20 +36,20 @@ public class Elevator extends SubsystemBase {
     }
 
     public double getVelocity(){
-        return encoder.getVelocity() * ELEVATOR.GEARBOX_RATIO;
+        return encoder.getVelocity()/2048d * ELEVATOR.GEARBOX_RATIO;
     }
 
     public double getPosition(){
-        return encoder.getPosition()/4096d * ELEVATOR.GEARBOX_RATIO;
+        return motor.getEncoder().getPosition();
     }
 
     public void set(double speed){
-        motor.set(ControlMode.PercentOutput, speed);
+        motor.set(speed);
     }
 
     @Override
     public void periodic() {
-        tab.addDouble("Postion", () -> getPosition());
+      //  tab.addDouble("Postion", () -> getPosition());
         
     }
 }

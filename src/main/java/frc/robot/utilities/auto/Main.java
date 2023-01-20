@@ -22,17 +22,17 @@ public class Main {
 
         //route.init(Pose2d::new);
 
-        MotionProfileConfig config = new MotionProfileConfig(1, 0.5, thetaconfig);
+        MotionProfileConfig config = new MotionProfileConfig(0.05, 0.01, thetaconfig);
 
         MotionProfile motionProfile = new MotionProfile(config);
 
         MotionProfileState currenState = new MotionProfileState(new MotionProfileComponent(0, 0, 0, 0, 0, 0, 0));
 
-        motionProfile.calculate(currenState, 1);
+        motionProfile.calculate(currenState, 0.1);
 
-        // for (double i = 0d; i <= 10; i+=0.1d) {
-        //     System.out.printf("Time: %.2f - %s - %s%n",i,motionProfile.getSpeedsAtTime(i), motionProfile.getPoseAtTime(i)); 
-        // }
+        for (double i = 0d; i <= 10; i+=0.1d) {
+            System.out.printf("Time: %.2f - %s - %s%n",i,motionProfile.getSpeedsAtTime(i), motionProfile.getPoseAtTime(i)); 
+        }
                
         // for (double i = 0d; i <= 10; i+=0.1d) {
         //     System.out.printf("Time: %.2f - %s - %s%n",i,route.calculate(i), route.getPose(i)); 

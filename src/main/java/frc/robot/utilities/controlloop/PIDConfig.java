@@ -1,5 +1,7 @@
 package frc.robot.utilities.controlloop;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
@@ -8,6 +10,7 @@ public class PIDConfig implements Sendable{
     
     private static int instances = 0;
     private double p,i,d,iLimit,max,min, errorBand;
+    private DoubleSupplier f;
     private boolean continuous;
 
     public PIDConfig (double p, double i, double d){
@@ -28,6 +31,15 @@ public class PIDConfig implements Sendable{
 
     public PIDConfig setD(double d){
         this.d = d;
+        return this;
+    }
+
+    public PIDConfig setF(double f){
+        return setF(() -> f);
+    }
+
+    public PIDConfig setF(DoubleSupplier f){
+        this.f = f;
         return this;
     }
 
@@ -59,6 +71,10 @@ public class PIDConfig implements Sendable{
 
     public double getD() {
         return d;
+    }
+
+    public double getF(){
+        return f.getAsDouble();
     }
     
     public double getILimit() {

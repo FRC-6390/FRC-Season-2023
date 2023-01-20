@@ -41,6 +41,14 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     swerveModules[2] = new SwerveModule(DRIVETRAIN.BACK_LEFT_MODULE_CONFIG, tab);
     swerveModules[3] = new SwerveModule(DRIVETRAIN.BACK_RIGHT_MODULE_CONFIG, tab);
 
+    gyro = new Pigeon2(DRIVETRAIN.PIGEON);
+    gameField = new Field2d();
+    swerveModules = new SwerveModule[4];
+    swerveModules[0] = new SwerveModule(DRIVETRAIN.FRONT_LEFT_MODULE_CONFIG, tab);
+    swerveModules[1] = new SwerveModule(DRIVETRAIN.FRONT_RIGHT_MODULE_CONFIG, tab);
+    swerveModules[2] = new SwerveModule(DRIVETRAIN.BACK_LEFT_MODULE_CONFIG, tab);
+    swerveModules[3] = new SwerveModule(DRIVETRAIN.BACK_RIGHT_MODULE_CONFIG, tab);
+
     gyro = new Pigeon2(DRIVETRAIN.PIGEON, DRIVETRAIN.CANBUS);
    
     //pdh = new PowerDistribution(DRIVETRAIN.REV_PDH, ModuleType.kRev);
@@ -54,7 +62,7 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(gyro.getYaw()), SwervePositions);
     pose = new Pose2d();
 
-        autoTab.add(gameField);
+    autoTab.add(gameField);
     autoTab.addDouble("Odometry Heading", () -> pose.getRotation().getDegrees()).withWidget(BuiltInWidgets.kTextView);
     autoTab.addDouble("Odometry X", () -> pose.getX()).withWidget(BuiltInWidgets.kTextView);
     autoTab.addDouble("Odometry Y", () -> pose.getY()).withWidget(BuiltInWidgets.kTextView);
@@ -70,11 +78,11 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   }
 
   public double getRoll(){
-    return gyro.getRoll(); 
+    return Math.IEEEremainder(gyro.getRoll(), 360); 
   }
 
   public double getPitch(){
-    return gyro.getPitch(); 
+    return Math.IEEEremainder(gyro.getPitch(),360); 
   }
 
   public double getHeading(){
@@ -123,11 +131,16 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   }
 
   public void lockWheels(){
-    double angle = Math.toRadians(getHeading()-45d);
+    System.out.println("yes");
+    
     for (int i = 0; i < swerveModules.length; i++) {
       swerveModules[i].lock();
-      swerveModules[i].setToAngle(angle);
     }
+    swerveModules[0].setToAngle(Math.toRadians(45));
+    swerveModules[1].setToAngle(Math.toRadians(135));
+    swerveModules[2].setToAngle(Math.toRadians(-45));
+    swerveModules[3].setToAngle(Math.toRadians(-135));
+
   }
 
   public void unlockWheels(){
@@ -143,9 +156,8 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     double xSpeed = chassisSpeeds.vxMetersPerSecond + feedbackSpeeds.vxMetersPerSecond;
     double ySpeed = chassisSpeeds.vyMetersPerSecond + feedbackSpeeds.vyMetersPerSecond;
     double thetaSpeed = chassisSpeeds.omegaRadiansPerSecond + feedbackSpeeds.omegaRadiansPerSecond;
-    chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
-
-    SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
+    
+    SwerveModuleState[] states = kinematics.toSwerveModuleStates(new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed));
     
     setModuleStates(states);
 

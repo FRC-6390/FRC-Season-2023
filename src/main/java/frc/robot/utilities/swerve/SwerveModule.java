@@ -147,8 +147,8 @@ public class SwerveModule implements Sendable{
 
     public void setToAngle(double angle){
         SwerveModuleState state = new SwerveModuleState(0, new Rotation2d(angle));
-        setDesiredState(state);
-       //rotationMotor.set(ControlMode.PercentOutput, pid.calculate(angle));
+        //setDesiredState(state);
+        rotationMotor.set(ControlMode.PercentOutput, pid.calculate(state.angle.getRadians()));
     }
 
     public void lock(){

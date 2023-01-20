@@ -7,16 +7,27 @@ import frc.robot.utilities.auto.JanusConfig;
 import frc.robot.utilities.auto.JanusRoute;
 import frc.robot.utilities.auto.JanusRouteFactory;
 import frc.robot.utilities.controlloop.PIDConfig;
+import frc.robot.utilities.controlloop.motionprofile.MotionProfileConfig;
 import frc.robot.utilities.swerve.SwerveModuleConfig;
 
 public interface Constants {
+
+    public interface WASHINGMACHINE {
+
+    }
+
+    public interface INTAKE {
+        int INTAKE = 0;
+        int ARM = 0;
+    }
 
     public interface ELEVATOR {
         
         int DRIVE_MOTOR = 0;
         int ENCODER = 0;
-        double GEARBOX_RATIO = 0;
-        
+        double GEARBOX_RATIO = 1d/10d;
+        PIDConfig pidConfig = new PIDConfig(0, 0, 0);
+        MotionProfileConfig config = new MotionProfileConfig(0.1, 0.04, pidConfig);
     }
 
     public interface DRIVETRAIN{
@@ -72,6 +83,7 @@ public interface Constants {
         
         PIDConfig XY_PID_CONFIG = new PIDConfig(0.02, 0, 0);
         PIDConfig THETA_PID_CONFIG = new PIDConfig(0.02, 0, 0).setContinuous(-Math.PI, Math.PI);
+        PIDConfig ROLL_PITCH_PID_CONFIG = new PIDConfig(0.02, 0, 0).setContinuous(-Math.PI, Math.PI);
 
         JanusConfig CONFIG = new JanusConfig(SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND, SWERVEMODULE.MAX_ACCELERATION_METERS_PER_SECOND, SWERVEMODULE.MAX_ANGULAR_SPEED_METERS_PER_SECOND, SWERVEMODULE.MAX_ACCELERATION_METERS_PER_SECOND, XY_PID_CONFIG, THETA_PID_CONFIG);
 

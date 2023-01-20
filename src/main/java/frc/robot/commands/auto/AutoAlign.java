@@ -42,8 +42,10 @@ public class AutoAlign extends CommandBase {
 
         double distance = vissionTracking.getDistance();
 
-        double xDistance = Math.cos(vissionTracking.getXOffset()) * distance;
-        double yDistance = Math.sin(vissionTracking.getXOffset()) * distance;
+        System.out.println(distance);
+
+        double xDistance = Math.cos(Math.toRadians(vissionTracking.getXOffset())) * distance;
+        double yDistance = Math.sin(Math.toRadians(vissionTracking.getXOffset())) * distance;
 
         double xSpeed = xLimiter.calculate(xPID.calculate(xDistance + driveTrain.getPose().getX())) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
         double ySpeed = yLimiter.calculate(yPID.calculate(yDistance + driveTrain.getPose().getY())) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
@@ -57,7 +59,7 @@ public class AutoAlign extends CommandBase {
             vissionTracking.setLEDColour(REVColour.Strobe_White);
         }else{
             vissionTracking.setLEDColour(REVColour.White);
-            ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, thetaSpeed, driveTrain.getRotation2d());
+            ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
             driveTrain.feedbackDrive(chassisSpeeds);
         }
 
@@ -65,7 +67,7 @@ public class AutoAlign extends CommandBase {
   
     @Override
     public void end(boolean interrupted) {
-        driveTrain.feedbackDrive(new ChassisSpeeds());
+
     }
   
     @Override

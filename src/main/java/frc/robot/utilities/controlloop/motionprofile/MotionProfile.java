@@ -198,7 +198,7 @@ public class MotionProfile {
 
     public double getSpeedsAtTime(double time){
         double speed = findRelaventState(time).getSpeed(time);
-        speed += pid.calculate(getPoseAtTime(time));
+        //speed += pid.calculate(getPoseAtTime(time));
         return speed;
     }
 

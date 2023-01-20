@@ -8,13 +8,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.AUTO;
+import frc.robot.Constants.ELEVATOR;
 import frc.robot.commands.AprilTagVission;
 import frc.robot.commands.DriverControl;
+import frc.robot.commands.ElevatorControl;
 import frc.robot.commands.TestSystems;
+import frc.robot.commands.auto.AutoBalance;
 import frc.robot.commands.auto.JanusAuto;
 import frc.robot.commands.auto.TestRoute1;
 import frc.robot.commands.auto.TrajectoryAuto;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.VissionTracking;
 import frc.robot.utilities.auto.JanusRouteFactory;
 import frc.robot.utilities.controller.DebouncedController;
@@ -23,6 +27,7 @@ public class RobotContainer {
 
   private DriveTrain driveTrain = new DriveTrain();
   private VissionTracking vission = new VissionTracking();
+  //private Elevator elevator = new Elevator();
   private DebouncedController controller = new DebouncedController(0);
   private SendableChooser<JanusRouteFactory> autoChooser = new SendableChooser<>();
 
@@ -47,6 +52,7 @@ public class RobotContainer {
   private void configureBindings() {
     controller.start.whileTrue(new InstantCommand(driveTrain::zeroHeading));
     controller.back.onTrue(new InstantCommand(vission::turnOFFLEDS));
+   // controller.b.whileTrue(new ElevatorControl(elevator, 0.3, ELEVATOR.config));
     controller.a.whileTrue(new AprilTagVission(driveTrain, vission, Constants.AUTO.XY_PID_CONFIG, Constants.AUTO.THETA_PID_CONFIG));
   }
 
@@ -56,7 +62,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand(){
     // return new JanusAuto(driveTrain, autoChooser.getSelected().build());
-    return new TrajectoryAuto(driveTrain);
+    return new AutoBalance(driveTrain, Constants.AUTO.ROLL_PITCH_PID_CONFIG, Constants.AUTO.ROLL_PITCH_PID_CONFIG);
   }
 
 }
