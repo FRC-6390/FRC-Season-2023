@@ -68,7 +68,7 @@ public class AutoAlign extends CommandBase {
 
     }
   
-    @Override
+    @   Override
     public boolean isFinished() {
       return false;
     }
