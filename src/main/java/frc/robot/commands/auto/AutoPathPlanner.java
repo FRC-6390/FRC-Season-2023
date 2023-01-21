@@ -21,7 +21,7 @@ public final class AutoPathPlanner {
     }
 
     static PIDConstants XY_PID = new PIDConstants(0, 0, 0);
-    static PIDConstants THETA_PID = new PIDConstants(0, 0, 0);
+    static PIDConstants THETA_PID = new PIDConstants(0.01, 0, 0);
 
     //events to trigger commands while in autonomous
     private static final Map<String, Command> eventMap = new HashMap<>(Map.ofEntries(
@@ -45,6 +45,6 @@ public final class AutoPathPlanner {
     );
 
     public static CommandBase runAuto(String autoSelector) {
-        return autoBuilder.fullAuto(PathPlanner.loadPathGroup(autoSelector, new PathConstraints(4, 3)));
+        return autoBuilder.fullAuto(PathPlanner.loadPathGroup(autoSelector, new PathConstraints(4.1, 3)));
     }
 }

@@ -92,8 +92,8 @@ public class PID implements Sendable {
         builder.addDoubleProperty("I", config::getI, config::setI);
         builder.addDoubleProperty("D", config::getD, config::setD);
         builder.addDoubleProperty("I Limit", config::getILimit, config::setILimit);
-        // builder.addDoubleProperty("Setpoint", this::getSetpoint, this::setSetpoint);
-        // builder.addDoubleProperty("Measurement", measurement::getAsDouble,  null);
-       // builder.addDoubleProperty("Calculated", () -> getSupplier().getAsDouble(), null);
+        builder.addDoubleProperty("Setpoint", this::getSetpoint, this::setSetpoint);
+        builder.addDoubleProperty("Measurement", measurement::getAsDouble,  null);
+        builder.addDoubleProperty("Calculated", () -> getSupplier().getAsDouble(), null);
     }
 }

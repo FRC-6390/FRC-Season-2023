@@ -19,8 +19,8 @@ public class DriverControl extends CommandBase {
     this.xInput = xInput;
     this.yInput = yInput;
     this.thetaInput = thetaInput;
-    xLimiter = new SlewRateLimiter(SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND);
-    yLimiter = new SlewRateLimiter(SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND);
+    xLimiter = new SlewRateLimiter(SWERVEMODULE.MAX_ACCELERATION_METERS_PER_SECOND);
+    yLimiter = new SlewRateLimiter(SWERVEMODULE.MAX_ACCELERATION_METERS_PER_SECOND);
     thetaLimiter = new SlewRateLimiter(SWERVEMODULE.MAX_ANGULAR_ACCELERATION_METERS_PER_SECOND);
     addRequirements(driveTrain);
   }
@@ -32,14 +32,14 @@ public class DriverControl extends CommandBase {
   public void execute() {
   
     double xSpeed = xLimiter.calculate(-xInput.getAsDouble()) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
-    double ySpeed = yLimiter.calculate(yInput.getAsDouble()) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
+    double ySpeed = yLimiter.calculate(-yInput.getAsDouble()) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
     double thetaSpeed = thetaLimiter.calculate(thetaInput.getAsDouble()) * SWERVEMODULE.MAX_ANGULAR_SPEED_METERS_PER_SECOND;
 
     // xSpeed = 0.5;
     // ySpeed = 0;
     // thetaSpeed = 0;
 
-    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, -thetaSpeed, driveTrain.getRotation2d());
+    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(ySpeed, xSpeed, -thetaSpeed, driveTrain.getRotation2d());
 
     driveTrain.drive(chassisSpeeds);
   }
