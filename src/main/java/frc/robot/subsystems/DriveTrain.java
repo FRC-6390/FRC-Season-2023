@@ -100,11 +100,19 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
 
   //counters the drift in our robot due to uneven frame
   double pXY = 0;
+
+  // private double getAverageSpeed(){
+  //   double speed = 0;
+  //   for (int i = 0; i < swerveModules.length; i++) {
+  //     speed += swerveModules[i].getState().speedMetersPerSecond;
+  //   }
+  //   return speed / swerveModules.length;
+  // }
+  
   public void driftCorrection(ChassisSpeeds speeds){
-    double xy = Math.abs(speeds.vxMetersPerSecond) + Math.abs(speeds.vyMetersPerSecond);
-    if(Math.abs(speeds.omegaRadiansPerSecond) > 0.0 || pXY <= 0) desiredHeading = pose.getRotation().getDegrees();
-    else if(xy > 0) speeds.omegaRadiansPerSecond += pid.calculate(desiredHeading);
-    pXY = xy;
+    // double speed = Math.abs(getAverageSpeed());
+    if(Math.abs(speeds.omegaRadiansPerSecond) > 0.0) desiredHeading = pose.getRotation().getDegrees();
+    else speeds.omegaRadiansPerSecond += pid.calculate(desiredHeading);
   }
 
   public void drive(ChassisSpeeds speeds){
