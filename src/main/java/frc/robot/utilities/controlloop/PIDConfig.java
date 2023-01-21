@@ -14,7 +14,7 @@ public class PIDConfig implements Sendable{
     private boolean continuous;
 
     public PIDConfig (double p, double i, double d){
-        setP(p).setI(i).setD(d);
+        setP(p).setI(i).setD(d).setF(0);
         instances++;
         SendableRegistry.addLW(this, "PIDConfig", instances);
     }

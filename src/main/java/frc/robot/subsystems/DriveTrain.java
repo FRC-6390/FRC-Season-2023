@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.net.http.HttpResponse.PushPromiseHandler;
+
 import com.ctre.phoenix.sensors.Pigeon2;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -46,16 +48,7 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     swerveModules[0] = new SwerveModule(DRIVETRAIN.FRONT_LEFT_MODULE_CONFIG, tab);
     swerveModules[1] = new SwerveModule(DRIVETRAIN.FRONT_RIGHT_MODULE_CONFIG, tab);
     swerveModules[2] = new SwerveModule(DRIVETRAIN.BACK_LEFT_MODULE_CONFIG, tab);
-    swerveModules[3] = new SwerveModule(DRIVETRAIN.BACK_RIGHT_MODULE_CONFIG, tab);
-
-    gyro = new Pigeon2(DRIVETRAIN.PIGEON);
-    gameField = new Field2d();
-    swerveModules = new SwerveModule[4];
-    swerveModules[0] = new SwerveModule(DRIVETRAIN.FRONT_LEFT_MODULE_CONFIG, tab);
-    swerveModules[1] = new SwerveModule(DRIVETRAIN.FRONT_RIGHT_MODULE_CONFIG, tab);
-    swerveModules[2] = new SwerveModule(DRIVETRAIN.BACK_LEFT_MODULE_CONFIG, tab);
-    swerveModules[3] = new SwerveModule(DRIVETRAIN.BACK_RIGHT_MODULE_CONFIG, tab);
-
+    swerveModules[3] = new SwerveModule(DRIVETRAIN.BACK_RIGHT_MODULE_CONFIG, tab);  
     gyro = new Pigeon2(DRIVETRAIN.PIGEON, DRIVETRAIN.CANBUS);
    
     //pdh = new PowerDistribution(DRIVETRAIN.REV_PDH, ModuleType.kRev);
@@ -65,7 +58,6 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     SwerveModulePosition[] SwervePositions = {swerveModules[0].getPostion(), swerveModules[1].getPostion(), swerveModules[2].getPostion(), swerveModules[3].getPostion()};
 
     kinematics = new SwerveDriveKinematics(DRIVETRAIN.SWERVE_MODULE_LOCATIONS);
-
     odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(gyro.getYaw()), SwervePositions);
     pose = new Pose2d();
 
@@ -154,7 +146,6 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   }
 
   public void lockWheels(){
-    System.out.println("yes");
     
     for (int i = 0; i < swerveModules.length; i++) {
       swerveModules[i].lock();
