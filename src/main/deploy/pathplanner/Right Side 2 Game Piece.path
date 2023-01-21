@@ -1,0 +1,119 @@
+{
+  "waypoints": [
+    {
+      "anchorPoint": {
+        "x": 1.8092227910561378,
+        "y": 0.3316282809455762
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.0264964923653097,
+        "y": 0.34306373890921843
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 2.483914810910934,
+        "y": 0.6632565618911548
+      },
+      "prevControl": {
+        "x": 2.2666411096017622,
+        "y": 0.6632565618911548
+      },
+      "nextControl": {
+        "x": 3.147762598498347,
+        "y": 0.6632565618911548
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.73790517338524,
+        "y": 0.7089983937457166
+      },
+      "prevControl": {
+        "x": 8.539434460023582,
+        "y": 0.7089983937457164
+      },
+      "nextControl": {
+        "x": 4.936375886746898,
+        "y": 0.7089983937457168
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.7520455012379348,
+        "y": 1.086368506545857
+      },
+      "prevControl": {
+        "x": 2.8498494657474334,
+        "y": 0.5374665242911069
+      },
+      "nextControl": null,
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    }
+  ],
+  "maxVelocity": 4.1,
+  "maxAcceleration": 3.0,
+  "isReversed": null,
+  "markers": [
+    {
+      "position": 0.0,
+      "names": [
+        "Intake Out",
+        "Linear Extension L3 Out",
+        "Linear Extension In",
+        "Intake In"
+      ]
+    },
+    {
+      "position": 1.1,
+      "names": [
+        "Intake Out",
+        "Intake"
+      ]
+    }
+  ]
+}

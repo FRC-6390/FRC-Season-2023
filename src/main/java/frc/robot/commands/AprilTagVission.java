@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -10,17 +11,20 @@ import frc.robot.utilities.auto.JanusRoute;
 import frc.robot.utilities.controlloop.PID;
 import frc.robot.utilities.controlloop.PIDConfig;
 import frc.robot.utilities.sensors.REVColour;
+import frc.robot.utilities.sensors.vission.LimeLight;
 
 public class AprilTagVission extends CommandBase {
 
-    private VissionTracking vissonTracking;
+    private LimeLight limelight;
     private DriveTrain driveTrain;
     private PID xPID, yPID, thetaPID;
     private PIDConfig xyConfig, thetaConfig;
     private SlewRateLimiter xLimiter, yLimiter, thetaLimiter;
+    private PIDController yController;
+    private ChassisSpeeds chassisSpeeds;
 
-    public AprilTagVission(DriveTrain driveTrain, VissionTracking vissonTracking, PIDConfig xyConfig, PIDConfig thetaConfig) {
-        this.vissonTracking = vissonTracking;
+    public AprilTagVission(DriveTrain driveTrain, LimeLight limelight, PIDConfig xyConfig, PIDConfig thetaConfig) {
+        this.limelight = limelight;
         this.driveTrain = driveTrain;
         this.thetaConfig = thetaConfig;
         this.xyConfig = xyConfig;
@@ -28,36 +32,33 @@ public class AprilTagVission extends CommandBase {
         yLimiter = new SlewRateLimiter(SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND);
         thetaLimiter = new SlewRateLimiter(SWERVEMODULE.MAX_ANGULAR_SPEED_METERS_PER_SECOND);
 
-        addRequirements(driveTrain, vissonTracking);
+        addRequirements(driveTrain);
     }
-  
+
     @Override
     public void initialize() {
-        xPID = new PID(() -> driveTrain.getPose().getX(), vissonTracking::getXOffset ,xyConfig);
-        yPID = new PID(() -> driveTrain.getPose().getY(), 0, xyConfig);
-        thetaPID = new PID(() -> driveTrain.getPose().getRotation().getRadians(), 0, thetaConfig);
     }
   
     @Override
     public void execute() {
-        double xSpeed = xLimiter.calculate(xPID.calculate()) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
-        double ySpeed = yLimiter.calculate(yPID.calculate()) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
-        double thetaSpeed = thetaLimiter.calculate(thetaPID.calculate()) * SWERVEMODULE.MAX_ANGULAR_SPEED_METERS_PER_SECOND;
+        double xController = 3 * Math.toRadians(limelight.getTargetVerticalOffset());
+        double yController = 3 * Math.toRadians(limelight.getTargetHorizontalOffset());
 
-        boolean xLimit = true;
+        double xSpeed = yLimiter.calculate(xController);
+        double ySpeed = yLimiter.calculate(yController);
+
         boolean yLimit = false;
-        boolean thetaLimit = false;
-        System.out.println(vissonTracking.getXOffset());
-
+        System.out.println(limelight.getAprilTagID());
+    
         
         //lock wheels
-        if(vissonTracking.getXOffset() > 1){
-          System.out.println("True");
-          ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(1, 0, 0, driveTrain.getRotation2d());
+        if((limelight.getTargetHorizontalOffset() > 1) || (limelight.getTargetVerticalOffset() > 1)){
+          System.out.println(yController + ": " + ySpeed);
+          chassisSpeeds = new ChassisSpeeds(xSpeed, -ySpeed, 0);
           driveTrain.drive(chassisSpeeds);
-        } else {
-          System.out.println("False");
-          driveTrain.stopWheels();
+        }else {
+          chassisSpeeds = new ChassisSpeeds(0, 0, 0);
+          driveTrain.drive(chassisSpeeds);
         }
 
     }

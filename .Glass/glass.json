@@ -1,0 +1,34 @@
+{
+  "NetworkTables": {
+    "transitory": {
+      "Shuffleboard": {
+        ".metadata": {
+          "Auto": {
+            "Odometry X": {
+              "open": true
+            },
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
+      },
+      "SmartDashboard": {
+        "PID DRIVE : ": {
+          "open": true
+        },
+        "open": true
+      }
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/Auto Path Planner/SendableChooser[1]": "String Chooser",
+      "/Shuffleboard/Auto/Field": "Field2d",
+      "/Shuffleboard/Auto/SendableChooser[0]": "String Chooser"
+    }
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)",
+    "serverTeam": "6390"
+  }
+}

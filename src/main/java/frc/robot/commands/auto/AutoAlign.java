@@ -42,8 +42,6 @@ public class AutoAlign extends CommandBase {
 
         double distance = vissionTracking.getDistance();
 
-        System.out.println(distance);
-
         double xDistance = Math.cos(Math.toRadians(vissionTracking.getXOffset())) * distance;
         double yDistance = Math.sin(Math.toRadians(vissionTracking.getXOffset())) * distance;
 

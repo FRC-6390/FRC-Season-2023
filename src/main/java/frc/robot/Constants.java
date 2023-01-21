@@ -69,10 +69,10 @@ public interface Constants {
         double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
         double MAX_SPEED_METERS_PER_SECOND = Units.feetToMeters(13.5);
         double MAX_SPEED_METERS_PER_SECOND_SQUARED = Units.feetToMeters(13.5) * Units.feetToMeters(13.5);
-        double MAX_ANGULAR_SPEED_METERS_PER_SECOND = 4;
-        double MAX_ACCELERATION_METERS_PER_SECOND = 1;
-        double MAX_ANGULAR_ACCELERATION_METERS_PER_SECOND = 1;
-        double ROTATION_GEAR_RATIO = 1d/(12.8d);// 1d/(150d/7d);
+        double MAX_ANGULAR_SPEED_METERS_PER_SECOND = Units.feetToMeters(13.5);;
+        double MAX_ACCELERATION_METERS_PER_SECOND = 2.75;
+        double MAX_ANGULAR_ACCELERATION_METERS_PER_SECOND = 3.85;
+        double ROTATION_GEAR_RATIO = 1d/(8.12d);// 1d/(12.8d) 1d/(150d/7d);
         double DRIVE_GEAR_RATIO = 1d/(8.14);
         double ROTATION_ENCODER_CONVERSION_RADIANS = ROTATION_GEAR_RATIO * 2 * Math.PI;
         double DRIVE_ENCODER_CONVERSION_METERS = (DRIVE_GEAR_RATIO * Math.PI * WHEEL_DIAMETER_METERS);
@@ -81,7 +81,7 @@ public interface Constants {
 
     public interface AUTO{
         
-        PIDConfig XY_PID_CONFIG = new PIDConfig(0.02, 0, 0);
+        PIDConfig XY_PID_CONFIG = new PIDConfig(0.5, 0, 0);
         PIDConfig THETA_PID_CONFIG = new PIDConfig(0.02, 0, 0).setContinuous(-Math.PI, Math.PI);
         PIDConfig ROLL_PITCH_PID_CONFIG = new PIDConfig(0.02, 0, 0).setContinuous(-Math.PI, Math.PI);
 

@@ -13,25 +13,27 @@ import frc.robot.commands.AprilTagVission;
 import frc.robot.commands.DriverControl;
 import frc.robot.commands.ElevatorControl;
 import frc.robot.commands.TestSystems;
-import frc.robot.commands.auto.AutoBalance;
+import frc.robot.commands.auto.AutoPathPlanner;
 import frc.robot.commands.auto.JanusAuto;
-import frc.robot.commands.auto.TestRoute1;
 import frc.robot.commands.auto.TrajectoryAuto;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.VissionTracking;
 import frc.robot.utilities.auto.JanusRouteFactory;
 import frc.robot.utilities.controller.DebouncedController;
+import frc.robot.utilities.sensors.vission.LimeLight;
 
 public class RobotContainer {
 
-  private DriveTrain driveTrain = new DriveTrain();
-  private VissionTracking vission = new VissionTracking();
-  //private Elevator elevator = new Elevator();
+  public static DriveTrain driveTrain = new DriveTrain();
+  private LimeLight limelight = new LimeLight();
   private DebouncedController controller = new DebouncedController(0);
   private SendableChooser<JanusRouteFactory> autoChooser = new SendableChooser<>();
+  private SendableChooser<String> autoPathChooser = new SendableChooser<>(); //this one is a string as the Path Planner calls on a file instead of command
 
   public RobotContainer() {
+
+    driveTrain.shuffleboard();
     driveTrain.setDefaultCommand(new DriverControl(driveTrain, controller.leftX, controller.leftY, controller.rightX));
 
     autoChooser.addOption("Janus X", AUTO.TEST_X_AUTO_PATH);
@@ -43,7 +45,10 @@ public class RobotContainer {
     autoChooser.addOption("Janus Command 2", AUTO.TEXT_COMMAND_2_AUTO_PATH);
     autoChooser.addOption("Janus Command 3", AUTO.TEXT_COMMAND_3_AUTO_PATH);
 
+    autoPathChooser.addOption("Right Side 2 Game Piece", "Right Side 2 Game Piece");
+
     Shuffleboard.getTab("Auto").add(autoChooser);
+    Shuffleboard.getTab("Auto Path Planner").add(autoPathChooser);
     // SmartDashboard.putData("-=TEST=- Auto Selector", autoChooser);
     configureBindings();
     //createSystemTestButtonBinding();
@@ -51,9 +56,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     controller.start.whileTrue(new InstantCommand(driveTrain::zeroHeading));
-    controller.back.onTrue(new InstantCommand(vission::turnOFFLEDS));
-   // controller.b.whileTrue(new ElevatorControl(elevator, 0.3, ELEVATOR.config));
-    controller.a.whileTrue(new AprilTagVission(driveTrain, vission, Constants.AUTO.XY_PID_CONFIG, Constants.AUTO.THETA_PID_CONFIG));
+    controller.a.whileTrue(new AprilTagVission(driveTrain, limelight, Constants.AUTO.XY_PID_CONFIG, Constants.AUTO.THETA_PID_CONFIG));
   }
 
   public void createSystemTestButtonBinding(){
@@ -62,7 +65,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand(){
     // return new JanusAuto(driveTrain, autoChooser.getSelected().build());
-    return new AutoBalance(driveTrain, Constants.AUTO.ROLL_PITCH_PID_CONFIG, Constants.AUTO.ROLL_PITCH_PID_CONFIG);
+    return AutoPathPlanner.runAuto("Right Side 2 Game Piece");
   }
 
 }

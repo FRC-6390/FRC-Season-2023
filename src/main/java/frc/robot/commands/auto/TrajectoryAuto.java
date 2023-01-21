@@ -10,31 +10,33 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
-import frc.robot.Constants.DRIVETRAIN;
 import frc.robot.subsystems.DriveTrain;
 
 public class TrajectoryAuto extends SequentialCommandGroup{
+
+    public static Trajectory trajectory;
 
     public TrajectoryAuto(final DriveTrain driveTrain) {
 
         // 1. Create trajectory settings
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
-            Constants.SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND,
-            Constants.SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND_SQUARED
+            2,
+            2 
+            
         ).setKinematics(driveTrain.kinematics);
 
         // 2. Generate trajectory
         Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
             new Pose2d(0, 0, new Rotation2d(0)),
             List.of(
-                new Translation2d(2, 0),                    
-                new Translation2d(2, 2)),
-                new Pose2d(10, 0, Rotation2d.fromDegrees(0)
+                new Translation2d(1, 1),                    
+                new Translation2d(2, -1)),
+                new Pose2d(3, 0, Rotation2d.fromDegrees(0)
+
             ),trajectoryConfig
         );
 
