@@ -1,11 +1,16 @@
 package frc.robot.utilities.sensors.vission;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class LimeLight {
-    private static final LimelightConfig DEFUALT_CONFIG = new LimelightConfig("limelight",0,0);
     private LimelightConfig config;
     private NetworkTable limelightTable;
     public NetworkTableEntry tv, tx, ty, ta, ts, tl, tshort, tlong, thor, getpipe, camtran, tid, json, botpose, tclass, tc, ledMode, camMode, pipeline, stream, snapshot, crop, tx0, ty0, ta0, ts0, tx1, ty1, ta1, ts1, tx2, ty2, ta2, ts2, cx0, cy0, cx1, cy1;
@@ -66,7 +71,7 @@ public class LimeLight {
     }
 
     public LimeLight(){
-        this(DEFUALT_CONFIG);
+        this(LimelightConfig.defualt());
     }
 
     public LimeLight(LimelightConfig config){
@@ -214,8 +219,25 @@ public class LimeLight {
      /**
      * Robot transform in field-space. Translation (X,Y,Z) Rotation(X,Y,Z)
      */
-    public Number[] getBotPosition(){
+    public Number[] getBotPositionRaw(){
         return botpose.getNumberArray(null);
+    }
+
+    /**
+     * Robot transform in field-space. Translation (X,Y,Z) Rotation(X,Y,Z)
+     */
+    public Pose3d getBot3DPosition(){
+        Number[] pose = getBotPositionRaw();
+        Translation3d translation3d = new Translation3d(pose[0].doubleValue(), pose[1].doubleValue(), pose[2].doubleValue());
+        Rotation3d rotation3d = new Rotation3d(pose[3].doubleValue(), pose[4].doubleValue(), pose[5].doubleValue());
+        return new Pose3d(translation3d, rotation3d);
+    }
+
+    public Pose2d getBot2DPosition(){
+        Number[] pose = getBotPositionRaw();
+        Translation2d translation = new Translation2d(pose[0].doubleValue(), pose[1].doubleValue());
+        Rotation2d rotation = new Rotation2d(pose[5].doubleValue());
+        return new Pose2d(translation, rotation);
     }
 
     /**
@@ -272,8 +294,10 @@ public class LimeLight {
     }
 
     public double getDistanceFromTarget(double mountingAngle, double mountingHeightMeters, double targetHeightMeters){
-        double angleToTargetRadains =  (mountingAngle + getTargetVerticalOffset()) * (Math.PI/180); 
-        return (targetHeightMeters - mountingHeightMeters)/Math.tan(angleToTargetRadains);
+        double angleToTargetRadains =  (mountingAngle + getTargetVerticalOffset()) * (Math.PI/180d); 
+        double heightDiff = targetHeightMeters - mountingHeightMeters;
+        
+        return heightDiff == 0 ? Math.tan(angleToTargetRadains) : (heightDiff)/Math.tan(angleToTargetRadains);
     }
 
 }

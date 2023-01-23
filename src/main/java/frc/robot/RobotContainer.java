@@ -15,12 +15,12 @@ import frc.robot.commands.AprilTagVission;
 import frc.robot.commands.DriverControl;
 import frc.robot.commands.ElevatorControl;
 import frc.robot.commands.TestSystems;
+import frc.robot.commands.auto.AutoAlign;
 import frc.robot.commands.auto.AutoPathPlanner;
 import frc.robot.commands.auto.JanusAuto;
 import frc.robot.commands.auto.TrajectoryAuto;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.VissionTracking;
 import frc.robot.utilities.auto.JanusRouteFactory;
 import frc.robot.utilities.controller.DebouncedController;
 import frc.robot.utilities.sensors.vission.LimeLight;
@@ -28,7 +28,6 @@ import frc.robot.utilities.sensors.vission.LimeLight;
 public class RobotContainer {
 
   public static DriveTrain driveTrain = new DriveTrain();
-  private LimeLight limelight = new LimeLight();
   private DebouncedController controller = new DebouncedController(0);
   private SendableChooser<JanusRouteFactory> autoChooser = new SendableChooser<>();
   private SendableChooser<String> autoPathChooser = new SendableChooser<>(); //this one is a string as the Path Planner calls on a file instead of command
@@ -58,7 +57,8 @@ public class RobotContainer {
 
   private void configureBindings() {
     controller.start.whileTrue(new InstantCommand(driveTrain::zeroHeading));
-    controller.a.whileTrue(new AprilTagVission(driveTrain, limelight, Constants.AUTO.XY_PID_CONFIG, Constants.AUTO.THETA_PID_CONFIG));
+    controller.a.whileTrue(new AprilTagVission(driveTrain, driveTrain.getLimelight(), Constants.AUTO.XY_PID_CONFIG, Constants.AUTO.THETA_PID_CONFIG));
+    controller.b.whileTrue(new AutoAlign(driveTrain, driveTrain.getLimelight(), driveTrain.getBlinkin(), Constants.AUTO.ALIGN_XY_PID_CONFIG, Constants.AUTO.ALIGN_THETA_PID_CONFIG));
   }
 
   public void createSystemTestButtonBinding(){
