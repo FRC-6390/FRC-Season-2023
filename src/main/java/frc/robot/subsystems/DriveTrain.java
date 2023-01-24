@@ -69,17 +69,19 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   public void shuffleboard(){
     autoTab.add(gameField);
     autoTab.addDouble("Odometry Heading", () -> pose.getRotation().getDegrees()).withWidget(BuiltInWidgets.kTextView);
-    autoTab.addDouble("Odometry X", pose::getX).withWidget(BuiltInWidgets.kTextView);
-    autoTab.addDouble("Odometry Y", pose::getY).withWidget(BuiltInWidgets.kTextView);
+    autoTab.addDouble("Odometry X", () -> pose.getX()).withWidget(BuiltInWidgets.kTextView);
+    autoTab.addDouble("Odometry Y", () -> pose.getY()).withWidget(BuiltInWidgets.kTextView);
   }
 
   public void init(){
    // pdh.clearStickyFaults();
     zeroHeading();
+    resetOdometry(pose);
   }
 
   public void zeroHeading(){
     gyro.setYaw(0);
+    resetOdometry(pose);
   }
 
   public double getRoll(){
@@ -118,7 +120,6 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   public void resetOdometry(Pose2d pose){
     odometry.resetPosition(getRotation2d(), getModulePostions(), pose);
   }
-
 
   public void setModuleStates(SwerveModuleState[] states){
     SwerveDriveKinematics.desaturateWheelSpeeds(states, SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND);
@@ -168,7 +169,7 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     double thetaSpeed = chassisSpeeds.omegaRadiansPerSecond + feedbackSpeeds.omegaRadiansPerSecond;
     chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
     
-    driftCorrection(chassisSpeeds);
+    // driftCorrection(chassisSpeeds);
 
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
     
