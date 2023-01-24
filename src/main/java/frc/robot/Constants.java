@@ -12,11 +12,17 @@ import frc.robot.utilities.swerve.SwerveModuleConfig;
 public interface Constants {
 
     public interface ELEVATOR {
-        
         int DRIVE_MOTOR = 0;
         int ENCODER = 0;
         double GEARBOX_RATIO = 0;
-        
+    }
+
+    public interface INTAKE {
+        int LEFT_MOTOR = 0;
+        int RIGHT_MOTOR = 0;
+        int POSITION_MOTOR = 0;
+        int POSITION_ENCODER = 0;
+        double POSITION_GEARBOX_RATIO = 0;
     }
 
     public interface DRIVETRAIN{

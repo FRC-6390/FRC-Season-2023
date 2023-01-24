@@ -5,27 +5,31 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.DriveTrain;
+import frc.robot.commands.IntakeRollers;
+import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public final class AutoPathPlanner {
     
-    public AutoPathPlanner() {
+    static Intake intake = new Intake();
+    static IntakeRollers intakeRollers = new IntakeRollers(intake);
+
+    public AutoPathPlanner(Intake intake) {
         throw new UnsupportedOperationException("This is a utility class!");
     }
 
-    static PIDConstants XY_PID = new PIDConstants(0, 0, 0);
-    static PIDConstants THETA_PID = new PIDConstants(0.01, 0, 0);
+    static PIDConstants XY_PID = new PIDConstants(1, 0, 0);
+    static PIDConstants THETA_PID = new PIDConstants(5, 0, 0);
 
     //events to trigger commands while in autonomous
     private static final Map<String, Command> eventMap = new HashMap<>(Map.ofEntries(
-        Map.entry("Intake", Commands.print("Intake Command Triggered")),
+        Map.entry("Intake", intakeRollers),
         Map.entry("Intake In", Commands.print("Intake In Command Triggered")),
         Map.entry("Intake Out", Commands.print("Intake Out Command Triggered")),
         Map.entry("Linear Extension L1 Out", Commands.print("Linear Extension L1 Out Command Triggered")),
@@ -41,10 +45,11 @@ public final class AutoPathPlanner {
             THETA_PID,
             RobotContainer.driveTrain::drive,
             eventMap,
+            true,
             RobotContainer.driveTrain
     );
 
     public static CommandBase runAuto(String autoSelector) {
-        return autoBuilder.fullAuto(PathPlanner.loadPathGroup(autoSelector, new PathConstraints(4.1, 3)));
+        return autoBuilder.fullAuto(PathPlanner.loadPathGroup(autoSelector, new PathConstraints(2, 1)));
     }
 }
