@@ -1,10 +1,12 @@
 package frc.robot.commands;
 
+import java.util.ArrayList;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.utilities.controller.DebouncedButton;
 import frc.robot.utilities.debug.SystemTest;
+import frc.robot.utilities.debug.SystemTestAction;
 
 public class TestSystems extends CommandBase{
 
@@ -17,31 +19,36 @@ public class TestSystems extends CommandBase{
         this.forwards = forwards;
         this.backwards = backwards;
         this.speed = speed;
-        System.out.println("test constructed");
 
     }
 
     @Override
     public void initialize() {
-        System.out.println("test init");
 
     }
     
     @Override
     public void execute() {
-        System.out.println("test exe");
 
-        for (int i = 0; i < subsystems.length;) {
-            for (int j = 0; j < subsystems[i].getNumberOfComponents();) {
+        for (int i = 0; i < subsystems.length; i++) {
+            ArrayList<SystemTestAction> actions = subsystems[i].getDevices();
+            for (int j = 0; j < actions.size();) {
+                SystemTestAction action = actions.get(j);
                 //test next device in sub
-                if(forwards.debounced()) j++;
+                if(forwards.debounced()) {
+                    action.action().accept(0);
+                    j++;
+                }
                 //test previous device in sub
-                if(backwards.debounced()) j--;
+                if(backwards.debounced()) {
+                    action.action().accept(0);
+                    j++;
+                }
                 //go to previous sub
                 if(j < 0) i-=2;
                 
                 //if done continue to next sub
-                if(subsystems[i].testFunctionality(j, speed.getAsDouble()/2)) i++;
+                action.action().accept(speed.getAsDouble()*action.precent());
             }
         }
     }

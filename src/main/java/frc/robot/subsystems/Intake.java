@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -13,8 +15,10 @@ import frc.robot.utilities.controlloop.motionprofile.MotionProfile;
 import frc.robot.utilities.controlloop.motionprofile.MotionProfileComponent;
 import frc.robot.utilities.controlloop.motionprofile.MotionProfileConfig;
 import frc.robot.utilities.controlloop.motionprofile.MotionProfileState;
+import frc.robot.utilities.debug.SystemTest;
+import frc.robot.utilities.debug.SystemTestAction;
 
-public class Intake extends SubsystemBase{
+public class Intake extends SubsystemBase implements SystemTest{
     
     private static TalonFX intake, arm;
     private static CANCoder encoder;
@@ -75,5 +79,10 @@ public class Intake extends SubsystemBase{
         currentState = updateState();
         double speed = (profile.getPoseAtTime(timer.get()) + pid.calculate()) / 12;
         arm.set(ControlMode.PercentOutput, speed);
+    }
+
+    @Override
+    public ArrayList<SystemTestAction> getDevices() {
+        return new ArrayList<>();
     }
 }

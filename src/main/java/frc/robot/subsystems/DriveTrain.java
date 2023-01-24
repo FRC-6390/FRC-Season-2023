@@ -1,23 +1,22 @@
 package frc.robot.subsystems;
 
-import java.net.http.HttpResponse.PushPromiseHandler;
+import java.util.ArrayList;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.APRILTAGS;
 import frc.robot.Constants.DRIVETRAIN;
@@ -26,6 +25,7 @@ import frc.robot.Constants.SWERVEMODULE;
 import frc.robot.utilities.controlloop.PID;
 import frc.robot.utilities.controlloop.PIDConfig;
 import frc.robot.utilities.debug.SystemTest;
+import frc.robot.utilities.debug.SystemTestAction;
 import frc.robot.utilities.sensors.REVBlinkin;
 import frc.robot.utilities.sensors.vission.LimeLight;
 import frc.robot.utilities.swerve.SwerveModule;
@@ -33,7 +33,7 @@ import frc.robot.utilities.swerve.SwerveModule;
 public class DriveTrain extends SubsystemBase implements SystemTest{
 
   private static SwerveModule[] swerveModules;
-  //private static PowerDistribution pdh;
+  private static PowerDistribution pdh;
   private static Pigeon2 gyro;
   private static ChassisSpeeds chassisSpeeds, feedbackSpeeds;
   public static SwerveDriveKinematics kinematics;
@@ -58,7 +58,7 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     swerveModules[3] = new SwerveModule(DRIVETRAIN.BACK_RIGHT_MODULE_CONFIG, tab);  
     gyro = new Pigeon2(DRIVETRAIN.PIGEON, DRIVETRAIN.CANBUS);
    
-    //pdh = new PowerDistribution(DRIVETRAIN.REV_PDH, ModuleType.kRev);
+    pdh = new PowerDistribution(DRIVETRAIN.REV_PDH, ModuleType.kRev);
     chassisSpeeds = new ChassisSpeeds();
     feedbackSpeeds = new ChassisSpeeds();
 
@@ -68,9 +68,10 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(gyro.getYaw()), SwervePositions);
     pose = new Pose2d();
 
-    pid = new PID(driftCorrectionPID).setMeasurement(() -> getRotation2d().getDegrees());
+    pid = new PID(driftCorrectionPID).setMeasurement(() -> pose.getRotation().getDegrees());
     limeLight = new LimeLight(ROBOT.LIMELIGHT_CONFIG);
     blinkin = new REVBlinkin(ROBOT.BLINKIN_PORT);
+
   }
 
   public void shuffleboard(){
@@ -81,7 +82,7 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   }
 
   public void init(){
-   // pdh.clearStickyFaults();
+    pdh.clearStickyFaults();
     zeroHeading();
   }
 
@@ -97,11 +98,11 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     return Math.IEEEremainder(gyro.getPitch(),360); 
   }
 
-  public static double getHeading(){
+  public double getHeading(){
     return Math.IEEEremainder(gyro.getYaw(), 360);
   }
 
-  public static Rotation2d getRotation2d(){
+  public Rotation2d getRotation2d(){
     return Rotation2d.fromDegrees(getHeading());
   }
 
@@ -178,13 +179,13 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   }
 
   private void updateOdometry(){
-    if(limeLight.hasValidTarget()){
+    if(limeLight.hasBotPose()){
       if(limeLight.getPipeline() == 0){
         APRILTAGS tag = APRILTAGS.getByID((int)limeLight.getAprilTagID());
         if(!tag.equals(APRILTAGS.INVALID)){
-          Pose2d relatviePose =limeLight.getBot2DPosition();
+          Pose2d relativePose =limeLight.getBot2DPosition();
           Pose2d tagPose = tag.getPose2d();
-          pose = new Pose2d(relatviePose.getX() + tagPose.getX(), relatviePose.getY() + tagPose.getY(), getRotation2d());
+          pose = new Pose2d(relativePose.getX() + tagPose.getX(), relativePose.getY() + tagPose.getY(), getRotation2d());
         }
       }
     }else{
@@ -212,11 +213,11 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     double thetaSpeed = chassisSpeeds.omegaRadiansPerSecond + feedbackSpeeds.omegaRadiansPerSecond;
     ChassisSpeeds speed = new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
     
-    driftCorrection(speed);
+    //driftCorrection(speed);
 
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speed);
     
-    setModuleStates(states);
+   // setModuleStates(states);
 
     updateOdometry();
   }
@@ -226,33 +227,16 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   }
 
   @Override
-  public boolean testFunctionality(int id, double speed) {
+  public ArrayList<SystemTestAction> getDevices() {
+    ArrayList<SystemTestAction> actions = new ArrayList<>();
 
-    if(id < 0 || id >= swerveModules.length*2) {
-      for (int i = 0; i < swerveModules.length; i++) {
-        swerveModules[i].stop();
-      }
-      return true;
+    for (int i = 0; i < swerveModules.length; i++) {
+      actions.add(new SystemTestAction(swerveModules[i]::setDriveMotor, 0.5));
+      actions.add(new SystemTestAction(swerveModules[i]::setRotationMotor, 0.5));
     }
-    
-    if(id >= 4) {
-      swerveModules[id-4].setRotationMotor(speed);
-      //stop previous module
-      swerveModules[id-5].setRotationMotor(0);
-    }
-    else {
-      swerveModules[id].setDriveMotor(speed);
-      //stop previous module
-      if(id > 0) swerveModules[id-1].setDriveMotor(0);
-    }
-  
-    return false;
+    return actions;
   }
 
-  @Override
-  public int getNumberOfComponents() {
-    return swerveModules.length*2;
-  }
 }
 
 

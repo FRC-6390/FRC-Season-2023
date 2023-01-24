@@ -1,29 +1,18 @@
 package frc.robot;
 
-import java.net.http.HttpResponse.PushPromiseHandler;
-
-import edu.wpi.first.apriltag.AprilTag;
-import edu.wpi.first.hal.simulation.RoboRioDataJNI;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.AUTO;
-import frc.robot.Constants.ELEVATOR;
 import frc.robot.commands.AprilTagVission;
 import frc.robot.commands.DriverControl;
-import frc.robot.commands.ElevatorControl;
 import frc.robot.commands.TestSystems;
 import frc.robot.commands.auto.AutoAlign;
 import frc.robot.commands.auto.AutoPathPlanner;
-import frc.robot.commands.auto.JanusAuto;
-import frc.robot.commands.auto.TrajectoryAuto;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Elevator;
 import frc.robot.utilities.auto.JanusRouteFactory;
 import frc.robot.utilities.controller.DebouncedController;
-import frc.robot.utilities.sensors.vission.LimeLight;
 
 public class RobotContainer {
 
