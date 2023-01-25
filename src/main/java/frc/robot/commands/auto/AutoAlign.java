@@ -3,31 +3,32 @@ package frc.robot.commands.auto;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.APRILTAGS;
 import frc.robot.Constants.SWERVEMODULE;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.VissionTracking;
 import frc.robot.utilities.controlloop.PID;
 import frc.robot.utilities.controlloop.PIDConfig;
+import frc.robot.utilities.sensors.REVBlinkin;
 import frc.robot.utilities.sensors.REVColour;
+import frc.robot.utilities.sensors.vission.LimeLight;
 
 public class AutoAlign extends CommandBase {
 
-    private VissionTracking vissionTracking;
+    private LimeLight limeLight;
+    private REVBlinkin blinkin;
     private DriveTrain driveTrain;
     private PID xPID, yPID, thetaPID;
     private PIDConfig xyConfig, thetaConfig;
-    private SlewRateLimiter xLimiter, yLimiter, thetaLimiter;
 
-    public AutoAlign(DriveTrain driveTrain, VissionTracking vissonTracking, PIDConfig xyConfig, PIDConfig thetaConfig) {
-        this.vissionTracking = vissonTracking;
+    public AutoAlign(DriveTrain driveTrain, LimeLight limeLight, REVBlinkin blinkin, PIDConfig xyConfig, PIDConfig thetaConfig) {
+        this.limeLight = limeLight;
+        this.blinkin = blinkin;
         this.driveTrain = driveTrain;
         this.thetaConfig = thetaConfig;
         this.xyConfig = xyConfig;
-        xLimiter = new SlewRateLimiter(SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND);
-        yLimiter = new SlewRateLimiter(SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND);
-        thetaLimiter = new SlewRateLimiter(SWERVEMODULE.MAX_ANGULAR_SPEED_METERS_PER_SECOND);
+       
 
-        addRequirements(driveTrain, vissonTracking);
+        addRequirements(driveTrain);
     }
   
     @Override
@@ -39,25 +40,36 @@ public class AutoAlign extends CommandBase {
   
     @Override
     public void execute() {
+        
+        if(!limeLight.hasValidTarget()) return;
 
-        double distance = vissionTracking.getDistance();
+        double targetHeightMeters = limeLight.getPipeline() == 0 ? APRILTAGS.getByID((int)limeLight.getAprilTagID()).getHeight() : 0;
 
-        double xDistance = Math.cos(Math.toRadians(vissionTracking.getXOffset())) * distance;
-        double yDistance = Math.sin(Math.toRadians(vissionTracking.getXOffset())) * distance;
+        double distance = limeLight.getDistanceFromTarget(targetHeightMeters);
 
-        double xSpeed = xLimiter.calculate(xPID.calculate(xDistance + driveTrain.getPose().getX())) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
-        double ySpeed = yLimiter.calculate(yPID.calculate(yDistance + driveTrain.getPose().getY())) * SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND;
-        double thetaSpeed = thetaLimiter.calculate(thetaPID.calculate()) * SWERVEMODULE.MAX_ANGULAR_SPEED_METERS_PER_SECOND;
+        System.out.println(distance);
+
+        double xOffsetRadians = Math.toRadians(limeLight.getTargetHorizontalOffset());
+
+        double xDistance = Math.cos(xOffsetRadians) * distance;
+        double yDistance = Math.sin(xOffsetRadians) * distance;
+        double thetaDistance = xOffsetRadians;
+        System.out.println(xDistance + " " +yDistance);
+
+        double xSpeed = xPID.calculate(xDistance + driveTrain.getPose().getX());
+        double ySpeed = yPID.calculate(yDistance + driveTrain.getPose().getY());
+        double thetaSpeed = thetaPID.calculate(thetaDistance + driveTrain.getRotation2d().getRadians());
 
         boolean xLimit = false;
         boolean yLimit = false;
         boolean thetaLimit = false;
         //lock wheels
         if(xLimit && yLimit && thetaLimit){
-            vissionTracking.setLEDColour(REVColour.Strobe_White);
+            blinkin.setColour(REVColour.Strobe_White);
         }else{
-            vissionTracking.setLEDColour(REVColour.White);
-            ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, thetaSpeed, driveTrain.getRotation2d());
+            blinkin.setColour(REVColour.White);
+            ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
+            System.out.println(chassisSpeeds);
             driveTrain.feedbackDrive(chassisSpeeds);
         }
 
@@ -66,9 +78,10 @@ public class AutoAlign extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         driveTrain.feedbackDrive(new ChassisSpeeds());
+
     }
   
-    @Override
+    @   Override
     public boolean isFinished() {
       return false;
     }

@@ -6,7 +6,7 @@ import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.commands.IntakeRollers;
+import frc.robot.commands.IntakeControl;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -18,7 +18,7 @@ import java.util.Map;
 public final class AutoPathPlanner {
     
     static Intake intake = new Intake();
-    static IntakeRollers intakeRollers = new IntakeRollers(intake);
+    static IntakeControl intakeControl = new IntakeControl(intake);
 
     public AutoPathPlanner(Intake intake) {
         throw new UnsupportedOperationException("This is a utility class!");
@@ -29,7 +29,7 @@ public final class AutoPathPlanner {
 
     //events to trigger commands while in autonomous
     private static final Map<String, Command> eventMap = new HashMap<>(Map.ofEntries(
-        Map.entry("Intake", intakeRollers),
+        Map.entry("Intake", intakeControl),
         Map.entry("Intake In", Commands.print("Intake In Command Triggered")),
         Map.entry("Intake Out", Commands.print("Intake Out Command Triggered")),
         Map.entry("Linear Extension L1 Out", Commands.print("Linear Extension L1 Out Command Triggered")),

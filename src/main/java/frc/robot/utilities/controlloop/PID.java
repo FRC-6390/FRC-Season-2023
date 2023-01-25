@@ -1,5 +1,6 @@
 package frc.robot.utilities.controlloop;
 
+import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
@@ -47,7 +48,8 @@ public class PID implements Sendable {
         double p = config.getP() > 0 ? config.getP()*error : 0;
         double i = config.getI() > 0 ? config.getI()*errorSum : 0;
         double d = config.getD() > 0 ? config.getD()*errorRate : 0;
-        return enabled ? p+i+d : 0;
+        double f = config.getF() > 0 ? config.getF() : 0 ;
+        return enabled ? p+i+d+f : 0;
     }
 
     private double calculateError(){

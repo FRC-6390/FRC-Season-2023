@@ -3,45 +3,44 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
 import frc.robot.utilities.controlloop.motionprofile.MotionProfile;
 import frc.robot.utilities.controlloop.motionprofile.MotionProfileConfig;
 
-public class ElevatorControl extends CommandBase {
+public class IntakeArm extends CommandBase {
 
-    private Elevator elevator;
-    private MotionProfileConfig elevatorConfig;
+    private Intake intake;
+    private MotionProfileConfig intakeConfig;
     private MotionProfile motionProfile;
     private double setpoint;
     private Timer timer;
 
-    public ElevatorControl(Elevator elevator, double setpoint, MotionProfileConfig elevatorConfig) {
-        this.elevator = elevator;
+    public IntakeArm(Intake intake, double setpoint, MotionProfileConfig intakeConfig) {
+        this.intake = intake;
         this.setpoint = setpoint;
-        this.elevatorConfig = elevatorConfig;
-        addRequirements(elevator);
+        this.intakeConfig = intakeConfig;
+        addRequirements(intake);
     }
 
     @Override
     public void initialize() {
-        motionProfile = new MotionProfile(elevatorConfig);
+        motionProfile = new MotionProfile(intakeConfig);
         timer = new Timer();
         timer.reset();
         timer.start();
-        motionProfile.init(elevator::getPosition);
-        motionProfile.calculate(elevator.getCurrentState(), setpoint);
+        motionProfile.init(intake::getPosition);
+        motionProfile.calculate(intake.getCurrentState(), setpoint);
     }
 
     @Override
     public void execute() {
         double speed = motionProfile.getSpeedsAtTime(timer.get());
-        System.out.println(elevator.getPosition());
-        if(Math.abs(speed) > elevatorConfig.maxSpeedMeters()) speed = 0;
-        elevator.set(speed);
+        intake.setIntake(speed);
     }
 
     @Override
     public void end(boolean interrupted) {
-        elevator.set(0);
+        intake.setIntake(0);
     }
 
     @Override

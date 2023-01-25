@@ -4,51 +4,81 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.INTAKE;
+import frc.robot.utilities.controlloop.PID;
+import frc.robot.utilities.controlloop.PIDConfig;
+import frc.robot.utilities.controlloop.motionprofile.MotionProfile;
 import frc.robot.utilities.controlloop.motionprofile.MotionProfileComponent;
+import frc.robot.utilities.controlloop.motionprofile.MotionProfileConfig;
 import frc.robot.utilities.controlloop.motionprofile.MotionProfileState;
 
-public class Intake extends SubsystemBase {
+public class Intake extends SubsystemBase{
+    
+    private static TalonFX intakeLeft, intakeRight, arm;
+    private static CANCoder encoder;
+    private static PIDConfig pidConfig;
+    private static PID pid;
+    private static MotionProfileConfig profileConfig;
+    private static MotionProfile profile;
+    private static MotionProfileState currentState;
+    private static double setpoint;
+    private static Timer timer;
+    
 
-    private static CANCoder positionEncoder;
-    private static TalonFX intakeLeft, intakeRight, intakePosition;
-    private static ShuffleboardTab tab;
-
-    static{
-        tab = Shuffleboard.getTab("Intake");
+    static {
         intakeLeft = new TalonFX(INTAKE.LEFT_MOTOR);
         intakeRight = new TalonFX(INTAKE.RIGHT_MOTOR);
-        intakePosition = new TalonFX(INTAKE.POSITION_MOTOR);
-        positionEncoder = new CANCoder(INTAKE.POSITION_ENCODER);
+        arm = new TalonFX(INTAKE.ARM);
+        profile = new MotionProfile(profileConfig);
+        pidConfig = new PIDConfig(16, 0, 500).setContinuous(-Math.PI, Math.PI);
+        pid = new PID(pidConfig);
+        setpoint = 0;
+        timer = new Timer();
+        timer.reset();
+        timer.start();
     }
 
-    public MotionProfileState getCurrentState(){
+    public double getPosition(){
+        return encoder.getPosition()/4096d;
+    }
+
+    private double getVelocity(){
+        return encoder.getVelocity()/4096d;
+    }
+
+    public void setSetpoint(double val){
+        setpoint = Math.toRadians(val);
+        calculateMotionProfile();
+    }
+
+    private double getSetpoint(){
+        return setpoint;
+    }
+
+    private void calculateMotionProfile(){
+        profile.calculate(currentState, getSetpoint());
+    }
+
+    private MotionProfileState updateState(){
         MotionProfileComponent component = new MotionProfileComponent(getPosition(), 0, 0, 0, 0, getVelocity(), getVelocity());
         return new MotionProfileState(component);
     }
 
-    public double getVelocity(){
-        return positionEncoder.getVelocity() * INTAKE.POSITION_GEARBOX_RATIO;
+    public MotionProfileState getCurrentState(){
+        return currentState;
     }
 
-    public double getPosition(){
-        return positionEncoder.getPosition()/4096d * INTAKE.POSITION_GEARBOX_RATIO;
-    }
-
-    public void set(double speed){
-        intakePosition.set(ControlMode.PercentOutput, speed);
-    }
-
-    public void rollerSpeed(double speed){
+    public void setIntake(double speed){
         intakeLeft.set(ControlMode.PercentOutput, speed);
         intakeRight.set(ControlMode.PercentOutput, -speed);
     }
 
     @Override
     public void periodic() {
-        tab.addDouble("Intake Position", () -> getPosition());
+        currentState = updateState();
+        double speed = (profile.getPoseAtTime(timer.get()) + pid.calculate()) / 12;
+        arm.set(ControlMode.PercentOutput, speed);
     }
 }

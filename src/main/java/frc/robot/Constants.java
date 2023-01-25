@@ -1,5 +1,14 @@
 package frc.robot;
 
+import java.util.HashMap;
+import java.util.Set;
+import java.util.Map.Entry;
+
+import org.opencv.core.Point;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -7,9 +16,15 @@ import frc.robot.utilities.auto.JanusConfig;
 import frc.robot.utilities.auto.JanusRoute;
 import frc.robot.utilities.auto.JanusRouteFactory;
 import frc.robot.utilities.controlloop.PIDConfig;
+import frc.robot.utilities.controlloop.motionprofile.MotionProfileConfig;
+import frc.robot.utilities.sensors.vission.LimelightConfig;
 import frc.robot.utilities.swerve.SwerveModuleConfig;
 
 public interface Constants {
+
+    public interface WASHINGMACHINE {
+
+    }
 
     public interface ELEVATOR {
         int DRIVE_MOTOR = 0;
@@ -18,11 +33,14 @@ public interface Constants {
     }
 
     public interface INTAKE {
+        int ARM = 0;
         int LEFT_MOTOR = 0;
         int RIGHT_MOTOR = 0;
-        int POSITION_MOTOR = 0;
         int POSITION_ENCODER = 0;
-        double POSITION_GEARBOX_RATIO = 0;
+        double ARM_GEARBOX_RATIO = 0;
+        double GEARBOX_RATIO = 1d/10d;
+        PIDConfig pidConfig = new PIDConfig(0, 0, 0);
+        MotionProfileConfig config = new MotionProfileConfig(0.1, 0.04, pidConfig);
     }
 
     public interface DRIVETRAIN{
@@ -78,6 +96,9 @@ public interface Constants {
         
         PIDConfig XY_PID_CONFIG = new PIDConfig(0.5, 0, 0);
         PIDConfig THETA_PID_CONFIG = new PIDConfig(0.02, 0, 0).setContinuous(-Math.PI, Math.PI);
+        PIDConfig ROLL_PITCH_PID_CONFIG = new PIDConfig(0.02, 0, 0).setContinuous(-Math.PI, Math.PI);
+        PIDConfig ALIGN_XY_PID_CONFIG = new PIDConfig(1, 0, 0);
+        PIDConfig ALIGN_THETA_PID_CONFIG = new PIDConfig(0.1, 0, 0).setContinuous(-Math.PI, Math.PI);
 
         JanusConfig CONFIG = new JanusConfig(SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND, SWERVEMODULE.MAX_ACCELERATION_METERS_PER_SECOND, SWERVEMODULE.MAX_ANGULAR_SPEED_METERS_PER_SECOND, SWERVEMODULE.MAX_ACCELERATION_METERS_PER_SECOND, XY_PID_CONFIG, THETA_PID_CONFIG);
 
@@ -101,6 +122,62 @@ public interface Constants {
         Translation2d BACK_LEFT = new Translation2d(-TRACKWIDTH_METERS/2, WHEELBASE_METERS/2);
         Translation2d BACK_RIGHT = new Translation2d(-TRACKWIDTH_METERS/2, -WHEELBASE_METERS/2);
         int BLINKIN_PORT = 1;
+
+        LimelightConfig LIMELIGHT_CONFIG = new LimelightConfig(0, 0);
     }
     
+    public enum APRILTAGS {
+    
+        INVALID(0, new Pose3d(0,0,0, new Rotation3d())),
+        //Z is to the carpet to center of the tag
+        RED_ALLIANCE_RIGHT(1, new Pose3d(15.57,0.985,0.436, new Rotation3d())),
+        RED_ALLIANCE_MIDDLE(2, new Pose3d(15.57,2.69,0.436, new Rotation3d())),
+        RED_ALLIANCE_LEFT(3, new Pose3d(15.57,4.37,0.436, new Rotation3d())),
+
+        BLUE_ALLIANCE_LOADING(4, new Pose3d(0.36,6.67,0.666, new Rotation3d())),
+        RED_ALLIANCE_LOADING(5, new Pose3d(16.18,6.67,0.666, new Rotation3d())),
+
+        BLUE_ALLIANCE_LEFT(6, new Pose3d(0.97,4.37,0.436, new Rotation3d())),
+        BLUE_ALLIANCE_MIDDLE(7, new Pose3d(0.97,2.69,0.436, new Rotation3d())),
+        BLUE_ALLIANCE_RIGHT(8, new Pose3d(0.97,0.985,0.436, new Rotation3d()));    
+
+        // Blue right X: 138cm - 41cm = 0.97m Y: 65cm+23.5cm + 5cm + 5cm = 0.985m
+        // Blue middle X: 138cm - 41cm = 0.97m Y: 191cm + 2.5cm+ 47cm+ + 5cm + 23.5cm = 2.69m
+        // Blue left X: 138cm - 41cm = 0.97m Y: 191cm + 168cm + 2.5cm + 47cm + 5cm + 23.5cm = 4.37m
+        
+        // Red loading X: 36cm = 0.36m Y: 550cm + 117cm = 6.67m
+        // Blue loading X: 1654cm - 36cm = 16.18m Y: 550cm + 117cm = 6.67m
+        
+        // Red right X: 1654cm - 138cm + 41cm = 15.57m Y: 65cm+23.5cm + 5cm + 5cm = 0.985m
+        // Red middle X: 1654cm - 138cm + 41cm = 15.57m Y: 191cm + 2.5cm+ 47cm+ + 5cm + 23.5cm = 2.69m
+        // Red left X: 1654cm - 138cm + 41cm = 15.57m Y: 191cm + 168cm + 2.5cm + 47cm + 5cm + 23.5cm = 4.37m
+
+        int id;
+        Pose3d pose3d;
+        private APRILTAGS(int id, Pose3d pose3d){
+            this.id = id;
+            this.pose3d = pose3d;
+            
+        }
+       
+        public static APRILTAGS getByID(int id){
+            for (APRILTAGS tag : values()) {
+                if(tag.getID() == id) return tag;
+            }
+            return INVALID;
+        }
+
+        public int getID(){
+            return id;
+        }
+
+        public double getHeight(){
+            return pose3d.getZ();
+        }
+        
+        public Pose2d getPose2d(){
+            return pose3d.toPose2d();
+        }
+
+    }
 }

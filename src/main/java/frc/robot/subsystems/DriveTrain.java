@@ -1,8 +1,11 @@
 package frc.robot.subsystems;
 
+import java.net.http.HttpResponse.PushPromiseHandler;
+
 import com.ctre.phoenix.sensors.Pigeon2;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -16,11 +19,15 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.APRILTAGS;
 import frc.robot.Constants.DRIVETRAIN;
+import frc.robot.Constants.ROBOT;
 import frc.robot.Constants.SWERVEMODULE;
 import frc.robot.utilities.controlloop.PID;
 import frc.robot.utilities.controlloop.PIDConfig;
 import frc.robot.utilities.debug.SystemTest;
+import frc.robot.utilities.sensors.REVBlinkin;
+import frc.robot.utilities.sensors.vission.LimeLight;
 import frc.robot.utilities.swerve.SwerveModule;
 
 public class DriveTrain extends SubsystemBase implements SystemTest{
@@ -37,6 +44,8 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   private static double desiredHeading;
   private static PIDConfig driftCorrectionPID = new PIDConfig(0.4, 0, 0.1).setILimit(20).setContinuous(-Math.PI, Math.PI);
   private static PID pid;
+  private static LimeLight limeLight;
+  private static REVBlinkin blinkin;
 
   static {
     tab = Shuffleboard.getTab("Drive Train");
@@ -46,8 +55,7 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     swerveModules[0] = new SwerveModule(DRIVETRAIN.FRONT_LEFT_MODULE_CONFIG, tab);
     swerveModules[1] = new SwerveModule(DRIVETRAIN.FRONT_RIGHT_MODULE_CONFIG, tab);
     swerveModules[2] = new SwerveModule(DRIVETRAIN.BACK_LEFT_MODULE_CONFIG, tab);
-    swerveModules[3] = new SwerveModule(DRIVETRAIN.BACK_RIGHT_MODULE_CONFIG, tab);
-
+    swerveModules[3] = new SwerveModule(DRIVETRAIN.BACK_RIGHT_MODULE_CONFIG, tab);  
     gyro = new Pigeon2(DRIVETRAIN.PIGEON, DRIVETRAIN.CANBUS);
    
     //pdh = new PowerDistribution(DRIVETRAIN.REV_PDH, ModuleType.kRev);
@@ -57,13 +65,12 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     SwerveModulePosition[] SwervePositions = {swerveModules[0].getPostion(), swerveModules[1].getPostion(), swerveModules[2].getPostion(), swerveModules[3].getPostion()};
 
     kinematics = new SwerveDriveKinematics(DRIVETRAIN.SWERVE_MODULE_LOCATIONS);
-
     odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(gyro.getYaw()), SwervePositions);
     pose = new Pose2d();
 
     pid = new PID(driftCorrectionPID).setMeasurement(() -> getRotation2d().getDegrees());
-
-   
+    limeLight = new LimeLight(ROBOT.LIMELIGHT_CONFIG);
+    blinkin = new REVBlinkin(ROBOT.BLINKIN_PORT);
   }
 
   public void shuffleboard(){
@@ -85,11 +92,11 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   }
 
   public double getRoll(){
-    return gyro.getRoll(); 
+    return Math.IEEEremainder(gyro.getRoll(), 360); 
   }
 
   public double getPitch(){
-    return gyro.getPitch(); 
+    return Math.IEEEremainder(gyro.getPitch(),360); 
   }
 
   public static double getHeading(){
@@ -101,12 +108,19 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   }
 
   //counters the drift in our robot due to uneven frame
-  double pXY = 0;
+
+  // private double getAverageSpeed(){
+  //   double speed = 0;
+  //   for (int i = 0; i < swerveModules.length; i++) {
+  //     speed += swerveModules[i].getState().speedMetersPerSecond;
+  //   }
+  //   return speed / swerveModules.length;
+  // }
+  
   public void driftCorrection(ChassisSpeeds speeds){
-    double xy = Math.abs(speeds.vxMetersPerSecond) + Math.abs(speeds.vyMetersPerSecond);
-    if(Math.abs(speeds.omegaRadiansPerSecond) > 0.0 || pXY <= 0) desiredHeading = pose.getRotation().getDegrees();
-    else if(xy > 0) speeds.omegaRadiansPerSecond += pid.calculate(desiredHeading);
-    pXY = xy;
+    // double speed = Math.abs(getAverageSpeed());
+    if(Math.abs(speeds.omegaRadiansPerSecond) > 0.0) desiredHeading = pose.getRotation().getDegrees();
+    else speeds.omegaRadiansPerSecond += pid.calculate(desiredHeading);
   }
 
   public void drive(ChassisSpeeds speeds){
@@ -147,11 +161,15 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   }
 
   public void lockWheels(){
-    double angle = Math.toRadians(getHeading()-45d);
+    
     for (int i = 0; i < swerveModules.length; i++) {
       swerveModules[i].lock();
-      swerveModules[i].setToAngle(angle);
     }
+    swerveModules[0].setToAngle(Math.toRadians(45));
+    swerveModules[1].setToAngle(Math.toRadians(135));
+    swerveModules[2].setToAngle(Math.toRadians(-45));
+    swerveModules[3].setToAngle(Math.toRadians(-135));
+
   }
 
   public void unlockWheels(){
@@ -160,24 +178,48 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     }
   }
 
+  private void updateOdometry(){
+    if(limeLight.hasValidTarget()){
+      if(limeLight.getPipeline() == 0){
+        APRILTAGS tag = APRILTAGS.getByID((int)limeLight.getAprilTagID());
+        if(!tag.equals(APRILTAGS.INVALID)){
+          Pose2d relatviePose =limeLight.getBot2DPosition();
+          Pose2d tagPose = tag.getPose2d();
+          pose = new Pose2d(relatviePose.getX() + tagPose.getX(), relatviePose.getY() + tagPose.getY(), getRotation2d());
+        }
+      }
+    }else{
+      odometry.update(getRotation2d(), getModulePostions());
+      pose = odometry.getPoseMeters();
+    }
+
+    gameField.setRobotPose(pose);
+  }
+
+  public LimeLight getLimelight(){
+    return limeLight;
+  }
+
+  public REVBlinkin getBlinkin(){
+    return blinkin;
+  }
+
   @Override
   public void periodic() {
 
-    SmartDashboard.putData("PID DRIVE : ", pid);
+    //SmartDashboard.putData("PID DRIVE : ", pid);
     double xSpeed = chassisSpeeds.vxMetersPerSecond + feedbackSpeeds.vxMetersPerSecond;
     double ySpeed = chassisSpeeds.vyMetersPerSecond + feedbackSpeeds.vyMetersPerSecond;
     double thetaSpeed = chassisSpeeds.omegaRadiansPerSecond + feedbackSpeeds.omegaRadiansPerSecond;
-    chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
+    ChassisSpeeds speed = new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
     
-    // driftCorrection(chassisSpeeds);
+    driftCorrection(speed);
 
-    SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
+    SwerveModuleState[] states = kinematics.toSwerveModuleStates(speed);
     
     setModuleStates(states);
 
-    odometry.update(getRotation2d(), getModulePostions());
-    pose = odometry.getPoseMeters();
-    gameField.setRobotPose(pose);
+    updateOdometry();
   }
 
   @Override

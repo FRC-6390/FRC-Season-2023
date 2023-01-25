@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants.SWERVEMODULE;
 import frc.robot.utilities.controlloop.PID;
 
-public class SwerveModule implements Sendable{
+public class SwerveModule {
     private TalonFX driveMotor;
     private TalonFX rotationMotor;
 
@@ -62,14 +62,13 @@ public class SwerveModule implements Sendable{
 
         encoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
 
-        pid = new PID(() -> getRotationMotorPosition(), null, SWERVEMODULE.ROTATION_PID);
+        pid = new PID(SWERVEMODULE.ROTATION_PID).setMeasurement(() -> getRotationMotorPosition());
         if(tab != null){
-            // ShuffleboardLayout layout = tab.getLayout("Swerve Module "+instances, BuiltInLayouts.kList).withSize(2, 4);
-            // //layout.add(pid);
-            offsetEntry = tab.add("Offset "+ instances, getEncoderOffset()).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", -Math.PI, "max", Math.PI)).getEntry();
-            tab.addDouble("Angle "+instances, () -> getPostion().angle.getDegrees());
-            tab.addDouble("Absolute "+instances, () -> getAbsolutePosition());
-
+            ShuffleboardLayout layout = tab.getLayout("Swerve Module "+instances, BuiltInLayouts.kList).withSize(2, 6);
+            layout.add(pid);
+            offsetEntry = layout.add("Offset "+ instances, getEncoderOffset()).withWidget(BuiltInWidgets.kNumberSlider).withProperties(Map.of("min", -Math.PI, "max", Math.PI)).getEntry();
+            layout.addDouble("Angle "+instances, () -> getPostion().angle.getDegrees());
+            layout.addDouble("Absolute "+instances, () -> getAbsolutePosition());
         }
         instances++;
 
@@ -147,8 +146,8 @@ public class SwerveModule implements Sendable{
 
     public void setToAngle(double angle){
         SwerveModuleState state = new SwerveModuleState(0, new Rotation2d(angle));
-        setDesiredState(state);
-       //rotationMotor.set(ControlMode.PercentOutput, pid.calculate(angle));
+        //setDesiredState(state);
+        rotationMotor.set(ControlMode.PercentOutput, pid.calculate(state.angle.getRadians()));
     }
 
     public void lock(){
@@ -159,15 +158,6 @@ public class SwerveModule implements Sendable{
     public void unlock(){
         driveMotor.setNeutralMode(NeutralMode.Coast);
         rotationMotor.setNeutralMode(NeutralMode.Coast);
-    }
-
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        builder.setSmartDashboardType("Swerve Module");
-        builder.addDoubleProperty("Radians", this::getAbsolutePosition, null);
-
-        builder.addDoubleProperty("Offset", this::getEncoderOffset, this::setEncoderOffset);
-        builder.addStringProperty("SwerveModule", state::toString, null);
     }
 
 }
