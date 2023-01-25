@@ -1,8 +1,9 @@
 package frc.robot.utilities.debug;
 
+import java.util.ArrayList;
+
 public interface SystemTest {
 
-    boolean testFunctionality(int id, double speed);
+    ArrayList<SystemTestAction> getDevices();
     
-    int getNumberOfComponents();
 }

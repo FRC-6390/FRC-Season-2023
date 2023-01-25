@@ -1,10 +1,8 @@
 package frc.robot.commands.auto;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.APRILTAGS;
-import frc.robot.Constants.SWERVEMODULE;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.utilities.controlloop.PID;
 import frc.robot.utilities.controlloop.PIDConfig;

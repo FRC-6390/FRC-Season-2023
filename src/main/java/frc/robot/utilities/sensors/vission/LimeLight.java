@@ -125,6 +125,10 @@ public class LimeLight {
         return tv.getDouble(0) == 1;
     }
 
+    public boolean hasBotPose(){
+        return botpose.getNumberArray(null) != null;
+    }
+
     /**
      * Horizontal Offset From Crosshair To Target (LL1: -27 degrees to 27 degrees | LL2: -29.8 to 29.8 degrees)
      */
@@ -228,6 +232,7 @@ public class LimeLight {
      */
     public Pose3d getBot3DPosition(){
         Number[] pose = getBotPositionRaw();
+        if(pose == null) return new Pose3d();
         Translation3d translation3d = new Translation3d(pose[0].doubleValue(), pose[1].doubleValue(), pose[2].doubleValue());
         Rotation3d rotation3d = new Rotation3d(pose[3].doubleValue(), pose[4].doubleValue(), pose[5].doubleValue());
         return new Pose3d(translation3d, rotation3d);
@@ -235,6 +240,7 @@ public class LimeLight {
 
     public Pose2d getBot2DPosition(){
         Number[] pose = getBotPositionRaw();
+        if(pose == null) return new Pose2d();
         Translation2d translation = new Translation2d(pose[0].doubleValue(), pose[1].doubleValue());
         Rotation2d rotation = new Rotation2d(pose[5].doubleValue());
         return new Pose2d(translation, rotation);
