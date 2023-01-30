@@ -19,15 +19,18 @@ public interface Constants {
         int MOTOR_ID = 13;
     }
 
-    public interface INTAKE {
-        int INTAKE = 0;
-        int ARM = 0;
-    }
-
     public interface ELEVATOR {
-        
         int DRIVE_MOTOR = 0;
         int ENCODER = 0;
+        double GEARBOX_RATIO = 0;
+    }
+
+    public interface INTAKE {
+        int ARM = 0;
+        int LEFT_MOTOR = 0;
+        int RIGHT_MOTOR = 0;
+        int POSITION_ENCODER = 0;
+        double ARM_GEARBOX_RATIO = 0;
         double GEARBOX_RATIO = 1d/10d;
         PIDConfig pidConfig = new PIDConfig(0, 0, 0);
         MotionProfileConfig config = new MotionProfileConfig(0.1, 0.04, pidConfig);
@@ -35,7 +38,7 @@ public interface Constants {
 
     public interface DRIVETRAIN{
 
-        String CANBUS = "can";
+        String CANBUS = "canTest";
 
         int PIGEON = 0;
 

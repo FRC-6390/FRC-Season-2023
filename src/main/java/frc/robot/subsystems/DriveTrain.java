@@ -77,17 +77,19 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   public void shuffleboard(){
     autoTab.add(gameField);
     autoTab.addDouble("Odometry Heading", () -> pose.getRotation().getDegrees()).withWidget(BuiltInWidgets.kTextView);
-    autoTab.addDouble("Odometry X", pose::getX).withWidget(BuiltInWidgets.kTextView);
-    autoTab.addDouble("Odometry Y", pose::getY).withWidget(BuiltInWidgets.kTextView);
+    autoTab.addDouble("Odometry X", () -> pose.getX()).withWidget(BuiltInWidgets.kTextView);
+    autoTab.addDouble("Odometry Y", () -> pose.getY()).withWidget(BuiltInWidgets.kTextView);
   }
 
   public void init(){
     pdh.clearStickyFaults();
     zeroHeading();
+    resetOdometry(pose);
   }
 
   public void zeroHeading(){
     gyro.setYaw(0);
+    resetOdometry(pose);
   }
 
   public double getRoll(){
@@ -134,7 +136,6 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     odometry.resetPosition(getRotation2d(), getModulePostions(), pose);
   }
 
-
   public void setModuleStates(SwerveModuleState[] states){
     SwerveDriveKinematics.desaturateWheelSpeeds(states, SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND);
     for (int i = 0; i < swerveModules.length; i++) {
@@ -179,19 +180,19 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   }
 
   private void updateOdometry(){
-    if(limeLight.hasBotPose()){
-      if(limeLight.getPipeline() == 0){
-        APRILTAGS tag = APRILTAGS.getByID((int)limeLight.getAprilTagID());
-        if(!tag.equals(APRILTAGS.INVALID)){
-          Pose2d relativePose =limeLight.getBot2DPosition();
-          Pose2d tagPose = tag.getPose2d();
-          pose = new Pose2d(relativePose.getX() + tagPose.getX(), relativePose.getY() + tagPose.getY(), getRotation2d());
-        }
-      }
-    }else{
+    // if(limeLight.hasBotPose()){
+      // if(limeLight.getPipeline() == 0){
+      //   APRILTAGS tag = APRILTAGS.getByID((int)limeLight.getAprilTagID());
+      //   if(!tag.equals(APRILTAGS.INVALID)){
+      //     Pose2d relativePose =limeLight.getBot2DPosition();
+      //     Pose2d tagPose = tag.getPose2d();
+      //     pose = new Pose2d(relativePose.getX() + tagPose.getX(), relativePose.getY() + tagPose.getY(), getRotation2d());
+      //   }
+      // }
+    // }else{
       odometry.update(getRotation2d(), getModulePostions());
       pose = odometry.getPoseMeters();
-    }
+    // }
 
     gameField.setRobotPose(pose);
   }

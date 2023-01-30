@@ -126,7 +126,8 @@ public class LimeLight {
     }
 
     public boolean hasBotPose(){
-        return botpose.getNumberArray(null) != null;
+        // return botpose.getNumberArray(null) != null;
+        return false;
     }
 
     /**
