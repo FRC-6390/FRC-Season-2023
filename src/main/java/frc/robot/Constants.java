@@ -38,7 +38,7 @@ public interface Constants {
 
     public interface DRIVETRAIN{
 
-        String CANBUS = "can";
+        String CANBUS = "canTest";
 
         int PIGEON = 0;
 

@@ -1,11 +1,15 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
+  TalonFX motor = new TalonFX(4, "canTest");
 
   @Override
   public void robotInit() {
@@ -15,6 +19,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    motor.set(ControlMode.PercentOutput, 0.5);
+    
   }
 
   @Override

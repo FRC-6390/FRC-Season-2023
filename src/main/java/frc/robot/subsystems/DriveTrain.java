@@ -180,19 +180,19 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   }
 
   private void updateOdometry(){
-    if(limeLight.hasBotPose()){
-      if(limeLight.getPipeline() == 0){
-        APRILTAGS tag = APRILTAGS.getByID((int)limeLight.getAprilTagID());
-        if(!tag.equals(APRILTAGS.INVALID)){
-          Pose2d relativePose =limeLight.getBot2DPosition();
-          Pose2d tagPose = tag.getPose2d();
-          pose = new Pose2d(relativePose.getX() + tagPose.getX(), relativePose.getY() + tagPose.getY(), getRotation2d());
-        }
-      }
-    }else{
+    // if(limeLight.hasBotPose()){
+      // if(limeLight.getPipeline() == 0){
+      //   APRILTAGS tag = APRILTAGS.getByID((int)limeLight.getAprilTagID());
+      //   if(!tag.equals(APRILTAGS.INVALID)){
+      //     Pose2d relativePose =limeLight.getBot2DPosition();
+      //     Pose2d tagPose = tag.getPose2d();
+      //     pose = new Pose2d(relativePose.getX() + tagPose.getX(), relativePose.getY() + tagPose.getY(), getRotation2d());
+      //   }
+      // }
+    // }else{
       odometry.update(getRotation2d(), getModulePostions());
       pose = odometry.getPoseMeters();
-    }
+    // }
 
     gameField.setRobotPose(pose);
   }
