@@ -27,6 +27,7 @@ public class SwerveModule {
 
     private CANCoder encoder;
     private PID pid;
+    
     private GenericEntry offsetEntry;
 
     private double encoderOffset;
@@ -37,7 +38,7 @@ public class SwerveModule {
         this(config, null);
     }
 
-    private static PIDController rotationPidController = new PIDController(0.3, 0.01, 0);
+    private static PIDController rotationPidController = new PIDController(0.35, 0.01, 0);
     
 
 
