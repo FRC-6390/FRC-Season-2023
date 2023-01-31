@@ -38,7 +38,7 @@ public interface Constants {
 
     public interface DRIVETRAIN{
 
-        String CANBUS = "canTest";
+        String CANBUS = "can";
 
         int PIGEON = 0;
 
@@ -59,10 +59,16 @@ public interface Constants {
         int BACK_RIGHT_ROTATION = 8;
         int BACK_RIGHT_ENCODER = 12;
 
-        double FRONT_LEFT_OFFSET = 0.013805+Math.PI;
-        double FRONT_RIGHT_OFFSET = 0.010737+Math.PI;
-        double BACK_LEFT_OFFSET = 0.030679+Math.PI;
-        double BACK_RIGHT_OFFSET = -0.042951+Math.PI;
+        //original offsets
+        // double FRONT_LEFT_OFFSET = 0.013805+Math.PI;
+        // double FRONT_RIGHT_OFFSET = 0.010737+Math.PI;
+        // double BACK_LEFT_OFFSET = 0.030679+Math.PI;
+        // double BACK_RIGHT_OFFSET = -0.042951+Math.PI;
+
+        double FRONT_LEFT_OFFSET = -2.468;
+        double FRONT_RIGHT_OFFSET = 0.0506;
+        double BACK_LEFT_OFFSET = -0.70102;
+        double BACK_RIGHT_OFFSET = 2.2;
 
         SwerveModuleConfig FRONT_LEFT_MODULE_CONFIG = new SwerveModuleConfig(FRONT_LEFT_DRIVE, false, FRONT_LEFT_ROTATION, false, FRONT_LEFT_ENCODER, FRONT_LEFT_OFFSET, CANBUS);
         SwerveModuleConfig FRONT_RIGHT_MODULE_CONFIG = new SwerveModuleConfig(FRONT_RIGHT_DRIVE, false, FRONT_RIGHT_ROTATION, false, FRONT_RIGHT_ENCODER, FRONT_RIGHT_OFFSET, CANBUS);

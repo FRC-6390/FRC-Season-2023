@@ -68,14 +68,14 @@ public class AutoAlign extends CommandBase {
             blinkin.setColour(REVColour.White);
             ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
             System.out.println(chassisSpeeds);
-            driveTrain.feedbackDrive(chassisSpeeds);
+            // driveTrain.feedbackDrive(chassisSpeeds);
         }
 
     }
   
     @Override
     public void end(boolean interrupted) {
-        driveTrain.feedbackDrive(new ChassisSpeeds());
+        // driveTrain.feedbackDrive(new ChassisSpeeds());
 
     }
   

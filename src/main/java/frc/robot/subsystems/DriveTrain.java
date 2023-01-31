@@ -52,10 +52,10 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     autoTab = Shuffleboard.getTab("Auto");
     gameField = new Field2d();
     swerveModules = new SwerveModule[4];
-    swerveModules[0] = new SwerveModule(DRIVETRAIN.FRONT_LEFT_MODULE_CONFIG, tab);
-    swerveModules[1] = new SwerveModule(DRIVETRAIN.FRONT_RIGHT_MODULE_CONFIG, tab);
-    swerveModules[2] = new SwerveModule(DRIVETRAIN.BACK_LEFT_MODULE_CONFIG, tab);
-    swerveModules[3] = new SwerveModule(DRIVETRAIN.BACK_RIGHT_MODULE_CONFIG, tab);  
+    swerveModules[0] = new SwerveModule(DRIVETRAIN.FRONT_LEFT_MODULE_CONFIG);
+    swerveModules[1] = new SwerveModule(DRIVETRAIN.FRONT_RIGHT_MODULE_CONFIG);
+    swerveModules[2] = new SwerveModule(DRIVETRAIN.BACK_LEFT_MODULE_CONFIG);
+    swerveModules[3] = new SwerveModule(DRIVETRAIN.BACK_RIGHT_MODULE_CONFIG);  
     gyro = new Pigeon2(DRIVETRAIN.PIGEON, DRIVETRAIN.CANBUS);
    
     pdh = new PowerDistribution(DRIVETRAIN.REV_PDH, ModuleType.kRev);
@@ -75,6 +75,10 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   }
 
   public void shuffleboard(){
+    tab.addDouble("Front Left Encoder", () -> swerveModules[0].getAbsolutePosition());
+    tab.addDouble("Front Right Encoder", () -> swerveModules[1].getAbsolutePosition());
+    tab.addDouble("Back Left Encoder", () -> swerveModules[2].getAbsolutePosition());
+    tab.addDouble("Back Right Encoder", () -> swerveModules[3].getAbsolutePosition());
     autoTab.add(gameField);
     autoTab.addDouble("Odometry Heading", () -> pose.getRotation().getDegrees()).withWidget(BuiltInWidgets.kTextView);
     autoTab.addDouble("Odometry X", () -> pose.getX()).withWidget(BuiltInWidgets.kTextView);
@@ -118,11 +122,11 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   //   return speed / swerveModules.length;
   // }
   
-  public void driftCorrection(ChassisSpeeds speeds){
-    // double speed = Math.abs(getAverageSpeed());
-    if(Math.abs(speeds.omegaRadiansPerSecond) > 0.0) desiredHeading = pose.getRotation().getDegrees();
-    else speeds.omegaRadiansPerSecond += pid.calculate(desiredHeading);
-  }
+  // public void driftCorrection(ChassisSpeeds speeds){
+  //   // double speed = Math.abs(getAverageSpeed());
+  //   if(Math.abs(speeds.omegaRadiansPerSecond) > 0.0) desiredHeading = pose.getRotation().getDegrees();
+  //   else speeds.omegaRadiansPerSecond += pid.calculate(desiredHeading);
+  // }
 
   public void drive(ChassisSpeeds speeds){
     chassisSpeeds = speeds;
@@ -151,9 +155,9 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     return positions;
   }
 
-  public void feedbackDrive(ChassisSpeeds speeds){
-    feedbackSpeeds = speeds;
-  }
+  // public void feedbackDrive(ChassisSpeeds speeds){
+  //   feedbackSpeeds = speeds;
+  // }
 
   public void stopWheels(){
     for(int i = 0; i < swerveModules.length; i++){
@@ -170,7 +174,6 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     swerveModules[1].setToAngle(Math.toRadians(135));
     swerveModules[2].setToAngle(Math.toRadians(-45));
     swerveModules[3].setToAngle(Math.toRadians(-135));
-
   }
 
   public void unlockWheels(){
@@ -209,16 +212,16 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   public void periodic() {
 
     //SmartDashboard.putData("PID DRIVE : ", pid);
-    double xSpeed = chassisSpeeds.vxMetersPerSecond + feedbackSpeeds.vxMetersPerSecond;
-    double ySpeed = chassisSpeeds.vyMetersPerSecond + feedbackSpeeds.vyMetersPerSecond;
-    double thetaSpeed = chassisSpeeds.omegaRadiansPerSecond + feedbackSpeeds.omegaRadiansPerSecond;
-    ChassisSpeeds speed = new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
-    
+    double xSpeed = chassisSpeeds.vxMetersPerSecond;
+    double ySpeed = chassisSpeeds.vyMetersPerSecond;
+    double thetaSpeed = chassisSpeeds.omegaRadiansPerSecond;
+    ChassisSpeeds speed = new ChassisSpeeds(ySpeed, xSpeed, thetaSpeed);
+    System.out.println(speed);
     //driftCorrection(speed);
 
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speed);
     
-   // setModuleStates(states);
+    setModuleStates(states);
 
     updateOdometry();
   }
