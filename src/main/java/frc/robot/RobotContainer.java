@@ -35,6 +35,7 @@ public class RobotContainer {
     autoChooser.addOption("Janus Command 2", AUTO.TEXT_COMMAND_2_AUTO_PATH);
     autoChooser.addOption("Janus Command 3", AUTO.TEXT_COMMAND_3_AUTO_PATH);
 
+    autoPathChooser.addOption("Test Path", "Test Path");
     autoPathChooser.addOption("Right Side 2 Game Piece", "Right Side 2 Game Piece");
 
     Shuffleboard.getTab("Auto").add(autoChooser);
@@ -56,7 +57,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand(){
     // return new JanusAuto(driveTrain, autoChooser.getSelected().build());
-    return AutoPathPlanner.runAuto("Right Side 2 Game Piece");
+    return AutoPathPlanner.runAuto(autoPathChooser.getSelected());
   }
 
 }

@@ -37,15 +37,15 @@ public class SwerveModule {
 
     public SwerveModule(SwerveModuleConfig config, ShuffleboardTab tab){
        
-        if(config.canbus() != null){
-            driveMotor = new TalonFX(config.driveMotor(), config.canbus());
-            rotationMotor = new TalonFX(config.rotationMotor(), config.canbus());
-            encoder = new CANCoder(config.encoder(), config.canbus());
-        }else{
-            driveMotor = new TalonFX(config.driveMotor());
-            rotationMotor = new TalonFX(config.rotationMotor());
-            encoder = new CANCoder(config.encoder());
-        }
+        // if(config.canbus() != null){
+            driveMotor = new TalonFX(config.driveMotor(), "canTest");
+            rotationMotor = new TalonFX(config.rotationMotor(), "canTest");
+            encoder = new CANCoder(config.encoder(), "canTest");
+        // }else{
+        //     driveMotor = new TalonFX(config.driveMotor());
+        //     rotationMotor = new TalonFX(config.rotationMotor());
+        //     encoder = new CANCoder(config.encoder());
+        // }
         encoderOffset = config.encoderOffset();
         driveMotor.setInverted(config.driveMotorReversed());
         rotationMotor.setInverted(config.rotationMotorReversed());
@@ -67,11 +67,11 @@ public class SwerveModule {
     }
 
     public double getDriveMotorVelocity(){
-        return driveMotor.getSensorCollection().getIntegratedSensorVelocity() / 2048d /2*Math.PI * SWERVEMODULE.DRIVE_ENCODER_CONVERSION_METERS;
+        return driveMotor.getSelectedSensorVelocity() / 2048d /2*Math.PI * SWERVEMODULE.DRIVE_ENCODER_CONVERSION_METERS;
     }
     
     public double getDriveMotorPosition(){
-        return driveMotor.getSensorCollection().getIntegratedSensorPosition() / 2048d /2*Math.PI * SWERVEMODULE.DRIVE_ENCODER_CONVERSION_METERS;
+        return driveMotor.getSelectedSensorPosition() / 2048d /2*Math.PI * SWERVEMODULE.DRIVE_ENCODER_CONVERSION_METERS;
     }
 
     public double getRotationMotorPosition(){
