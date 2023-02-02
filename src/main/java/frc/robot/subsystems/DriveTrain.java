@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.ctre.phoenix.sensors.Pigeon2;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -46,16 +47,18 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   private static PID pid;
   private static LimeLight limeLight;
   private static REVBlinkin blinkin;
+  private static PIDController rotationPidController = new PIDController(0.3, 0, 0);
+
 
   static {
     tab = Shuffleboard.getTab("Drive Train");
     autoTab = Shuffleboard.getTab("Auto");
     gameField = new Field2d();
     swerveModules = new SwerveModule[4];
-    swerveModules[0] = new SwerveModule(DRIVETRAIN.FRONT_LEFT_MODULE_CONFIG);
-    swerveModules[1] = new SwerveModule(DRIVETRAIN.FRONT_RIGHT_MODULE_CONFIG);
-    swerveModules[2] = new SwerveModule(DRIVETRAIN.BACK_LEFT_MODULE_CONFIG);
-    swerveModules[3] = new SwerveModule(DRIVETRAIN.BACK_RIGHT_MODULE_CONFIG);  
+    swerveModules[0] = new SwerveModule(DRIVETRAIN.FRONT_LEFT_MODULE_CONFIG, tab);
+    swerveModules[1] = new SwerveModule(DRIVETRAIN.FRONT_RIGHT_MODULE_CONFIG, tab);
+    swerveModules[2] = new SwerveModule(DRIVETRAIN.BACK_LEFT_MODULE_CONFIG, tab);
+    swerveModules[3] = new SwerveModule(DRIVETRAIN.BACK_RIGHT_MODULE_CONFIG, tab);  
     gyro = new Pigeon2(DRIVETRAIN.PIGEON, DRIVETRAIN.CANBUS);
    
     pdh = new PowerDistribution(DRIVETRAIN.REV_PDH, ModuleType.kRev);
@@ -72,6 +75,7 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     limeLight = new LimeLight(ROBOT.LIMELIGHT_CONFIG);
     blinkin = new REVBlinkin(ROBOT.BLINKIN_PORT);
 
+    rotationPidController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   public void shuffleboard(){
@@ -79,6 +83,10 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     tab.addDouble("Front Right Encoder", () -> swerveModules[1].getAbsolutePosition());
     tab.addDouble("Back Left Encoder", () -> swerveModules[2].getAbsolutePosition());
     tab.addDouble("Back Right Encoder", () -> swerveModules[3].getAbsolutePosition());
+    
+    autoTab.addDouble("Desired Heading", () -> pose.getRotation().getDegrees()).withWidget(BuiltInWidgets.kTextView);
+    autoTab.addDouble("PID Desired Heading", () -> pid.calculate(pose.getRotation().getDegrees())).withWidget(BuiltInWidgets.kTextView);
+
     autoTab.add(gameField);
     autoTab.addDouble("Odometry Heading", () -> pose.getRotation().getDegrees()).withWidget(BuiltInWidgets.kTextView);
     autoTab.addDouble("Odometry X", () -> pose.getX()).withWidget(BuiltInWidgets.kTextView);
@@ -113,20 +121,20 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   }
 
   //counters the drift in our robot due to uneven frame
-
-  // private double getAverageSpeed(){
-  //   double speed = 0;
-  //   for (int i = 0; i < swerveModules.length; i++) {
-  //     speed += swerveModules[i].getState().speedMetersPerSecond;
-  //   }
-  //   return speed / swerveModules.length;
-  // }
+  private double getAverageSpeed(){
+    double speed = 0;
+    for (int i = 0; i < swerveModules.length; i++) {
+      speed += swerveModules[i].getState().speedMetersPerSecond;
+    }
+    return speed / swerveModules.length;
+  }
   
-  // public void driftCorrection(ChassisSpeeds speeds){
-  //   // double speed = Math.abs(getAverageSpeed());
-  //   if(Math.abs(speeds.omegaRadiansPerSecond) > 0.0) desiredHeading = pose.getRotation().getDegrees();
-  //   else speeds.omegaRadiansPerSecond += pid.calculate(desiredHeading);
-  // }
+  public void driftCorrection(ChassisSpeeds speeds){
+    // double speed = Math.abs(getAverageSpeed());
+    if(Math.abs(speeds.omegaRadiansPerSecond) > 0.0) desiredHeading = pose.getRotation().getDegrees();
+    else speeds.omegaRadiansPerSecond += pid.calculate(desiredHeading);
+    // else speeds.omegaRadiansPerSecond += rotationPidController.calculate(desiredHeading);
+  }
 
   public void drive(ChassisSpeeds speeds){
     chassisSpeeds = speeds;
@@ -155,9 +163,9 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     return positions;
   }
 
-  // public void feedbackDrive(ChassisSpeeds speeds){
-  //   feedbackSpeeds = speeds;
-  // }
+  public void feedbackDrive(ChassisSpeeds speeds){
+    feedbackSpeeds = speeds;
+  }
 
   public void stopWheels(){
     for(int i = 0; i < swerveModules.length; i++){
@@ -170,15 +178,15 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     for (int i = 0; i < swerveModules.length; i++) {
       swerveModules[i].lock();
     }
-    swerveModules[0].setToAngle(Math.toRadians(45));
-    swerveModules[1].setToAngle(Math.toRadians(135));
-    swerveModules[2].setToAngle(Math.toRadians(-45));
-    swerveModules[3].setToAngle(Math.toRadians(-135));
+    // swerveModules[0].setToAngle(Math.toRadians(45));
+    // swerveModules[1].setToAngle(Math.toRadians(135));
+    // swerveModules[2].setToAngle(Math.toRadians(-45));
+    // swerveModules[3].setToAngle(Math.toRadians(-135));
   }
 
   public void unlockWheels(){
     for (int i = 0; i < swerveModules.length; i++) {
-      swerveModules[i].unlock();
+      // swerveModules[i].unlock();
     }
   }
 
@@ -212,12 +220,12 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   public void periodic() {
 
     //SmartDashboard.putData("PID DRIVE : ", pid);
-    double xSpeed = chassisSpeeds.vxMetersPerSecond;
-    double ySpeed = chassisSpeeds.vyMetersPerSecond;
-    double thetaSpeed = chassisSpeeds.omegaRadiansPerSecond;
-    ChassisSpeeds speed = new ChassisSpeeds(ySpeed, xSpeed, thetaSpeed);
-    System.out.println(speed);
-    //driftCorrection(speed);
+    double xSpeed = chassisSpeeds.vxMetersPerSecond + feedbackSpeeds.vxMetersPerSecond;
+    double ySpeed = chassisSpeeds.vyMetersPerSecond + feedbackSpeeds.vyMetersPerSecond;
+    double thetaSpeed = chassisSpeeds.omegaRadiansPerSecond + feedbackSpeeds.omegaRadiansPerSecond;
+    ChassisSpeeds speed = new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
+    // ChassisSpeeds speed = new ChassisSpeeds(0, 1.5, 0);
+    // driftCorrection(speed);
 
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speed);
     
@@ -244,3 +252,118 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
 }
 
 
+
+// package frc.robot.subsystems;
+
+// import com.kauailabs.navx.frc.AHRS;
+
+// import edu.wpi.first.math.geometry.Pose2d;
+// import edu.wpi.first.math.geometry.Rotation2d;
+// import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+// import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+// import edu.wpi.first.math.kinematics.SwerveModuleState;
+// import edu.wpi.first.wpilibj.SPI;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj2.command.SubsystemBase;
+// import frc.robot.Constants;
+// import frc.robot.Constants.DRIVETRAIN;
+// import frc.robot.utilities.swerve.SwerveModule;
+
+// public class DriveTrain extends SubsystemBase {
+//     private final SwerveModule frontLeft = new SwerveModule(
+//             Constants.DRIVETRAIN.FRONT_LEFT_DRIVE,
+//             Constants.DRIVETRAIN.FRONT_LEFT_ROTATION,
+//             Constants.FRONT_LEFT_ENCODER
+//             DriveConstants.kFrontLeftTurningEncoderReversed,
+//             DriveConstants.kFrontLeftDriveAbsoluteEncoderPort,
+//             DriveConstants.kFrontLeftDriveAbsoluteEncoderad,
+//             DriveConstants.kFrontLeftDriveAbsoluteEncoderReversed);
+
+//     private final SwerveModule frontRight = new SwerveModule(
+//             DriveConstants.kFrontRightDriveMotorPort,
+//             DriveConstants.kFrontRightTurningMotorPort,
+//             DriveConstants.kFrontRightDriveEncoderReversed,
+//             DriveConstants.kFrontRightTurningEncoderReversed,
+//             DriveConstants.kFrontRightDriveAbsoluteEncoderPort,
+//             DriveConstants.kFrontRightDriveAbsoluteEncoderOffsetRad,
+//             DriveConstants.kFrontRightDriveAbsoluteEncoderReversed);
+
+//     private final SwerveModule backLeft = new SwerveModule(
+//             DriveConstants.kBackLeftDriveMotorPort,
+//             DriveConstants.kBackLeftTurningMotorPort,
+//             DriveConstants.kBackLeftDriveEncoderReversed,
+//             DriveConstants.kBackLeftTurningEncoderReversed,
+//             DriveConstants.kBackLeftDriveAbsoluteEncoderPort,
+//             DriveConstants.kBackLeftDriveAbsoluteEncoderOffsetRad,
+//             DriveConstants.kBackLeftDriveAbsoluteEncoderReversed);
+
+//     private final SwerveModule backRight = new SwerveModule(
+//             DriveConstants.kBackRightDriveMotorPort,
+//             DriveConstants.kBackRightTurningMotorPort,
+//             DriveConstants.kBackRightDriveEncoderReversed,
+//             DriveConstants.kBackRightTurningEncoderReversed,
+//             DriveConstants.kBackRightDriveAbsoluteEncoderPort,
+//             DriveConstants.kBackRightDriveAbsoluteEncoderOffsetRad,
+//             DriveConstants.kBackRightDriveAbsoluteEncoderReversed);
+
+//     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
+//     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kDriveKinematics,
+//             new Rotation2d(0));
+
+//     public DriveTrain() {
+//         new Thread(() -> {
+//             try {
+//                 Thread.sleep(1000);
+//                 zeroHeading();
+//             } catch (Exception e) {
+//             }
+//         }).start();
+//     }
+
+//     public void zeroHeading() {
+//         gyro.reset();
+//     }
+
+//     public double getHeading() {
+//         return Math.IEEEremainder(gyro.getAngle(), 360);
+//     }
+
+//     public Rotation2d getRotation2d() {
+//         return Rotation2d.fromDegrees(getHeading());
+//     }
+
+//     public Pose2d getPose() {
+//         return odometer.getPoseMeters();
+//     }
+
+//     public void resetOdometry(Pose2d pose){
+//       odometer.resetPosition(getRotation2d(), getModulePostions(), pose);
+//     }
+
+//     private void updateOdometry(){
+//       odometer.update(getRotation2d(), getModulePostions());
+//     }
+
+
+//     @Override
+//     public void periodic() {
+//         updateOdometry();
+//         SmartDashboard.putNumber("Robot Heading", getHeading());
+//         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+//     }
+
+//     public void stopModules() {
+//         frontLeft.stop();
+//         frontRight.stop();
+//         backLeft.stop();
+//         backRight.stop();
+//     }
+
+//     public void setModuleStates(SwerveModuleState[] desiredStates) {
+//         // SwerveDriveKinematics.normalizeWheelSpeeds(desiredStates, Constants.SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND);
+//         frontLeft.setDesiredState(desiredStates[0]);
+//         frontRight.setDesiredState(desiredStates[1]);
+//         backLeft.setDesiredState(desiredStates[2]);
+//         backRight.setDesiredState(desiredStates[3]);
+//     }
+// }

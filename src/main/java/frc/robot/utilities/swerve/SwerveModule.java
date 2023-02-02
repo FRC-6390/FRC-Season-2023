@@ -38,7 +38,7 @@ public class SwerveModule {
         this(config, null);
     }
 
-    private static PIDController rotationPidController = new PIDController(0.35, 0.01, 0);
+    private static PIDController rotationPidController = new PIDController(0.35, 0.1, 0);
     
 
 
@@ -71,15 +71,17 @@ public class SwerveModule {
         instances++;
 
         resetEncoders();
-        unlock();
+        lock();
     }
 
     public double getDriveMotorVelocity(){
-        return driveMotor.getSensorCollection().getIntegratedSensorVelocity() / 2048d /2*Math.PI * SWERVEMODULE.DRIVE_ENCODER_CONVERSION_METERS;
+        // .getSensorCollection().getIntegratedSensorVelocity() this is not good as it does not match the CAN frame aparently
+        return driveMotor.getSelectedSensorVelocity() / 2048d /2*Math.PI * SWERVEMODULE.DRIVE_ENCODER_CONVERSION_METERS;
     }
     
     public double getDriveMotorPosition(){
-        return driveMotor.getSensorCollection().getIntegratedSensorPosition() / 2048d /2*Math.PI * SWERVEMODULE.DRIVE_ENCODER_CONVERSION_METERS;
+        // .getSensorCollection().getIntegratedSensorPosition() this is not good as it does not match the CAN frame aparently
+        return driveMotor.getSelectedSensorPosition() / 2048d /2*Math.PI * SWERVEMODULE.DRIVE_ENCODER_CONVERSION_METERS;
     }
 
     public double getRotationMotorPosition(){
@@ -175,7 +177,6 @@ public class SwerveModule {
 
 
 
-
 // import com.ctre.phoenix.motorcontrol.ControlMode;
 // import com.ctre.phoenix.motorcontrol.can.TalonFX;
 // import com.ctre.phoenixpro.hardware.CANcoder;
@@ -219,13 +220,13 @@ public class SwerveModule {
 //         driveMotor.setInverted(driveMotorReversed);
 //         turningMotor.setInverted(turningMotorReversed);
 
-      
-//         turningEncoder = turningMotor.getEncoder();
+//         driveEncoder = new CANcoder(absoluteEncoderId, "can");
+//         turningEncoder = new CANcoder(absoluteEncoderId, "can");
 
-//         driveEncoder.setPositionConversionFactor(ModuleConstants.kDriveEncoderRot2Meter);
-//         driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveEncoderRPM2MeterPerSec);
-//         turningEncoder.setPositionConversionFactor(ModuleConstants.kTurningEncoderRot2Rad);
-//         turningEncoder.setVelocityConversionFactor(ModuleConstants.kTurningEncoderRPM2RadPerSec);
+//         // driveEncoder.setPositionConversionFactor(Constants.SWERVEMODULE.DRIVE_ENCODER_CONVERSION_METERS);
+//         // driveEncoder.setVelocityConversionFactor(Constants.SWERVEMODULE.DRIVE_ENCODER_CONVERSION_METERS_PER_SECOND);
+//         // turningEncoder.setPositionConversionFactor(Constants.SWERVEMODULE.ROTATION_ENCODER_CONVERSION_RADIANS);
+//         // turningEncoder.setVelocityConversionFactor(Constants.SWERVEMODULE.ROTATION_ENCODER_CONVERSION_RADIANS_PER_SECOND);
 
 //         turningPidController = new PIDController(0.3, 0, 0);
 //         turningPidController.enableContinuousInput(-Math.PI, Math.PI);
@@ -272,11 +273,11 @@ public class SwerveModule {
 //         }
 //         state = SwerveModuleState.optimize(state, getState().angle);
 //         driveMotor.set(ControlMode.PercentOutput, state.speedMetersPerSecond / Constants.SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND);
-//         turningMotor.set(ControlMode.PercentOutput ,turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
+//         turningMotor.set(ControlMode.PercentOutput, turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
 //     }
 
-//     public void stop() {
-//         driveMotor.set(0);
-//         turningMotor.set(0);
+//     public void stop(){
+//         driveMotor.set(ControlMode.PercentOutput, 0);
+//         turningMotor.set(ControlMode.PercentOutput, 0);
 //     }
 // }
