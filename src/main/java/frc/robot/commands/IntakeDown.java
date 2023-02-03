@@ -30,10 +30,7 @@ public class IntakeDown extends CommandBase {
   public void initialize() 
   {
     IntakeMahdi.pos = false;
-    kp = 0.01;
-    ki = 0;
-    kd = 0;
-    pid = new PIDController(kp, ki, kd);
+    pid = new PIDController(0.01, 0, 0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

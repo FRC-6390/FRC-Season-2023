@@ -16,7 +16,7 @@ public class IntakeOut extends CommandBase {
   @Override
   public void execute() 
   {
-    IntakeMahdi.setRollers(speed);
+    IntakeMahdi.setRollers(-speed);
   }
 
   @Override
