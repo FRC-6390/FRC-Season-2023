@@ -9,6 +9,7 @@ import frc.robot.commands.AprilTagVission;
 import frc.robot.commands.DriverControl;
 import frc.robot.commands.TestSystems;
 import frc.robot.commands.auto.AutoAlign;
+import frc.robot.commands.auto.AutoBalance;
 import frc.robot.commands.auto.AutoPathPlanner;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.utilities.auto.JanusRouteFactory;
@@ -25,8 +26,6 @@ public class RobotContainer {
 
     driveTrain.shuffleboard();
     driveTrain.setDefaultCommand(new DriverControl(driveTrain, controller.leftX, controller.leftY, controller.rightX));
-
-
   
     autoChooser.addOption("Janus X", AUTO.TEST_X_AUTO_PATH);
     autoChooser.addOption("Janus Y", AUTO.TEST_Y_AUTO_PATH);
@@ -39,10 +38,11 @@ public class RobotContainer {
 
     autoPathChooser.addOption("Test Path", "Test Path");
     autoPathChooser.addOption("Right Side 2 Game Piece", "Right Side 2 Game Piece");
+    autoPathChooser.addOption("Left Side 2 Game Piece", "Left Side 2 Game Piece");
 
     Shuffleboard.getTab("Auto").add(autoChooser);
     Shuffleboard.getTab("Auto Path Planner").add(autoPathChooser);
-    // SmartDashboard.putData("-=TEST=- Auto Selector", autoChooser);
+
     configureBindings();
     //createSystemTestButtonBinding();
   }
@@ -51,6 +51,7 @@ public class RobotContainer {
     controller.start.whileTrue(new InstantCommand(driveTrain::zeroHeading));
     controller.a.whileTrue(new AprilTagVission(driveTrain, driveTrain.getLimelight(), Constants.AUTO.XY_PID_CONFIG, Constants.AUTO.THETA_PID_CONFIG));
     controller.b.whileTrue(new AutoAlign(driveTrain, driveTrain.getLimelight(), driveTrain.getBlinkin(), Constants.AUTO.ALIGN_XY_PID_CONFIG, Constants.AUTO.ALIGN_THETA_PID_CONFIG));
+    controller.y.whileTrue(new AutoBalance(driveTrain));
   }
 
   public void createSystemTestButtonBinding(){
@@ -58,7 +59,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand(){
-    // return new JanusAuto(driveTrain, autoChooser.getSelected().build());
     return AutoPathPlanner.runAuto(autoPathChooser.getSelected());
   }
 

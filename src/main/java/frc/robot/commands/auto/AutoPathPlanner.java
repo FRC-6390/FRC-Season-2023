@@ -6,12 +6,8 @@ import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-// import frc.robot.commands.IntakeControl;
-import frc.robot.subsystems.DriveTrain;
-// import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +22,7 @@ public final class AutoPathPlanner {
     }
 
     static PIDConstants XY_PID = new PIDConstants(1, 0, 0);
-    static PIDConstants THETA_PID = new PIDConstants(5, 0, 0);
+    static PIDConstants THETA_PID = new PIDConstants(4.9, 0, 0);
 
     //events to trigger commands while in autonomous
     private static final Map<String, Command> eventMap = new HashMap<>(Map.ofEntries(
@@ -51,6 +47,6 @@ public final class AutoPathPlanner {
     );
 
     public static CommandBase runAuto(String autoSelector) {
-        return autoBuilder.fullAuto(PathPlanner.loadPathGroup(autoSelector, new PathConstraints(2, 1)));
+        return autoBuilder.fullAuto(PathPlanner.loadPathGroup(autoSelector, new PathConstraints(3, 1.5)));
     }
 }

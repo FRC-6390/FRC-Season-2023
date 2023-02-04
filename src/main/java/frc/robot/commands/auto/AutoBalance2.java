@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands.auto;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
@@ -24,23 +20,18 @@ public class AutoBalance2 extends CommandBase {
   public double errortot = 0;
   public double errorRate;
   public double prevError;
-  /** Creates a new AutoBalance2. */
+
   public AutoBalance2() {
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  // Called when the command is initially scheduled.
   @Override
-  public void initialize()
-  {
+  public void initialize(){
+    driveTrain = new DriveTrain();
     kp = 0.01;
     ki = 0.2;
     kd = 0.1;
-    
-    
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute()
   {
@@ -74,11 +65,9 @@ public class AutoBalance2 extends CommandBase {
     System.out.println(pitch + ' ' + error + ' ' + errortot + ' ' + errorRate + ' ' + prevError + ' ' + speed);
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;

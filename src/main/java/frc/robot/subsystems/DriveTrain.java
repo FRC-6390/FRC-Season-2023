@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.APRILTAGS;
 import frc.robot.Constants.DRIVETRAIN;
 import frc.robot.Constants.ROBOT;
 import frc.robot.Constants.SWERVEMODULE;
@@ -43,7 +42,7 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   private static ShuffleboardTab tab, autoTab;
   private static Field2d gameField;
   private static double desiredHeading;
-  private static PIDConfig driftCorrectionPID = new PIDConfig(0.4, 0, 0.1).setILimit(20).setContinuous(-Math.PI, Math.PI);
+  private static PIDConfig driftCorrectionPID = new PIDConfig(0.09, 0, 0.1).setILimit(20).setContinuous(-Math.PI, Math.PI);
   private static PID pid;
   private static LimeLight limeLight;
   private static REVBlinkin blinkin;
@@ -101,6 +100,7 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
 
   public void zeroHeading(){
     gyro.setYaw(0);
+    System.out.println(gyro.getYaw());
     resetOdometry(pose);
   }
 
@@ -119,21 +119,11 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   public Rotation2d getRotation2d(){
     return Rotation2d.fromDegrees(getHeading());
   }
-
-  //counters the drift in our robot due to uneven frame
-  private double getAverageSpeed(){
-    double speed = 0;
-    for (int i = 0; i < swerveModules.length; i++) {
-      speed += swerveModules[i].getState().speedMetersPerSecond;
-    }
-    return speed / swerveModules.length;
-  }
   
   public void driftCorrection(ChassisSpeeds speeds){
-    // double speed = Math.abs(getAverageSpeed());
+    // double speed = Math.abs(getAverageSpeed()); //method removed pls refer to github if needed
     if(Math.abs(speeds.omegaRadiansPerSecond) > 0.0) desiredHeading = pose.getRotation().getDegrees();
     else speeds.omegaRadiansPerSecond += pid.calculate(desiredHeading);
-    // else speeds.omegaRadiansPerSecond += rotationPidController.calculate(desiredHeading);
   }
 
   public void drive(ChassisSpeeds speeds){
@@ -178,15 +168,15 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     for (int i = 0; i < swerveModules.length; i++) {
       swerveModules[i].lock();
     }
-    // swerveModules[0].setToAngle(Math.toRadians(45));
-    // swerveModules[1].setToAngle(Math.toRadians(135));
-    // swerveModules[2].setToAngle(Math.toRadians(-45));
-    // swerveModules[3].setToAngle(Math.toRadians(-135));
+    swerveModules[0].setToAngle(Math.toRadians(45));
+    swerveModules[1].setToAngle(Math.toRadians(135));
+    swerveModules[2].setToAngle(Math.toRadians(-45));
+    swerveModules[3].setToAngle(Math.toRadians(-135));
   }
 
   public void unlockWheels(){
     for (int i = 0; i < swerveModules.length; i++) {
-      // swerveModules[i].unlock();
+      swerveModules[i].unlock();
     }
   }
 
@@ -219,13 +209,12 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   @Override
   public void periodic() {
 
-    //SmartDashboard.putData("PID DRIVE : ", pid);
     double xSpeed = chassisSpeeds.vxMetersPerSecond + feedbackSpeeds.vxMetersPerSecond;
     double ySpeed = chassisSpeeds.vyMetersPerSecond + feedbackSpeeds.vyMetersPerSecond;
     double thetaSpeed = chassisSpeeds.omegaRadiansPerSecond + feedbackSpeeds.omegaRadiansPerSecond;
     ChassisSpeeds speed = new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
-    // ChassisSpeeds speed = new ChassisSpeeds(0, 1.5, 0);
-    // driftCorrection(speed);
+
+    driftCorrection(speed);
 
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speed);
     
@@ -250,120 +239,3 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   }
 
 }
-
-
-
-// package frc.robot.subsystems;
-
-// import com.kauailabs.navx.frc.AHRS;
-
-// import edu.wpi.first.math.geometry.Pose2d;
-// import edu.wpi.first.math.geometry.Rotation2d;
-// import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-// import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-// import edu.wpi.first.math.kinematics.SwerveModuleState;
-// import edu.wpi.first.wpilibj.SPI;
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import edu.wpi.first.wpilibj2.command.SubsystemBase;
-// import frc.robot.Constants;
-// import frc.robot.Constants.DRIVETRAIN;
-// import frc.robot.utilities.swerve.SwerveModule;
-
-// public class DriveTrain extends SubsystemBase {
-//     private final SwerveModule frontLeft = new SwerveModule(
-//             Constants.DRIVETRAIN.FRONT_LEFT_DRIVE,
-//             Constants.DRIVETRAIN.FRONT_LEFT_ROTATION,
-//             Constants.FRONT_LEFT_ENCODER
-//             DriveConstants.kFrontLeftTurningEncoderReversed,
-//             DriveConstants.kFrontLeftDriveAbsoluteEncoderPort,
-//             DriveConstants.kFrontLeftDriveAbsoluteEncoderad,
-//             DriveConstants.kFrontLeftDriveAbsoluteEncoderReversed);
-
-//     private final SwerveModule frontRight = new SwerveModule(
-//             DriveConstants.kFrontRightDriveMotorPort,
-//             DriveConstants.kFrontRightTurningMotorPort,
-//             DriveConstants.kFrontRightDriveEncoderReversed,
-//             DriveConstants.kFrontRightTurningEncoderReversed,
-//             DriveConstants.kFrontRightDriveAbsoluteEncoderPort,
-//             DriveConstants.kFrontRightDriveAbsoluteEncoderOffsetRad,
-//             DriveConstants.kFrontRightDriveAbsoluteEncoderReversed);
-
-//     private final SwerveModule backLeft = new SwerveModule(
-//             DriveConstants.kBackLeftDriveMotorPort,
-//             DriveConstants.kBackLeftTurningMotorPort,
-//             DriveConstants.kBackLeftDriveEncoderReversed,
-//             DriveConstants.kBackLeftTurningEncoderReversed,
-//             DriveConstants.kBackLeftDriveAbsoluteEncoderPort,
-//             DriveConstants.kBackLeftDriveAbsoluteEncoderOffsetRad,
-//             DriveConstants.kBackLeftDriveAbsoluteEncoderReversed);
-
-//     private final SwerveModule backRight = new SwerveModule(
-//             DriveConstants.kBackRightDriveMotorPort,
-//             DriveConstants.kBackRightTurningMotorPort,
-//             DriveConstants.kBackRightDriveEncoderReversed,
-//             DriveConstants.kBackRightTurningEncoderReversed,
-//             DriveConstants.kBackRightDriveAbsoluteEncoderPort,
-//             DriveConstants.kBackRightDriveAbsoluteEncoderOffsetRad,
-//             DriveConstants.kBackRightDriveAbsoluteEncoderReversed);
-
-//     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
-//     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kDriveKinematics,
-//             new Rotation2d(0));
-
-//     public DriveTrain() {
-//         new Thread(() -> {
-//             try {
-//                 Thread.sleep(1000);
-//                 zeroHeading();
-//             } catch (Exception e) {
-//             }
-//         }).start();
-//     }
-
-//     public void zeroHeading() {
-//         gyro.reset();
-//     }
-
-//     public double getHeading() {
-//         return Math.IEEEremainder(gyro.getAngle(), 360);
-//     }
-
-//     public Rotation2d getRotation2d() {
-//         return Rotation2d.fromDegrees(getHeading());
-//     }
-
-//     public Pose2d getPose() {
-//         return odometer.getPoseMeters();
-//     }
-
-//     public void resetOdometry(Pose2d pose){
-//       odometer.resetPosition(getRotation2d(), getModulePostions(), pose);
-//     }
-
-//     private void updateOdometry(){
-//       odometer.update(getRotation2d(), getModulePostions());
-//     }
-
-
-//     @Override
-//     public void periodic() {
-//         updateOdometry();
-//         SmartDashboard.putNumber("Robot Heading", getHeading());
-//         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
-//     }
-
-//     public void stopModules() {
-//         frontLeft.stop();
-//         frontRight.stop();
-//         backLeft.stop();
-//         backRight.stop();
-//     }
-
-//     public void setModuleStates(SwerveModuleState[] desiredStates) {
-//         // SwerveDriveKinematics.normalizeWheelSpeeds(desiredStates, Constants.SWERVEMODULE.MAX_SPEED_METERS_PER_SECOND);
-//         frontLeft.setDesiredState(desiredStates[0]);
-//         frontRight.setDesiredState(desiredStates[1]);
-//         backLeft.setDesiredState(desiredStates[2]);
-//         backRight.setDesiredState(desiredStates[3]);
-//     }
-// }

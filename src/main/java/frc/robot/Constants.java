@@ -88,7 +88,7 @@ public interface Constants {
         double DRIVE_GEAR_RATIO = 1d/(8.14);
         double ROTATION_ENCODER_CONVERSION_RADIANS = ROTATION_GEAR_RATIO * 2 * Math.PI;
         double ROTATION_ENCODER_CONVERSION_RADIANS_PER_SECOND = ROTATION_ENCODER_CONVERSION_RADIANS / 60;
-        double DRIVE_ENCODER_CONVERSION_METERS = (DRIVE_GEAR_RATIO * Math.PI * WHEEL_DIAMETER_METERS);
+        double DRIVE_ENCODER_CONVERSION_METERS = (DRIVE_GEAR_RATIO * Math.PI * WHEEL_DIAMETER_METERS) * 0.59; //the 0.625 is a quick fix to correct the odometry
         double DRIVE_ENCODER_CONVERSION_METERS_PER_SECOND = DRIVE_ENCODER_CONVERSION_METERS / 60;
         PIDConfig ROTATION_PID = new PIDConfig(0.5, 0, 0).setContinuous(-Math.PI, Math.PI);
     }
@@ -124,7 +124,6 @@ public interface Constants {
         Translation2d BACK_RIGHT = new Translation2d(-TRACKWIDTH_METERS/2, -WHEELBASE_METERS/2);
         int BLINKIN_PORT = 1;
         
-
         LimelightConfig LIMELIGHT_CONFIG = new LimelightConfig(0, 0);
     }
     
