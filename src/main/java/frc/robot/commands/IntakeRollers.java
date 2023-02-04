@@ -1,12 +1,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.IntakeMahdi;
+import frc.robot.subsystems.Intake;
 
-public class IntakeOut extends CommandBase {
+public class IntakeRollers extends CommandBase {
   
   double speed;
-  public IntakeOut(double speed) {
+
+  public IntakeRollers(double speed) {
     this.speed = speed;
   }
 
@@ -14,17 +15,16 @@ public class IntakeOut extends CommandBase {
   public void initialize() {}
 
   @Override
-  public void execute() 
-  {
-    IntakeMahdi.setRollers(-speed);
+  public void execute() {
+    Intake.setRollers(speed);
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   @Override
   public boolean isFinished() {
     return false;
   }
 }
-

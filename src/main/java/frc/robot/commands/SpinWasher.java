@@ -1,22 +1,21 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.IntakeMahdi;
+import frc.robot.subsystems.WashingMachine;
 
-public class IntakeIn extends CommandBase {
-  
-  double speed;
-  public IntakeIn(double speed) {
+public class SpinWasher extends CommandBase {
+
+  public double speed;
+  public SpinWasher(double speed) {
     this.speed = speed;
   }
-
+  
   @Override
   public void initialize() {}
 
   @Override
-  public void execute() 
-  {
-    IntakeMahdi.setRollers(speed);
+  public void execute() {
+    WashingMachine.set(speed);
   }
 
   @Override

@@ -1,29 +1,29 @@
 package frc.robot.subsystems;
 
-import java.util.ArrayList;
-
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.WASHINGMACHINE;
-import frc.robot.utilities.debug.SystemTest;
-import frc.robot.utilities.debug.SystemTestAction;
+import frc.robot.Constants;
 
-public class WashingMachine extends SubsystemBase implements SystemTest {
+public class WashingMachine extends SubsystemBase {
 
-    private static TalonFX motor;
+  public static TalonFX washingMotor;
+  public WashingMachine() {}
 
-    static{
-        motor = new TalonFX(WASHINGMACHINE.MOTOR_ID);
-    }
+  static{
+    washingMotor = new TalonFX(Constants.WASHING_MACHINE.MOTOR_ID);
+  }
 
-    @Override
-    public void periodic() {
-        
-    }
+  @Override
+  public void periodic() {
 
-    @Override
-    public ArrayList<SystemTestAction> getDevices() {
-        return new ArrayList<>();
-    }
+  }
+
+  public static void set(double speed){
+    washingMotor.set(ControlMode.PercentOutput, speed);
+  }
+
+
 }
+

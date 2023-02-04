@@ -15,7 +15,7 @@ import frc.robot.utilities.swerve.SwerveModuleConfig;
 
 public interface Constants {
 
-    public interface WASHINGMACHINE {
+    public interface WASHING_MACHINE {
         int MOTOR_ID = 13;
     }
 
