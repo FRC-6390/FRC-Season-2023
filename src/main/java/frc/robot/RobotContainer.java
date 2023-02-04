@@ -24,13 +24,15 @@ import frc.robot.subsystems.WashingMachineMahdi;
 import frc.robot.utilities.auto.JanusRouteFactory;
 import frc.robot.utilities.controller.DebouncedButton;
 import frc.robot.utilities.controller.DebouncedController;
+import frc.robot.utilities.controller.DebouncedJoystick;
 
 public class RobotContainer {
 
   public static DriveTrain driveTrain = new DriveTrain();
   private DebouncedController controller = new DebouncedController(0);
   private SendableChooser<JanusRouteFactory> autoChooser = new SendableChooser<>();
-  private Joystick joystick = new Joystick(0);
+  
+  private DebouncedJoystick joystick = new DebouncedJoystick(1);
   
   private SendableChooser<String> autoPathChooser = new SendableChooser<>(); //this one is a string as the Path Planner calls on a file instead of command
 
@@ -64,6 +66,7 @@ public class RobotContainer {
     controller.start.whileTrue(new InstantCommand(driveTrain::zeroHeading));
     controller.a.whileTrue(new AprilTagVission(driveTrain, driveTrain.getLimelight(), Constants.AUTO.XY_PID_CONFIG, Constants.AUTO.THETA_PID_CONFIG));
     controller.b.whileTrue(new AutoAlign(driveTrain, driveTrain.getLimelight(), driveTrain.getBlinkin(), Constants.AUTO.ALIGN_XY_PID_CONFIG, Constants.AUTO.ALIGN_THETA_PID_CONFIG));
+    
   }
 
   public void createSystemTestButtonBinding(){
