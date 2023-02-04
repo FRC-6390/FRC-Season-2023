@@ -1,25 +1,40 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AUTO;
 import frc.robot.commands.AprilTagVission;
 import frc.robot.commands.DriverControl;
+import frc.robot.commands.IntakeDown;
+import frc.robot.commands.IntakeUp;
+import frc.robot.commands.SpinLeft;
+import frc.robot.commands.SpinOff;
+import frc.robot.commands.SpinRight;
+import frc.robot.commands.IntakeIn;
+import frc.robot.commands.IntakeOut;
 import frc.robot.commands.TestSystems;
 import frc.robot.commands.auto.AutoAlign;
 import frc.robot.commands.auto.AutoBalance;
 import frc.robot.commands.auto.AutoPathPlanner;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.WashingMachineMahdi;
 import frc.robot.utilities.auto.JanusRouteFactory;
+import frc.robot.utilities.controller.DebouncedButton;
 import frc.robot.utilities.controller.DebouncedController;
+import frc.robot.utilities.controller.DebouncedJoystick;
 
 public class RobotContainer {
 
   public static DriveTrain driveTrain = new DriveTrain();
   private DebouncedController controller = new DebouncedController(0);
   private SendableChooser<JanusRouteFactory> autoChooser = new SendableChooser<>();
+  
+  private DebouncedJoystick joystick = new DebouncedJoystick(1);
+  
   private SendableChooser<String> autoPathChooser = new SendableChooser<>(); //this one is a string as the Path Planner calls on a file instead of command
 
   public RobotContainer() {
