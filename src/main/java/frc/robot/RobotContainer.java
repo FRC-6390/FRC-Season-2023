@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.AUTO;
 import frc.robot.commands.AprilTagVission;
 import frc.robot.commands.DriverControl;
+import frc.robot.commands.GripperRollers;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.IntakeRollers;
 import frc.robot.commands.IntakeUp;
@@ -65,12 +66,13 @@ public class RobotContainer {
     controller.a.whileTrue(new AprilTagVission(driveTrain, driveTrain.getLimelight(), Constants.AUTO.XY_PID_CONFIG, Constants.AUTO.THETA_PID_CONFIG));
     controller.b.whileTrue(new AutoAlign(driveTrain, driveTrain.getLimelight(), driveTrain.getBlinkin(), Constants.AUTO.ALIGN_XY_PID_CONFIG, Constants.AUTO.ALIGN_THETA_PID_CONFIG));
     controller.y.onTrue(new AutoBalance(driveTrain));
-    controller.rightTrigger.whileTrue(new IntakeRollers(0.5));
+    controller.leftTrigger.whileTrue(new IntakeRollers(0.5));
+    controller.rightTrigger.whileTrue(new GripperRollers(0.5));
 
     if(Intake.currentPosition){
-      controller.rightBumper.onTrue(new IntakeUp());
+      controller.leftBumper.onTrue(new IntakeUp());
     } else {
-      controller.rightBumper.onTrue(new IntakeDown());
+      controller.leftBumper.onTrue(new IntakeDown());
     }
 
 

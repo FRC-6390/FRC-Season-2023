@@ -15,6 +15,13 @@ import frc.robot.utilities.swerve.SwerveModuleConfig;
 
 public interface Constants {
 
+    public interface ARM {
+        int ARM_MOTOR = 0;
+        int ARM_ENCODER = 0;
+        int LEFT_ROLLER_GRIPPER = 0;
+        int RIGHT_ROLLER_GRIPPER = 0;
+    }
+
     public interface WASHING_MACHINE {
         int MOTOR_ID = 13;
     }

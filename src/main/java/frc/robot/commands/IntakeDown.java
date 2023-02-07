@@ -21,6 +21,7 @@ public class IntakeDown extends CommandBase {
   @Override
   public void initialize() {
     isDone = false;
+    
     //setting to coast when it is going down to allow it some room to move if it was hit
     Intake.intakeLift.setNeutralMode(NeutralMode.Coast);
     Intake.currentPosition = true;

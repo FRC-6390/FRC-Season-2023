@@ -25,7 +25,6 @@ public class Intake extends SubsystemBase {
   }
 
   static{
-    
     currentPosition = false;
     intakeLift = new TalonFX(Constants.INTAKE.ARM);
     intakeRollerLeft = new TalonFX(Constants.INTAKE.LEFT_MOTOR);
