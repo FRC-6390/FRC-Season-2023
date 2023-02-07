@@ -73,9 +73,14 @@ public class RobotContainer {
       controller.rightBumper.onTrue(new IntakeDown());
     }
 
+
     //secondary driver controls on Logitech Controller
-    joystick.one.whileTrue(new SpinWasher(0.3));
-    joystick.two.whileTrue(new SpinWasher(-0.3));
+    boolean washingDirection = joystick.one.debounced();
+    if(washingDirection == false){
+      joystick.two.whileTrue(new SpinWasher(0.3));
+    } else{
+      joystick.two.whileTrue(new SpinWasher(-0.3));
+    }
   }
 
   public void createSystemTestButtonBinding(){

@@ -59,12 +59,10 @@ public class AutoBalance extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    System.out.println("________________-------------------______________");
   }
 
   @Override
   public boolean isFinished() {
-    System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     return isDone;
   }
 }

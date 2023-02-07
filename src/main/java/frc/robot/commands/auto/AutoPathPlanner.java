@@ -14,9 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class AutoPathPlanner {
-    
-    // static Intake intake = new Intake();
-    // static IntakeControl intakeControl = new IntakeControl(intake, 0.5);
+
     static AutoBalance autoBalance = new AutoBalance(RobotContainer.driveTrain);
 
     public AutoPathPlanner() {
