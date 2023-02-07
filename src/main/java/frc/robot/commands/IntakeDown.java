@@ -21,10 +21,8 @@ public class IntakeDown extends CommandBase {
   @Override
   public void initialize() {
     isDone = false;
-
     //setting to coast when it is going down to allow it some room to move if it was hit
     Intake.intakeLift.setNeutralMode(NeutralMode.Coast);
-    
     Intake.currentPosition = true;
     pid = new PIDController(0.01, 0, 0);
   }
@@ -32,7 +30,7 @@ public class IntakeDown extends CommandBase {
   @Override
   public void execute() {
     
-    //DUMMY NUMBER 0
+    //If within a certain range, end command, else run PID
     if(Intake.getPosition() > 6950 && Intake.getPosition() <= 7000){
       isDone = true;
     } else{

@@ -24,6 +24,7 @@ public class IntakeUp extends CommandBase {
   @Override
   public void initialize() {
     isDone = false;
+
     Intake.currentPosition = false;
     //Sets lift to brake mode
     Intake.intakeLift.setNeutralMode(NeutralMode.Brake);
@@ -37,9 +38,10 @@ public class IntakeUp extends CommandBase {
     //as long as the limit switch is not triggered run the PID
     if(Intake.getLimitSwitch() == true)
     {
+      //Runs the PID
       Intake.setLift(pid.calculate(Intake.getPosition(), setpoint));
 
-      //DUMMY NUMBER 0
+      //If the switch is triggered or if the encoder value is 0, end command 
       if(Intake.getPosition() == 0 || Intake.getLimitSwitch() == false){
         isDone = true;
       }
