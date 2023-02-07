@@ -31,18 +31,18 @@ public class IntakeDown extends CommandBase {
 
   @Override
   public void execute() {
-    Intake.setLift(pid.calculate(Intake.getPosition(), setpoint));
-
+    
     //DUMMY NUMBER 0
-    if(Intake.getPosition() > 0){
+    if(Intake.getPosition() > 6950 && Intake.getPosition() <= 7000){
       isDone = true;
+    } else{
+      Intake.setLift(pid.calculate(Intake.getPosition(), setpoint));
     }
   }
 
   @Override
   public void end(boolean interrupted) {
     //setting to break when it all the way up to avoid shaking
-    Intake.intakeLift.setNeutralMode(NeutralMode.Brake);
     Intake.setLift(0);
   }
 

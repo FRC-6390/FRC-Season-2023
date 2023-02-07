@@ -25,6 +25,8 @@ public class IntakeUp extends CommandBase {
   public void initialize() {
     isDone = false;
     Intake.currentPosition = false;
+    //Sets lift to brake mode
+    Intake.intakeLift.setNeutralMode(NeutralMode.Brake);
 
     //Dummy Numbers
     pid = new PIDController(0.01, 0, 0);
@@ -33,11 +35,12 @@ public class IntakeUp extends CommandBase {
   @Override
   public void execute() {
     //as long as the limit switch is not triggered run the PID
-    if(Intake.getLimitSwitch() != false){
+    if(Intake.getLimitSwitch() == true)
+    {
       Intake.setLift(pid.calculate(Intake.getPosition(), setpoint));
 
       //DUMMY NUMBER 0
-      if(Intake.getPosition() > 0){
+      if(Intake.getPosition() == 0 || Intake.getLimitSwitch() == false){
         isDone = true;
       }
     }
@@ -45,9 +48,9 @@ public class IntakeUp extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    //setting to break when it all the way up to avoid shaking
-    Intake.intakeLift.setNeutralMode(NeutralMode.Brake);
+    
     Intake.setLift(0);
+    Intake.liftEncoder.setPosition(0);
   }
 
   @Override
