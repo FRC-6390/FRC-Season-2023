@@ -25,6 +25,7 @@ public class Intake extends SubsystemBase {
   }
 
   static{
+    
     currentPosition = false;
     intakeLift = new TalonFX(Constants.INTAKE.ARM);
     intakeRollerLeft = new TalonFX(Constants.INTAKE.LEFT_MOTOR);
@@ -38,23 +39,28 @@ public class Intake extends SubsystemBase {
     
   }
 
+  //Sets the intake rollers
   public static void setRollers(double speed){
     intakeRollerLeft.set(ControlMode.PercentOutput, speed);
     intakeRollerRight.set(ControlMode.PercentOutput, -speed);
   }
 
+  //Sets the lift to a certain speed
   public static void setLift(double speed){
     intakeLift.set(ControlMode.PercentOutput, speed);
   }
 
+  //Gets lift position
   public static double getPosition(){
     return liftEncoder.getPosition()/4096d;
   }
 
+  //Resets lift encoder
   public static void resetEncoder(){
     liftEncoder.setPosition(0);
   }
 
+  //Get value of the intake lift limit switch
   public static boolean getLimitSwitch(){
     //false for triggered, otherwise true
     return intakeLimitSwitch.get();

@@ -6,6 +6,8 @@ import frc.robot.subsystems.WashingMachine;
 public class SpinWasher extends CommandBase {
 
   public double speed;
+
+  //Sets up speed parameter
   public SpinWasher(double speed) {
     this.speed = speed;
   }
@@ -15,11 +17,13 @@ public class SpinWasher extends CommandBase {
 
   @Override
   public void execute() {
+    //Turns on the washer
     WashingMachine.set(speed);
   }
 
   @Override
   public void end(boolean interrupted) {
+    //Turns off the washer
     WashingMachine.set(0);
   }
 
