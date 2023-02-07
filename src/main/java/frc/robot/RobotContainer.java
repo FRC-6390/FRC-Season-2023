@@ -50,6 +50,7 @@ public class RobotContainer {
     autoPathChooser.addOption("Test Path", "Test Path");
     autoPathChooser.addOption("Right Side 2 Game Piece", "Right Side 2 Game Piece");
     autoPathChooser.addOption("Left Side 2 Game Piece", "Left Side 2 Game Piece");
+    autoPathChooser.addOption("Middle 1 Game Piece and Balance", "Middle 1 Game Piece and Balance");
 
     Shuffleboard.getTab("Auto").add(autoChooser);
     Shuffleboard.getTab("Auto Path Planner").add(autoPathChooser);
@@ -63,7 +64,7 @@ public class RobotContainer {
     controller.start.whileTrue(new InstantCommand(driveTrain::zeroHeading));
     controller.a.whileTrue(new AprilTagVission(driveTrain, driveTrain.getLimelight(), Constants.AUTO.XY_PID_CONFIG, Constants.AUTO.THETA_PID_CONFIG));
     controller.b.whileTrue(new AutoAlign(driveTrain, driveTrain.getLimelight(), driveTrain.getBlinkin(), Constants.AUTO.ALIGN_XY_PID_CONFIG, Constants.AUTO.ALIGN_THETA_PID_CONFIG));
-    controller.y.whileTrue(new AutoBalance(driveTrain));
+    controller.y.onTrue(new AutoBalance(driveTrain));
     controller.rightTrigger.whileTrue(new IntakeRollers(0.5));
 
     if(Intake.currentPosition){

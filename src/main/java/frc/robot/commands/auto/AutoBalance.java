@@ -9,9 +9,10 @@ public class AutoBalance extends CommandBase {
 
   DriveTrain driveTrain;
   ChassisSpeeds speeds;
-  PIDController xController = new PIDController(0.05, 0, 0);
-  PIDController yController = new PIDController(0.05, 0, 0);
-  double xSpeed, ySpeed;
+  PIDController xController = new PIDController(0.06, 0, 0);
+  PIDController yController = new PIDController(0.06, 0, 0);
+  double pitchSpeed, rollSpeed;
+  boolean isDone;
 
   public AutoBalance(DriveTrain driveTrain) {
     this.driveTrain = driveTrain;
@@ -19,37 +20,51 @@ public class AutoBalance extends CommandBase {
 
   @Override
   public void initialize() {
-
+    isDone = false;
   }
 
   @Override
   public void execute() {
     double gyroPitch = driveTrain.getPitch();//front and back
-    double gyroRoll = Math.abs(driveTrain.getRoll());//left and right
+    double gyroRoll = driveTrain.getRoll();//left and right
 
     //true if they need to start auto balancing
-    boolean pitchStatus = Math.abs(driveTrain.getPitch()) > 0.6;
-    boolean rollStatus = Math.abs(driveTrain.getRoll()) > 0.6;
+    boolean pitchStatus = Math.abs(driveTrain.getPitch()) > 0.5;
+    boolean rollStatus = Math.abs(driveTrain.getRoll()) > 0.5; //must calibrate to 0.6 ish
 
-    xSpeed = xController.calculate(gyroPitch);
-    ySpeed = xController.calculate(gyroRoll);
-  
+    pitchSpeed = xController.calculate(gyroPitch);
+    rollSpeed = xController.calculate(gyroRoll);
+
     if(pitchStatus && rollStatus){
-      speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, 0, driveTrain.getRotation2d());
+      if(pitchSpeed > rollSpeed){
+        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(pitchSpeed, 0.0, 0.0, driveTrain.getRotation2d());
+      } else{
+        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(rollSpeed, 0.0, 0.0, driveTrain.getRotation2d());
+      }
+      
     } else if(pitchStatus){
-      speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, 0.0, 0, driveTrain.getRotation2d());
+      speeds = ChassisSpeeds.fromFieldRelativeSpeeds(pitchSpeed, 0.0, 0.0, driveTrain.getRotation2d());
     } else if(rollStatus){
-      System.out.println("ROLLING");
-      speeds = ChassisSpeeds.fromFieldRelativeSpeeds(0.0, ySpeed, 0, driveTrain.getRotation2d());
+      speeds = ChassisSpeeds.fromFieldRelativeSpeeds(rollSpeed, 0.0, 0.0, driveTrain.getRotation2d());
     }
-    driveTrain.drive(speeds);
+
+    //false is when it is balanced
+    if(Math.abs(driveTrain.getPitch()) < 0.6 && Math.abs(driveTrain.getRoll()) < 0.6){
+      isDone = true;
+    } else{
+      driveTrain.drive(speeds);
+    }
+    System.out.println(isDone);
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    System.out.println("________________-------------------______________");
+  }
 
   @Override
   public boolean isFinished() {
-    return false;
+    System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+    return isDone;
   }
 }

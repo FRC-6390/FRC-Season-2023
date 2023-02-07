@@ -19,7 +19,9 @@ public class SpinWasher extends CommandBase {
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    WashingMachine.set(0);
+  }
 
   @Override
   public boolean isFinished() {

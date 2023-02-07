@@ -100,7 +100,6 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
 
   public void zeroHeading(){
     gyro.setYaw(0);
-    System.out.println(gyro.getYaw());
     resetOdometry(pose);
   }
 

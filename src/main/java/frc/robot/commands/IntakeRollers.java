@@ -21,6 +21,7 @@ public class IntakeRollers extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
+    Intake.setRollers(0);
   }
 
   @Override

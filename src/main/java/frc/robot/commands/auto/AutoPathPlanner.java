@@ -7,6 +7,7 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 import java.util.HashMap;
@@ -16,6 +17,7 @@ public final class AutoPathPlanner {
     
     // static Intake intake = new Intake();
     // static IntakeControl intakeControl = new IntakeControl(intake, 0.5);
+    static AutoBalance autoBalance = new AutoBalance(RobotContainer.driveTrain);
 
     public AutoPathPlanner() {
         throw new UnsupportedOperationException("This is a utility class!");
@@ -26,13 +28,16 @@ public final class AutoPathPlanner {
 
     //events to trigger commands while in autonomous
     private static final Map<String, Command> eventMap = new HashMap<>(Map.ofEntries(
-        Map.entry("Intake", Commands.print("Intake In Command Triggered")),
+        Map.entry("Spin Washer", Commands.print("Spinning Washing Machine Command Triggered")),
+        Map.entry("Intake Up", Commands.print("Intake Up Command Triggered")),
+        Map.entry("Intake Down", Commands.print("Intake Down Command Triggered")),
         Map.entry("Intake In", Commands.print("Intake In Command Triggered")),
         Map.entry("Intake Out", Commands.print("Intake Out Command Triggered")),
         Map.entry("Linear Extension L1 Out", Commands.print("Linear Extension L1 Out Command Triggered")),
         Map.entry("Linear Extension L2 Out", Commands.print("Linear Extension L2 Out Command Triggered")),
         Map.entry("Linear Extension L3 Out", Commands.print("Linear Extension L3 Out Command Triggered")),
-        Map.entry("Linear Extension In", Commands.print("Linear Extension In Command Triggered"))
+        Map.entry("Linear Extension In", Commands.print("Linear Extension In Command Triggered")),
+        Map.entry("Auto Balance", new AutoBalance(RobotContainer.driveTrain)) 
     ));
 
     private static final SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(

@@ -30,6 +30,7 @@ public interface Constants {
         int LEFT_MOTOR = 0;
         int RIGHT_MOTOR = 0;
         int POSITION_ENCODER = 0;
+        int LIMIT_SWITCH = 0;
         double ARM_GEARBOX_RATIO = 0;
         double GEARBOX_RATIO = 1d/10d;
         PIDConfig pidConfig = new PIDConfig(0, 0, 0);
