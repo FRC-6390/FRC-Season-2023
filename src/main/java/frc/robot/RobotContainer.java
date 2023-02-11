@@ -71,9 +71,9 @@ public class RobotContainer {
     // controller.leftTrigger.whileTrue(new IntakeRollers(0.5));
     // controller.rightTrigger.whileTrue(new GripperRollers(0.5));
 
-    controller.leftBumper.onTrue(new IntakeMove(-10));
+    controller.leftBumper.onTrue(new IntakeDown());
    
-    controller.rightBumper.onTrue(new IntakeMove(-100));
+    controller.rightBumper.onTrue(new IntakeUp());
     
 
 
