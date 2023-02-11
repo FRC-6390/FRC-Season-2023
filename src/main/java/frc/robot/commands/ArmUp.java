@@ -26,23 +26,15 @@ public class ArmUp extends CommandBase {
     isDone = false;
     Arm.currentPosition = false;
     Arm.armMotor.setNeutralMode(NeutralMode.Brake);
-    pid = new PIDController(0.01, 0, 0);
   }
 
   @Override
   public void execute() {
-    //Runs the PID
-    Arm.setLift(pid.calculate(Arm.getPosition(), setpoint));
-
-    //If the switch is triggered or if the encoder value is 0, end command 
-    if(Intake.getPosition() == 0){
-      isDone = true;
-    }
+    
   }
 
   @Override
   public void end(boolean interrupted) {
-    Arm.setLift(0);
   }
 
   @Override

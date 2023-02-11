@@ -25,12 +25,12 @@ public class Intake extends SubsystemBase {
   }
 
   static{
-    currentPosition = false;
-    intakeLift = new TalonFX(Constants.INTAKE.ARM);
+    currentPosition = true;
+    intakeLift = new TalonFX(Constants.INTAKE.ARM, "can");
     intakeRollerLeft = new TalonFX(Constants.INTAKE.LEFT_MOTOR);
     intakeRollerRight = new TalonFX(Constants.INTAKE.RIGHT_MOTOR);
-    liftEncoder = new CANCoder(Constants.INTAKE.POSITION_ENCODER);
-    intakeLimitSwitch = new DigitalInput(Constants.INTAKE.LIMIT_SWITCH);
+    liftEncoder = new CANCoder(Constants.INTAKE.POSITION_ENCODER, "can");
+    intakeLimitSwitch = new DigitalInput(Constants.INTAKE.LIMIT_SWITCH); 
   }
 
   @Override
@@ -51,7 +51,7 @@ public class Intake extends SubsystemBase {
 
   //Gets lift position
   public static double getPosition(){
-    return liftEncoder.getPosition()/4096d;
+    return liftEncoder.getPosition();
   }
 
   //Resets lift encoder

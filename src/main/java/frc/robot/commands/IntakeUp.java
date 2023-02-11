@@ -23,7 +23,7 @@ public class IntakeUp extends CommandBase {
   @Override
   public void initialize() {
     isDone = false;
-    Intake.currentPosition = false;
+    Intake.currentPosition = true;
     Intake.intakeLift.setNeutralMode(NeutralMode.Brake);
     pid = new PIDController(0.01, 0, 0);
   }
@@ -33,18 +33,19 @@ public class IntakeUp extends CommandBase {
     //as long as the limit switch is not triggered run the PID
     if(Intake.getLimitSwitch() == true){
       Intake.setLift(pid.calculate(Intake.getPosition(), setpoint));
+      System.out.println("GOING UP");
 
       //If the switch is triggered or if the encoder value is 0, end command 
-      if(Intake.getPosition() == 0 || Intake.getLimitSwitch() == false){
-        isDone = true;
-      }
+    } else if(Intake.getPosition() == 0 || Intake.getLimitSwitch() == false){
+      isDone = true;
     }
   }
 
   @Override
   public void end(boolean interrupted) {
-    Intake.setLift(0);
+    Intake.setLift(0.05);
     Intake.liftEncoder.setPosition(0);
+    System.out.println("DONE");
   }
 
   @Override

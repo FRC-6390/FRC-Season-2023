@@ -24,6 +24,7 @@ import frc.robot.utilities.controller.DebouncedJoystick;
 
 public class RobotContainer {
 
+  
   public static DriveTrain driveTrain = new DriveTrain();
 
   //controllers
@@ -66,23 +67,22 @@ public class RobotContainer {
     controller.a.whileTrue(new AprilTagVission(driveTrain, driveTrain.getLimelight(), Constants.AUTO.XY_PID_CONFIG, Constants.AUTO.THETA_PID_CONFIG));
     controller.b.whileTrue(new AutoAlign(driveTrain, driveTrain.getLimelight(), driveTrain.getBlinkin(), Constants.AUTO.ALIGN_XY_PID_CONFIG, Constants.AUTO.ALIGN_THETA_PID_CONFIG));
     controller.y.onTrue(new AutoBalance(driveTrain));
-    controller.leftTrigger.whileTrue(new IntakeRollers(0.5));
-    controller.rightTrigger.whileTrue(new GripperRollers(0.5));
+    // controller.leftTrigger.whileTrue(new IntakeRollers(0.5));
+    // controller.rightTrigger.whileTrue(new GripperRollers(0.5));
 
-    if(Intake.currentPosition){
-      controller.leftBumper.onTrue(new IntakeUp());
-    } else {
-      controller.leftBumper.onTrue(new IntakeDown());
-    }
+    controller.leftBumper.onTrue(new IntakeDown());
+   
+    controller.rightBumper.onTrue(new IntakeUp());
+    
 
 
     //secondary driver controls on Logitech Controller
-    boolean washingDirection = joystick.one.debounced();
-    if(washingDirection == false){
-      joystick.two.whileTrue(new SpinWasher(0.3));
-    } else{
-      joystick.two.whileTrue(new SpinWasher(-0.3));
-    }
+    // boolean washingDirection = joystick.one.debounced();
+    // if(washingDirection == false){
+    //   joystick.two.whileTrue(new SpinWasher(0.3));
+    // } else{
+    //   joystick.two.whileTrue(new SpinWasher(-0.3));
+    // }
   }
 
   public void createSystemTestButtonBinding(){

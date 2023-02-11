@@ -23,7 +23,7 @@ public interface Constants {
     }
 
     public interface WASHING_MACHINE {
-        int MOTOR_ID = 13;
+        int MOTOR_ID = 0;
     }
 
     public interface ELEVATOR {
@@ -33,10 +33,10 @@ public interface Constants {
     }
 
     public interface INTAKE {
-        int ARM = 0;
+        int ARM = 14;
         int LEFT_MOTOR = 0;
         int RIGHT_MOTOR = 0;
-        int POSITION_ENCODER = 0;
+        int POSITION_ENCODER = 13;
         int LIMIT_SWITCH = 0;
         double ARM_GEARBOX_RATIO = 0;
         double GEARBOX_RATIO = 1d/10d;

@@ -48,7 +48,6 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   private static REVBlinkin blinkin;
   private static PIDController rotationPidController = new PIDController(0.3, 0, 0);
 
-
   static {
     tab = Shuffleboard.getTab("Drive Train");
     autoTab = Shuffleboard.getTab("Auto");
@@ -82,6 +81,9 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     tab.addDouble("Front Right Encoder", () -> swerveModules[1].getAbsolutePosition());
     tab.addDouble("Back Left Encoder", () -> swerveModules[2].getAbsolutePosition());
     tab.addDouble("Back Right Encoder", () -> swerveModules[3].getAbsolutePosition());
+    
+    tab.addDouble("Intake Encoder", Intake::getPosition);
+    tab.addBoolean("Intake Limit Switch", () -> Intake.getLimitSwitch());
     
     autoTab.addDouble("Desired Heading", () -> pose.getRotation().getDegrees()).withWidget(BuiltInWidgets.kTextView);
     autoTab.addDouble("PID Desired Heading", () -> pid.calculate(pose.getRotation().getDegrees())).withWidget(BuiltInWidgets.kTextView);
