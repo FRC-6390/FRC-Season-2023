@@ -9,7 +9,6 @@ import frc.robot.commands.AprilTagVission;
 import frc.robot.commands.DriverControl;
 import frc.robot.commands.GripperRollers;
 import frc.robot.commands.IntakeDown;
-import frc.robot.commands.IntakeMove;
 import frc.robot.commands.IntakeRollers;
 import frc.robot.commands.IntakeUp;
 import frc.robot.commands.SpinWasher;
