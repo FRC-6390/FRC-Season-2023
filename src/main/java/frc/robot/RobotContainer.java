@@ -9,6 +9,7 @@ import frc.robot.commands.AprilTagVission;
 import frc.robot.commands.DriverControl;
 import frc.robot.commands.GripperRollers;
 import frc.robot.commands.IntakeDown;
+import frc.robot.commands.IntakeMove;
 import frc.robot.commands.IntakeRollers;
 import frc.robot.commands.IntakeUp;
 import frc.robot.commands.SpinWasher;
@@ -70,9 +71,9 @@ public class RobotContainer {
     // controller.leftTrigger.whileTrue(new IntakeRollers(0.5));
     // controller.rightTrigger.whileTrue(new GripperRollers(0.5));
 
-    controller.leftBumper.onTrue(new IntakeDown());
+    controller.leftBumper.onTrue(new IntakeMove(-10));
    
-    controller.rightBumper.onTrue(new IntakeUp());
+    controller.rightBumper.onTrue(new IntakeMove(-100));
     
 
 
