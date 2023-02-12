@@ -12,7 +12,7 @@ public class WashingMachine extends SubsystemBase {
   public WashingMachine() {}
 
   static{
-    washingMotor = new TalonFX(Constants.WASHING_MACHINE.MOTOR_ID);
+    washingMotor = new TalonFX(Constants.WASHING_MACHINE.MOTOR_ID, "can");
   }
 
   @Override

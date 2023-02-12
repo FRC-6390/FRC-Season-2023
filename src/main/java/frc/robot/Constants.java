@@ -23,7 +23,7 @@ public interface Constants {
     }
 
     public interface WASHING_MACHINE {
-        int MOTOR_ID = 0;
+        int MOTOR_ID = 15;
     }
 
     public interface ELEVATOR {

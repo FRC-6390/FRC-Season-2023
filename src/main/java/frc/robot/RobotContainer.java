@@ -17,7 +17,6 @@ import frc.robot.commands.auto.AutoAlign;
 import frc.robot.commands.auto.AutoBalance;
 import frc.robot.commands.auto.AutoPathPlanner;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Intake;
 import frc.robot.utilities.auto.JanusRouteFactory;
 import frc.robot.utilities.controller.DebouncedController;
 import frc.robot.utilities.controller.DebouncedJoystick;
@@ -34,6 +33,8 @@ public class RobotContainer {
   //smart dashboard auto selectors
   private SendableChooser<JanusRouteFactory> autoChooser = new SendableChooser<>();
   private SendableChooser<String> autoPathChooser = new SendableChooser<>(); 
+
+  public static boolean intakeState = true;
 
   public RobotContainer() {
 
@@ -71,18 +72,18 @@ public class RobotContainer {
     // controller.rightTrigger.whileTrue(new GripperRollers(0.5));
 
     controller.leftBumper.onTrue(new IntakeDown());
-   
     controller.rightBumper.onTrue(new IntakeUp());
-    
 
+    if(intakeState == true){
+      controller.leftBumper.onTrue(new IntakeDown());
+    } else {
+      controller.leftBumper.onTrue(new IntakeUp());
+    }
 
     //secondary driver controls on Logitech Controller
-    // boolean washingDirection = joystick.one.debounced();
-    // if(washingDirection == false){
-    //   joystick.two.whileTrue(new SpinWasher(0.3));
-    // } else{
-    //   joystick.two.whileTrue(new SpinWasher(-0.3));
-    // }
+    joystick.seven.whileTrue(new SpinWasher(0.5));
+    joystick.eight.whileTrue(new SpinWasher(-0.5));
+    
   }
 
   public void createSystemTestButtonBinding(){

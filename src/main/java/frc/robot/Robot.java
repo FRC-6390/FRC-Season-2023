@@ -1,6 +1,11 @@
 package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants.INTAKE;
+import frc.robot.commands.IntakeUp;
+import frc.robot.subsystems.Intake;
 
 public class Robot extends TimedRobot {
 
@@ -9,6 +14,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+    Intake.liftEncoder.setPosition(0);
   }
 
   @Override

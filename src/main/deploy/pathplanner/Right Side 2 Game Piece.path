@@ -7,8 +7,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.4216223639294636,
-        "y": 0.4345474026183433
+        "x": 3.421979683223409,
+        "y": 0.4688537765092641
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -16,7 +16,36 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "Intake Up"
+        ],
+        "executionBehavior": "parallelDeadline",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 3.9949199898399796,
+        "y": 0.4869133293822135
+      },
+      "prevControl": {
+        "x": 3.170752884853969,
+        "y": 0.4869133293822135
+      },
+      "nextControl": {
+        "x": 4.64852811681402,
+        "y": 0.4869133293822135
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "Intake Down"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -39,7 +68,7 @@
       "isReversal": false,
       "velOverride": 0.5,
       "isLocked": false,
-      "isStopPoint": false,
+      "isStopPoint": true,
       "stopEvent": {
         "names": [],
         "executionBehavior": "parallel",
@@ -49,16 +78,16 @@
     },
     {
       "anchorPoint": {
-        "x": 3.867605224511448,
-        "y": 0.6289501880002328
+        "x": 3.983044054976999,
+        "y": 0.593796743149042
       },
       "prevControl": {
-        "x": 5.319908385893806,
-        "y": 0.6060792720729508
+        "x": 5.435347216359361,
+        "y": 0.5709258272217598
       },
       "nextControl": {
-        "x": 2.323872167940056,
-        "y": 0.6532609447966337
+        "x": 2.439310998405607,
+        "y": 0.6181074999454428
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -66,7 +95,9 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "Intake Up"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -100,19 +131,15 @@
   "isReversed": null,
   "markers": [
     {
-      "position": 0.0,
+      "position": 0.9890909090908481,
       "names": [
-        "Intake Out",
-        "Linear Extension L3 Out",
-        "Linear Extension In",
-        "Intake In"
+        "Intake Down"
       ]
     },
     {
-      "position": 1.1,
+      "position": 2.96727272727268,
       "names": [
-        "Intake Out",
-        "Intake"
+        "Intake Up"
       ]
     }
   ]

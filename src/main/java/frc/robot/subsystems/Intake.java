@@ -64,4 +64,14 @@ public class Intake extends SubsystemBase {
     //false for triggered, otherwise true
     return intakeLimitSwitch.get();
   }
+
+  public static boolean getIntakeBoolPosition(){
+    //true if up, false if down
+    return currentPosition;
+  }
+
+  public static void setIntakeBoolPosition(boolean state){
+    //true if up, false if down
+    currentPosition = state;
+  }
 }
