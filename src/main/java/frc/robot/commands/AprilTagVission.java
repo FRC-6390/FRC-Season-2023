@@ -14,7 +14,6 @@ public class AprilTagVission extends CommandBase {
 
     private LimeLight limelight;
     private DriveTrain driveTrain;
-    private PID xPID, yPID, thetaPID;
     private PIDConfig xyConfig, thetaConfig;
     private SlewRateLimiter xLimiter, yLimiter, thetaLimiter;
     private PIDController yController;
@@ -65,6 +64,4 @@ public class AprilTagVission extends CommandBase {
     public boolean isFinished() {
       return false;
     }
-
-
-  }
+}

@@ -5,6 +5,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 
 public class IntakeDown extends CommandBase {
@@ -20,13 +22,11 @@ public class IntakeDown extends CommandBase {
 
   @Override
   public void initialize() {
+    CommandScheduler.getInstance().cancel(new IntakeUp());
     isDone = false;
-
     IntakeUp.isDone = true;
-    
-    Intake.liftEncoder.setPosition(0);
     Intake.intakeLift.setNeutralMode(NeutralMode.Brake);
-    Intake.currentPosition = true;
+    Intake.setIntakeBoolPosition(false);
     pid = new PIDController(0.0024, 0.0, 0);
   }
 
@@ -34,7 +34,7 @@ public class IntakeDown extends CommandBase {
   public void execute() {
     
     //If within a certain range, end command, else run PID
-    if(Intake.getPosition() < -109 && Intake.getPosition() >= -111){
+    if(Intake.getPosition() < -99 && Intake.getPosition() >= -111){
       isDone = true;
     } else{
       System.out.println("GOING DOWN");
@@ -44,7 +44,7 @@ public class IntakeDown extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    System.out.println("DONE");
+    RobotContainer.intakeState = false;
   }
 
   @Override
