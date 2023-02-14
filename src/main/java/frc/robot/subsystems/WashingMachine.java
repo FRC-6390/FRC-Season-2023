@@ -24,6 +24,13 @@ public class WashingMachine extends SubsystemBase {
     washingMotor.set(ControlMode.PercentOutput, speed);
   }
 
+  public static double getPos(){
+    return washingMotor.getSelectedSensorPosition();
+  }
+  public static void reset(){
+    washingMotor.setSelectedSensorPosition(0.0);
+  }
+
 
 }
 
