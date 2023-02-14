@@ -39,11 +39,11 @@ public class Elevator extends SubsystemBase implements SystemTest {
         return encoder.getVelocity()/2048d * ELEVATOR.GEARBOX_RATIO;
     }
 
-    public double getPosition(){
+    public static double getPosition(){
         return encoder.getPosition();
     }
 
-    public void set(double speed){
+    public static void set(double speed){
         motor.set(ControlMode.PercentOutput, speed);
     }
 
