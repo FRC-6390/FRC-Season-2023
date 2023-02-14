@@ -20,7 +20,16 @@ public class SpinWasher extends CommandBase {
   @Override
   public void execute() {
     //Turns on the washer
-    WashingMachine.set(speed);
+    //WashingMachine.set(speed);
+    if(WashingMachine.getPos() < 500){
+      WashingMachine.set(speed);
+    }
+    else{
+      WashingMachine.reset();
+      speed *= -1;
+    }
+
+    
   }
 
   @Override

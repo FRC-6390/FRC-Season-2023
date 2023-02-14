@@ -82,7 +82,7 @@ public class RobotContainer {
 
     //secondary driver controls on Logitech Controller
     joystick.seven.whileTrue(new SpinWasher(0.5));
-    joystick.eight.whileTrue(new SpinWasher(-0.5));
+    joystick.eight.whileTrue(new SpinWasher(0));
     
   }
 
