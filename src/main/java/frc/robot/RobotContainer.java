@@ -28,14 +28,12 @@ public class RobotContainer {
   public static DriveTrain driveTrain = new DriveTrain();
 
   //controllers
-  public static DebouncedController controller = new DebouncedController(0);
+  private DebouncedController controller = new DebouncedController(0);
   private DebouncedJoystick joystick = new DebouncedJoystick(1);
 
   //smart dashboard auto selectors
   private SendableChooser<JanusRouteFactory> autoChooser = new SendableChooser<>();
   private SendableChooser<String> autoPathChooser = new SendableChooser<>(); 
-
-  public static boolean intakeState = true;
 
   public RobotContainer() {
 
@@ -75,12 +73,8 @@ public class RobotContainer {
     controller.leftBumper.onTrue(new IntakeDown());
     controller.rightBumper.onTrue(new IntakeUp());
 
-    
-
     //secondary driver controls on Logitech Controller
     joystick.seven.whileTrue(new SpinWasher(0.5));
-    joystick.eight.whileTrue(new SpinWasher(0));
-    
   }
 
   public void createSystemTestButtonBinding(){

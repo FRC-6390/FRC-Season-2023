@@ -6,7 +6,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 
 public class IntakeDown extends CommandBase {
@@ -43,7 +42,6 @@ public class IntakeDown extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.intakeState = false;
   }
 
   @Override
