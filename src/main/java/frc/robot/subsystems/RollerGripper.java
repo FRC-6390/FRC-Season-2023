@@ -13,9 +13,8 @@ public class RollerGripper extends SubsystemBase {
  
 
   static{
-    leftRoller = new TalonFX(Constants.ROLLER_GRIPPER.LEFT_MOTOR);
-    rightRoller = new TalonFX(Constants.ROLLER_GRIPPER.RIGHT_MOTOR);
-    
+    leftRoller = new TalonFX(Constants.ARM.LEFT_ROLLER_GRIPPER);
+    rightRoller = new TalonFX(Constants.ARM.RIGHT_ROLLER_GRIPPER);
   }
 
   @Override

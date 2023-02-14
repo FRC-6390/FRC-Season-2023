@@ -7,6 +7,7 @@ public class SpinWasher extends CommandBase {
 
   
   public double speed;
+  private boolean isDone;
 
   //Sets up speed parameter
   public SpinWasher(double speed) {
@@ -20,16 +21,12 @@ public class SpinWasher extends CommandBase {
   @Override
   public void execute() {
     //Turns on the washer
-    //WashingMachine.set(speed);
-    if(WashingMachine.getPos() < 500){
-      WashingMachine.set(speed);
-    }
-    else{
+    WashingMachine.set(speed);
+
+    if(Math.abs(WashingMachine.getPos()) > 100000){
       WashingMachine.reset();
       speed *= -1;
-    }
-
-    
+    } 
   }
 
   @Override

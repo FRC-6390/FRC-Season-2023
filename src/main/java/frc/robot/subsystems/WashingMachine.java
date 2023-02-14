@@ -30,7 +30,5 @@ public class WashingMachine extends SubsystemBase {
   public static void reset(){
     washingMotor.setSelectedSensorPosition(0.0);
   }
-
-
 }
 
