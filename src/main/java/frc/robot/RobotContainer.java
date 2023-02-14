@@ -17,6 +17,7 @@ import frc.robot.commands.auto.AutoAlign;
 import frc.robot.commands.auto.AutoBalance;
 import frc.robot.commands.auto.AutoPathPlanner;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Intake;
 import frc.robot.utilities.auto.JanusRouteFactory;
 import frc.robot.utilities.controller.DebouncedController;
 import frc.robot.utilities.controller.DebouncedJoystick;
@@ -27,7 +28,7 @@ public class RobotContainer {
   public static DriveTrain driveTrain = new DriveTrain();
 
   //controllers
-  private DebouncedController controller = new DebouncedController(0);
+  public static DebouncedController controller = new DebouncedController(0);
   private DebouncedJoystick joystick = new DebouncedJoystick(1);
 
   //smart dashboard auto selectors
@@ -74,11 +75,7 @@ public class RobotContainer {
     controller.leftBumper.onTrue(new IntakeDown());
     controller.rightBumper.onTrue(new IntakeUp());
 
-    if(intakeState == true){
-      controller.leftBumper.onTrue(new IntakeDown());
-    } else {
-      controller.leftBumper.onTrue(new IntakeUp());
-    }
+    
 
     //secondary driver controls on Logitech Controller
     joystick.seven.whileTrue(new SpinWasher(0.5));

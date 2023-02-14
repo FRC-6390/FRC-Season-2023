@@ -11,7 +11,6 @@ import frc.robot.subsystems.Intake;
 public class IntakeUp extends CommandBase {
 
   public double setpoint = 0;
-  public double prevError;
   public static PIDController pid;
   public static boolean isDone;
 
@@ -22,15 +21,15 @@ public class IntakeUp extends CommandBase {
   public void initialize() {
     isDone = false;
     IntakeDown.isDone = true;
-    Intake.setIntakeBoolPosition(true);
+    Intake.currentPosition = true;
     Intake.intakeLift.setNeutralMode(NeutralMode.Brake);
-    pid = new PIDController(0.0058, 0.0025, 0);
+    pid = new PIDController(0.005, 0.0025, 0);
   }
 
   @Override
   public void execute() {
     //as long as the limit switch is not triggered run the PID
-    if(Intake.getPosition() < 1){
+    if(Intake.getPosition() < 0.5){
       Intake.setLift(pid.calculate(Intake.getPosition(), setpoint));
       System.out.println("GOING UP");
     } 
@@ -43,7 +42,6 @@ public class IntakeUp extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.intakeState = false;
   }
 
   @Override
