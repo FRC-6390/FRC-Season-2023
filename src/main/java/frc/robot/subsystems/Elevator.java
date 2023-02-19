@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.ArrayList;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -13,10 +11,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ELEVATOR;
 import frc.robot.utilities.controlloop.motionprofile.MotionProfileComponent;
 import frc.robot.utilities.controlloop.motionprofile.MotionProfileState;
-import frc.robot.utilities.debug.SystemTest;
-import frc.robot.utilities.debug.SystemTestAction;
 
-public class Elevator extends SubsystemBase implements SystemTest {
+public class Elevator extends SubsystemBase {
 
     private static CANCoder encoder;
     private static TalonFX motor;
@@ -24,8 +20,8 @@ public class Elevator extends SubsystemBase implements SystemTest {
 
     static{
         tab = Shuffleboard.getTab("Elevator");
-        motor = new TalonFX(ELEVATOR.DRIVE_MOTOR);
-        encoder = new CANCoder(ELEVATOR.ENCODER);
+        motor = new TalonFX(ELEVATOR.DRIVE_MOTOR, "can");
+        encoder = new CANCoder(ELEVATOR.ENCODER, "can");
         encoder.setPosition(0);
         motor.setNeutralMode(NeutralMode.Brake);
     }
@@ -43,18 +39,16 @@ public class Elevator extends SubsystemBase implements SystemTest {
         return encoder.getPosition();
     }
 
+    public static void setPosition(double position){
+        encoder.setPosition(position);
+    }
+
     public static void set(double speed){
         motor.set(ControlMode.PercentOutput, speed);
     }
 
     @Override
     public void periodic() {
-      //  tab.addDouble("Postion", () -> getPosition());
-        
-    }
-
-    @Override
-    public ArrayList<SystemTestAction> getDevices() {
-        return new ArrayList<>();
+        tab.addDouble("Postion", () -> getPosition());
     }
 }
