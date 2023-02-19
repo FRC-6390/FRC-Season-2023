@@ -27,8 +27,8 @@ public class Intake extends SubsystemBase {
   static{
     currentPosition = true;
     intakeLift = new TalonFX(Constants.INTAKE.ARM, "can");
-    intakeRollerLeft = new TalonFX(Constants.INTAKE.LEFT_MOTOR);
-    intakeRollerRight = new TalonFX(Constants.INTAKE.RIGHT_MOTOR);
+    intakeRollerLeft = new TalonFX(Constants.INTAKE.LEFT_MOTOR, "can");
+    intakeRollerRight = new TalonFX(Constants.INTAKE.RIGHT_MOTOR, "can");
     liftEncoder = new CANCoder(Constants.INTAKE.POSITION_ENCODER, "can");
     intakeLimitSwitch = new DigitalInput(Constants.INTAKE.LIMIT_SWITCH); 
   }

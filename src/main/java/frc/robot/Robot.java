@@ -1,6 +1,7 @@
 package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 
 public class Robot extends TimedRobot {
@@ -19,7 +20,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    Elevator.setPosition(0);
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -43,7 +46,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testInit() {
     CommandScheduler.getInstance().cancelAll();
-    m_robotContainer.createSystemTestButtonBinding();
+    // m_robotContainer.createSystemTestButtonBinding();
   }
 
   @Override

@@ -10,6 +10,7 @@ import frc.robot.commands.IntakeDown;
 import frc.robot.commands.IntakeUp;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +28,7 @@ public final class AutoPathPlanner {
 
     //events to trigger commands while in autonomous
     private static final Map<String, Command> eventMap = new HashMap<>(Map.ofEntries(
+        Map.entry("Wait", new WaitCommand(2)),
         Map.entry("Spin Washer", Commands.print("Spinning Washing Machine Command Triggered")),
         Map.entry("Intake Up", new IntakeUp()),
         Map.entry("Intake Down", new IntakeDown()),

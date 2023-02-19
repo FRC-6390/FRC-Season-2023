@@ -84,6 +84,7 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     
     tab.addDouble("Intake Encoder", Intake::getPosition);
     tab.addBoolean("Intake Limit Switch", () -> Intake.getLimitSwitch());
+    // tab.addDouble("Elevator Encoder", Elevator::getPosition);
     // tab.addBoolean("Intake Position", Intake::getIntakeBoolPosition);
     
     autoTab.addDouble("Desired Heading", () -> pose.getRotation().getDegrees()).withWidget(BuiltInWidgets.kTextView);

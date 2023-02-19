@@ -18,8 +18,12 @@ public interface Constants {
     public interface ARM {
         int ARM_MOTOR = 0;
         int ARM_ENCODER = 0;
-        int LEFT_ROLLER_GRIPPER = 0;
-        int RIGHT_ROLLER_GRIPPER = 0;
+        int OUTPUT_ROLLER = 0;
+    }
+
+    public interface GRIPPER {
+        int SIDE_GRIPPER = 0;
+        int BOTTOM_GRIPPER = 0;
     }
 
     public interface WASHING_MACHINE {
@@ -27,9 +31,14 @@ public interface Constants {
     }
 
     public interface ELEVATOR {
-        int DRIVE_MOTOR = 0;
-        int ENCODER = 0;
+        int DRIVE_MOTOR = 16;
+        int ENCODER = 20;
         double GEARBOX_RATIO = 0;
+
+        //encoder setpoint values
+        double SETPOINT_HIGH = 1000;
+        double SETPOINT_MID = 500;
+        double SETPOINT_LOW = 0;
     }
 
     public interface INTAKE {
@@ -126,6 +135,9 @@ public interface Constants {
     public interface ROBOT {
         double TRACKWIDTH_METERS = 0.61;
         double WHEELBASE_METERS = 0.61;
+
+        int CANDLE_ID = 0; //unkown tbd
+
         Translation2d FRONT_LEFT = new Translation2d(TRACKWIDTH_METERS/2, WHEELBASE_METERS/2);
         Translation2d FRONT_RIGHT = new Translation2d(TRACKWIDTH_METERS/2, -WHEELBASE_METERS/2);
         Translation2d BACK_LEFT = new Translation2d(-TRACKWIDTH_METERS/2, WHEELBASE_METERS/2);
@@ -133,6 +145,7 @@ public interface Constants {
         int BLINKIN_PORT = 1;
         
         LimelightConfig LIMELIGHT_CONFIG = new LimelightConfig(0, 0);
+        
     }
     
     public enum APRILTAGS {

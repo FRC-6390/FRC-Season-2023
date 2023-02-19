@@ -27,7 +27,7 @@ public class ElevatorControl extends CommandBase {
         timer = new Timer();
         timer.reset();
         timer.start();
-        motionProfile.init(elevator::getPosition);
+        // motionProfile.init(elevator::getPosition);
         motionProfile.calculate(elevator.getCurrentState(), setpoint);
     }
 

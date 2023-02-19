@@ -19,7 +19,6 @@ public class TestSystems extends CommandBase{
         this.forwards = forwards;
         this.backwards = backwards;
         this.speed = speed;
-
     }
 
     @Override

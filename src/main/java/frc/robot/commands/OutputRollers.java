@@ -3,12 +3,12 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Arm;
 
-public class GripperRollers extends CommandBase {
+public class OutputRollers extends CommandBase {
  
   public double speed;
   public boolean isDone = false;
 
-  public GripperRollers(double speed) {
+  public OutputRollers(double speed) {
     this.speed = speed;
   }
 
@@ -20,10 +20,10 @@ public class GripperRollers extends CommandBase {
   @Override
   public void execute() {
     if(Arm.getRollersVoltage() > 4){
-      Arm.setRollers(0);
+      Arm.setRoller(0);
       isDone = true;
     } else {
-      Arm.setRollers(speed);
+      Arm.setRoller(speed);
     }
   }
 
@@ -32,7 +32,7 @@ public class GripperRollers extends CommandBase {
   
   public void end(boolean interrupted) {
     //Stops the motors
-    Arm.setRollers(0);
+    Arm.setRoller(0);
   }
 
   

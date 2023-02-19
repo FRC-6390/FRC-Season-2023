@@ -8,8 +8,6 @@ public class ElevatorCommand extends CommandBase {
 
   //DUMMY numbers
   public double setpoint;
-  private double rangeMax = setpoint + 1;
-  private double rangeMin = setpoint - 1;
   public static PIDController pid;
   public static boolean isDone;
   
@@ -20,21 +18,24 @@ public class ElevatorCommand extends CommandBase {
   @Override
   public void initialize() {
     isDone = false;
-    pid = new PIDController(0.005, 0.0025, 0);
+    pid = new PIDController(0.0008, 0.0, 0);
   }
 
   @Override
   public void execute() {   
-    if((Elevator.getPosition() > rangeMin) && (Elevator.getPosition() < rangeMax)){
+    if((Elevator.getPosition() > setpoint -2) && (Elevator.getPosition() < setpoint +2)){
       isDone = true;
+      System.out.println("Done");
     } else{
-      Elevator.set(pid.calculate(Elevator.getPosition(), setpoint));
+      // Elevator.set(pid.calculate(Elevator.getPosition(), setpoint));
+      System.out.println("Elevator Moving: " + Elevator.getPosition());
     }
   }
 
   @Override
   public void end(boolean interrupted) {
     Elevator.set(0);
+    System.out.println("Command Finished");
   }
 
   @Override
