@@ -9,7 +9,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 import frc.robot.Constants;
 
-/** A robot arm subsystem that moves with a motion profile. */
+
 public class Arm extends TrapezoidProfileSubsystem {
   
   public static TalonFX armMotor = new TalonFX(Constants.ARM.ARM_MOTOR);
@@ -38,10 +38,9 @@ public class Arm extends TrapezoidProfileSubsystem {
     // armMotor.setSetpoint(0.001, setpoint.position, feedforward / 12.0);
   }
   
-  // @Override
-  // public double getMeasurement() {
-  //   return armEncoder.getPosition()/4096d;
-  // }
+  public double getMeasurement() {
+    return armEncoder.getPosition()/4096d;
+  }
 
 
   //Sets rollers
