@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.commands.ArmDown;
+import frc.robot.commands.ArmUp;
 import frc.robot.commands.Candle;
 import frc.robot.commands.DriverControl;
 import frc.robot.commands.ElevatorCommand;
@@ -60,20 +62,19 @@ public class RobotContainer {
     controller.b.onTrue(new ElevatorCommand(Constants.ELEVATOR.SETPOINT_MID));
     controller.y.onTrue(new ElevatorCommand(Constants.ELEVATOR.SETPOINT_HIGH));
 
-    //intaking system
-    controller.leftTrigger.whileTrue(new IntakeRollers(0.5));
-    controller.leftTrigger.whileTrue(new SpinWasher(0.5));
-    controller.leftTrigger.whileTrue(new OutputRollers(0.5));
+    controller.rightBumper.onTrue(new ArmUp());
+    // controller.leftBumper.onTrue(new ArmDown());
 
-    controller.top.whileTrue(new IntakeRollers(-0.5));
+    //intaking system TRIGGERS
+    controller.leftBumper.whileTrue(new SpinWasher(0.5, 1.0));
+    // controller.rightBumper.whileTrue(new IntakeRollers(0.5));
 
-    controller.rightTrigger.whileTrue(new OutputRollers(-0.5));
 
-    controller.leftBumper.onTrue(new IntakeDown());
-    controller.rightBumper.onTrue(new IntakeUp());
+    // controller.leftBumper.onTrue(new IntakeDown());
+    // controller.rightBumper.onTrue(new IntakeUp());
 
     //secondary driver controls on Logitech Controller
-    joystick.seven.whileTrue(new SpinWasher(0.5));
+    joystick.seven.whileTrue(new SpinWasher(0.5, 1.0));
     joystick.eleven.onTrue(new Candle("cube"));
     joystick.twelve.onTrue(new Candle("cone"));
   }

@@ -20,7 +20,6 @@ public class IntakeUp extends CommandBase {
   public void initialize() {
     isDone = false;
     IntakeDown.isDone = true;
-    Intake.currentPosition = true;
     Intake.intakeLift.setNeutralMode(NeutralMode.Brake);
     pid = new PIDController(0.009, 0.0, 0);
   }

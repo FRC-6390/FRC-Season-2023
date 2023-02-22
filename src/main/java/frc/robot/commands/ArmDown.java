@@ -5,17 +5,15 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Arm;
 
 public class ArmDown extends CommandBase {
 
   //Dummy number
-  public double setpoint = 7000;
-  public double prevError;
+  public double setpoint = 0;
   public static PIDController pid;
-
-  //boolean to decide when the command should end
-  public boolean isDone;
+  public static boolean isDone;
 
   public ArmDown() {
   }
@@ -23,13 +21,21 @@ public class ArmDown extends CommandBase {
   @Override
   public void initialize() {
     isDone = false;
-    Arm.currentPosition = true;
-    Arm.armMotor.setNeutralMode(NeutralMode.Brake);
+    ArmUp.isDone = true;
+    CommandScheduler.getInstance().cancel(new ArmUp());
+    pid = new PIDController(0.014, 0.001, 0);
   }
 
   @Override
   public void execute() {
-    
+      //If within a certain range, end command, else run PID
+      if(Arm.getPosition() < 1){
+        isDone = true;
+        Arm.setLift(0);
+      } else{
+        System.out.println("GOING DOWN");
+        Arm.setLift(pid.calculate(Arm.getPosition(), setpoint));
+      }
   }
 
   @Override

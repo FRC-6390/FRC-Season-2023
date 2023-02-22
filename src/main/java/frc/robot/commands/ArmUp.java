@@ -10,12 +10,9 @@ import frc.robot.subsystems.Arm;
 public class ArmUp extends CommandBase {
 
   //Dummy number
-  public double setpoint = 0;
-  public double prevError;
+  public double setpoint = 190;
   public static PIDController pid;
-
-  //boolean to decide when the command should end
-  public boolean isDone;
+  public static boolean isDone;
 
   public ArmUp() {
   }
@@ -23,16 +20,23 @@ public class ArmUp extends CommandBase {
   @Override
   public void initialize() {
     isDone = false;
-    Arm.currentPosition = false;
-    Arm.armMotor.setNeutralMode(NeutralMode.Brake);
+    ArmDown.isDone = true;
+    pid = new PIDController(0.014, 0.0019, 0);
   }
 
   @Override
   public void execute() {
+    if(Arm.getPosition() < setpoint){
+      Arm.setLift(pid.calculate(Arm.getPosition(), setpoint));
+      System.out.println("GOING UP");
+    } else {
+      Arm.setLift(0);
+    }
   }
 
   @Override
   public void end(boolean interrupted) {
+    Arm.setLift(0);
   }
 
   @Override

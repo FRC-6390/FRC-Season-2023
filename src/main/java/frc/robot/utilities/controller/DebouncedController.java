@@ -15,8 +15,6 @@ public class DebouncedController extends XboxController {
         START(8),
         LEFT_JOYSTICK(9),
         RIGHT_JOYSTICK(10),
-        RIGHT_TRIGGER(3),
-        LEFT_TRIGGER(2),
         LEFT_X(0),
         LEFT_Y(1),
         RIGHT_X(4),
@@ -76,8 +74,8 @@ public class DebouncedController extends XboxController {
      left = new DebouncedButton(this, BUTTONS.LEFT.get()),
      back = new DebouncedButton(this, BUTTONS.BACK.get()),
      start = new DebouncedButton(this, BUTTONS.START.get()),
-     rightTrigger = new DebouncedButton(this, BUTTONS.RIGHT_TRIGGER.get()),
-     leftTrigger = new DebouncedButton(this, BUTTONS.LEFT_TRIGGER.get());
+     rightTrigger = new DebouncedButton(this, AXIS.RIGHT_TRIGGER.get()),
+     leftTrigger = new DebouncedButton(this, AXIS.LEFT_TRIGGER.get());
 
      public ModifiedAxis leftX = new ModifiedAxis(this, AXIS.LEFT_X.get()),
      leftY = new ModifiedAxis(this, AXIS.LEFT_Y.get()),

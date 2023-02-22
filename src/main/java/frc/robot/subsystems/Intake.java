@@ -12,23 +12,17 @@ import frc.robot.Constants;
 public class Intake extends SubsystemBase {
   
   public static TalonFX intakeLift;
-  public static TalonFX intakeRollerLeft;
-  public static TalonFX intakeRollerRight;
+  public static TalonFX intakeRoller;
   public static CANCoder liftEncoder;
   public static DigitalInput intakeLimitSwitch;
-
-  //false when up, true when intake is down
-  public static boolean currentPosition;
 
   public Intake() {
 
   }
 
   static{
-    currentPosition = true;
     intakeLift = new TalonFX(Constants.INTAKE.ARM, "can");
-    intakeRollerLeft = new TalonFX(Constants.INTAKE.LEFT_MOTOR, "can");
-    intakeRollerRight = new TalonFX(Constants.INTAKE.RIGHT_MOTOR, "can");
+    intakeRoller = new TalonFX(Constants.INTAKE.INTAKE_MOTOR, "can");
     liftEncoder = new CANCoder(Constants.INTAKE.POSITION_ENCODER, "can");
     intakeLimitSwitch = new DigitalInput(Constants.INTAKE.LIMIT_SWITCH); 
   }
@@ -40,8 +34,7 @@ public class Intake extends SubsystemBase {
 
   //Sets the intake rollers
   public static void setRollers(double speed){
-    intakeRollerLeft.set(ControlMode.PercentOutput, speed);
-    intakeRollerRight.set(ControlMode.PercentOutput, -speed);
+    intakeRoller.set(ControlMode.PercentOutput, speed);
   }
 
   //Sets the lift to a certain speed
@@ -54,9 +47,19 @@ public class Intake extends SubsystemBase {
     return liftEncoder.getPosition();
   }
 
+  //Gets roller position
+  public static double getRollerPosition(){
+    return intakeRoller.getSelectedSensorPosition();
+  }
+
   //Resets lift encoder
   public static void resetEncoder(){
     liftEncoder.setPosition(0);
+  }
+
+  //Resets roller encoder
+  public static void resetRollerEncoder(){
+    intakeRoller.setSelectedSensorPosition(0);
   }
 
   //Get value of the intake lift limit switch

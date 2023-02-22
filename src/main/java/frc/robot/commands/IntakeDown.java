@@ -23,7 +23,6 @@ public class IntakeDown extends CommandBase {
     CommandScheduler.getInstance().cancel(new IntakeUp());
     isDone = false;
     IntakeUp.isDone = true;
-    Intake.currentPosition = false;
     Intake.intakeLift.setNeutralMode(NeutralMode.Brake);
     pid = new PIDController(0.0024, 0.0, 0);
   }

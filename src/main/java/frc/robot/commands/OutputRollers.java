@@ -19,12 +19,14 @@ public class OutputRollers extends CommandBase {
   
   @Override
   public void execute() {
-    if(Arm.getRollersVoltage() > 4){
-      Arm.setRoller(0);
-      isDone = true;
-    } else {
+    // if(Arm.getRollersVoltage() > 4){
+    //   Arm.setRoller(0);
+    //   isDone = true;
+    // } 
+    // else {
       Arm.setRoller(speed);
-    }
+      System.out.println(Arm.getRollersVoltage());
+    // }
   }
 
   

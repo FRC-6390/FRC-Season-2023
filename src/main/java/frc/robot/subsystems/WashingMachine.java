@@ -9,14 +9,13 @@ import frc.robot.Constants;
 public class WashingMachine extends SubsystemBase {
 
   public static TalonFX washingMotor;
-  public static TalonFX sideGripper, bottomGripper;
+  public static TalonFX sideGripper;
 
   public WashingMachine() {}
 
   static{
     washingMotor = new TalonFX(Constants.WASHING_MACHINE.MOTOR_ID, "can");
     sideGripper = new TalonFX(Constants.GRIPPER.SIDE_GRIPPER, "can");
-    bottomGripper = new TalonFX(Constants.GRIPPER.BOTTOM_GRIPPER, "can");
   }
 
   @Override
@@ -30,8 +29,7 @@ public class WashingMachine extends SubsystemBase {
 
   //Sets rollers
   public static void setGrippers(double speed){
-    sideGripper.set(ControlMode.PercentOutput, speed);
-    bottomGripper.set(ControlMode.PercentOutput, speed);
+    sideGripper.set(ControlMode.PercentOutput, -speed);
   }
 
   public static double getPos(){
@@ -39,6 +37,16 @@ public class WashingMachine extends SubsystemBase {
   }
   public static void reset(){
     washingMotor.setSelectedSensorPosition(0.0);
+  }
+
+  //Gets roller position
+  public static double getGripperPosition(){
+    return sideGripper.getSelectedSensorPosition();
+  }
+
+  //Resets roller encoder
+  public static void resetGripperEncoder(){
+    sideGripper.setSelectedSensorPosition(0);
   }
 }
 

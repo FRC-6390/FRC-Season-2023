@@ -16,14 +16,13 @@ import frc.robot.utilities.swerve.SwerveModuleConfig;
 public interface Constants {
 
     public interface ARM {
-        int ARM_MOTOR = 0;
-        int ARM_ENCODER = 0;
-        int OUTPUT_ROLLER = 0;
+        int ARM_MOTOR = 18;
+        int ARM_ENCODER = 19;
+        int OUTPUT_ROLLER = 17;
     }
 
     public interface GRIPPER {
-        int SIDE_GRIPPER = 0;
-        int BOTTOM_GRIPPER = 0;
+        int SIDE_GRIPPER = 21;
     }
 
     public interface WASHING_MACHINE {
@@ -34,17 +33,17 @@ public interface Constants {
         int DRIVE_MOTOR = 16;
         int ENCODER = 20;
         double GEARBOX_RATIO = 0;
+        int LIMIT_SWITCH = 1;
 
         //encoder setpoint values
-        double SETPOINT_HIGH = 1000;
-        double SETPOINT_MID = 500;
+        double SETPOINT_HIGH = 6800;
+        double SETPOINT_MID = 3200;
         double SETPOINT_LOW = 0;
     }
 
     public interface INTAKE {
         int ARM = 14;
-        int LEFT_MOTOR = 0;
-        int RIGHT_MOTOR = 0;
+        int INTAKE_MOTOR = 23;
         int POSITION_ENCODER = 13;
         int LIMIT_SWITCH = 0;
         double ARM_GEARBOX_RATIO = 0;
@@ -136,7 +135,7 @@ public interface Constants {
         double TRACKWIDTH_METERS = 0.61;
         double WHEELBASE_METERS = 0.61;
 
-        int CANDLE_ID = 0; //unkown tbd
+        int CANDLE_ID = 22; //unkown tbd
 
         Translation2d FRONT_LEFT = new Translation2d(TRACKWIDTH_METERS/2, WHEELBASE_METERS/2);
         Translation2d FRONT_RIGHT = new Translation2d(TRACKWIDTH_METERS/2, -WHEELBASE_METERS/2);
