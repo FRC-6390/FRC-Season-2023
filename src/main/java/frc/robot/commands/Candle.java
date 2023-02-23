@@ -10,6 +10,7 @@ public class Candle extends CommandBase {
   //CANdle LEDS
   CANdle led = new CANdle(Constants.ROBOT.CANDLE_ID, "can");
   String gamePiece;
+  static int nextPiece = 1;
 
   public Candle(String gamePiece) {
     this.gamePiece = gamePiece;
@@ -19,10 +20,12 @@ public class Candle extends CommandBase {
   public void initialize() {
     if(gamePiece == "Cube" || gamePiece == "cube"){
       led.setLEDs(160, 44, 222);
+      nextPiece = 1;
     } 
 
     if(gamePiece == "Cone" || gamePiece == "cone"){
       led.setLEDs(247, 200, 59);
+      nextPiece = -1;
     }
   }
 

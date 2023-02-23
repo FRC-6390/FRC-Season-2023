@@ -9,6 +9,9 @@ import frc.robot.commands.ArmUp;
 import frc.robot.commands.Candle;
 import frc.robot.commands.DriverControl;
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.GoingHigh;
+import frc.robot.commands.GoingLow;
+import frc.robot.commands.GoingMid;
 import frc.robot.commands.OutputRollers;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.IntakeRollers;
@@ -58,20 +61,22 @@ public class RobotContainer {
     // controller.b.whileTrue(new AutoAlign(driveTrain, driveTrain.getLimelight(), driveTrain.getBlinkin(), Constants.AUTO.ALIGN_XY_PID_CONFIG, Constants.AUTO.ALIGN_THETA_PID_CONFIG));
     // controller.y.onTrue(new AutoBalance(driveTrain));
 
-    controller.a.onTrue(new ElevatorCommand(Constants.ELEVATOR.SETPOINT_LOW));
-    controller.b.onTrue(new ElevatorCommand(Constants.ELEVATOR.SETPOINT_MID));
-    controller.y.onTrue(new ElevatorCommand(Constants.ELEVATOR.SETPOINT_HIGH));
+    controller.a.onTrue(new GoingLow());
+    controller.b.onTrue(new GoingMid());
+    controller.y.onTrue(new GoingHigh());
 
-    controller.rightBumper.onTrue(new ArmUp());
-    // controller.leftBumper.onTrue(new ArmDown());
 
     //intaking system TRIGGERS
-    controller.leftBumper.whileTrue(new SpinWasher(0.5, 1.0));
-    // controller.rightBumper.whileTrue(new IntakeRollers(0.5));
+    if(controller.leftTrigger.getAsDouble() > 0.4){
+      new SpinWasher(0.5, 1.0);
+    }
+    if(controller.rightTrigger.getAsDouble() > 0.4){
+      new OutputRollers(0.5);
+    }
 
 
-    // controller.leftBumper.onTrue(new IntakeDown());
-    // controller.rightBumper.onTrue(new IntakeUp());
+    controller.leftBumper.onTrue(new IntakeDown());
+    controller.rightBumper.onTrue(new IntakeUp());
 
     //secondary driver controls on Logitech Controller
     joystick.seven.whileTrue(new SpinWasher(0.5, 1.0));

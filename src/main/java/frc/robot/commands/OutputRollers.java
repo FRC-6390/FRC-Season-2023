@@ -14,7 +14,9 @@ public class OutputRollers extends CommandBase {
 
   
   @Override
-  public void initialize() {}
+  public void initialize() {
+    speed = Math.abs(speed) * Candle.nextPiece;
+  }
 
   
   @Override
