@@ -24,7 +24,7 @@ public class IntakeDown extends CommandBase {
     isDone = false;
     IntakeUp.isDone = true;
     Intake.intakeLift.setNeutralMode(NeutralMode.Brake);
-    pid = new PIDController(0.0024, 0.0, 0);
+    pid = new PIDController(0.004, 0.0, 0);
   }
 
   @Override

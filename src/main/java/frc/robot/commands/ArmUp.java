@@ -31,6 +31,7 @@ public class ArmUp extends CommandBase {
       System.out.println("GOING UP");
     } else {
       Arm.setLift(0);
+      isDone = true;
     }
   }
 

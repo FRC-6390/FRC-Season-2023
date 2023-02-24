@@ -18,7 +18,7 @@ public class ElevatorCommand extends CommandBase {
   @Override
   public void initialize() {
     isDone = false;
-    pid = new PIDController(0.001, 0.0, 0);
+    pid = new PIDController(0.001, 0.00012, 0);
   }
 
   @Override
@@ -30,6 +30,7 @@ public class ElevatorCommand extends CommandBase {
       Elevator.set(pid.calculate(Elevator.getPosition(), setpoint));
       System.out.println("Elevator Moving: " + Elevator.getPosition());
       if((Elevator.getLimitSwitch() == false) && (setpoint == 0)){
+        Elevator.setPosition(0);
         isDone = true;
       }
     }

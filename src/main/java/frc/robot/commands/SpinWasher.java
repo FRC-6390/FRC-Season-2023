@@ -30,6 +30,7 @@ public class SpinWasher extends CommandBase {
 
   @Override
   public void execute() {
+    System.out.println(Intake.getPosition());
 
     if(Intake.getPosition() < -50){
       Intake.setRollers(intakeSpeed);
@@ -37,7 +38,6 @@ public class SpinWasher extends CommandBase {
 
     //moving grippers
     WashingMachine.setGrippers(0.5);
-    System.out.println(WashingMachine.getGripperPosition());
     if(WashingMachine.getGripperPosition() < -20000){
 
       //Turns on the washer after 1 second
@@ -49,11 +49,11 @@ public class SpinWasher extends CommandBase {
       } 
     }
 
-    if(Arm.getRollersVoltage() < 10){
-      Arm.setRoller(-0.5);
-    } else {
-      isDone = true;
-    }
+    // if(Arm.getRollersVoltage() < 10){
+    //   Arm.setRoller(-0.5);
+    // } else {
+    //   isDone = true;
+    // }
 
   }
 

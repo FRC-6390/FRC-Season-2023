@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.ArmDown;
 import frc.robot.commands.ArmUp;
-import frc.robot.commands.Candle;
 import frc.robot.commands.DriverControl;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.GoingHigh;
@@ -71,7 +70,7 @@ public class RobotContainer {
       new SpinWasher(0.5, 1.0);
     }
     if(controller.rightTrigger.getAsDouble() > 0.4){
-      new OutputRollers(0.5);
+      new OutputRollers(0.5, "cone");
     }
 
 
@@ -79,9 +78,11 @@ public class RobotContainer {
     controller.rightBumper.onTrue(new IntakeUp());
 
     //secondary driver controls on Logitech Controller
+    joystick.seven.whileTrue(new OutputRollers(0.5, "cube"));
+    joystick.nine.whileTrue(new OutputRollers(0.5, "cone"));
     joystick.seven.whileTrue(new SpinWasher(0.5, 1.0));
-    joystick.eleven.onTrue(new Candle("cube"));
-    joystick.twelve.onTrue(new Candle("cone"));
+    joystick.nine.whileTrue(new SpinWasher(0.5, 1));
+
   }
 
   public Command getAutonomousCommand(){
