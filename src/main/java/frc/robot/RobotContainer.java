@@ -28,7 +28,7 @@ public class RobotContainer {
   public static DriveTrain driveTrain = new DriveTrain();
 
   //controllers
-  private DebouncedController controller = new DebouncedController(0);
+  public static DebouncedController controller = new DebouncedController(0);
   private DebouncedJoystick joystick = new DebouncedJoystick(1);
 
   //smart dashboard auto selectors
@@ -48,6 +48,8 @@ public class RobotContainer {
     Shuffleboard.getTab("Auto").add(autoChooser);
     Shuffleboard.getTab("Auto Path Planner").add(autoPathChooser);
 
+ 
+
     configureBindings();
   }
 
@@ -65,13 +67,7 @@ public class RobotContainer {
     controller.y.onTrue(new GoingHigh());
 
 
-    //intaking system TRIGGERS
-    if(controller.leftTrigger.getAsDouble() > 0.4){
-      new SpinWasher(0.5, 1.0);
-    }
-    if(controller.rightTrigger.getAsDouble() > 0.4){
-      new OutputRollers(0.5, "cone");
-    }
+    
 
 
     controller.leftBumper.onTrue(new IntakeDown());

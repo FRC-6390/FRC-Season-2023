@@ -1,6 +1,8 @@
 package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.OutputRollers;
+import frc.robot.commands.SpinWasher;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -20,6 +22,15 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+
+       //intaking system TRIGGERS
+    if(RobotContainer.controller.leftTrigger.getAsDouble() > 0.4){
+      new SpinWasher(0.5, 1.0);
+      new OutputRollers(0.5, "cube");
+    }
+    if(RobotContainer.controller.rightTrigger.getAsDouble() > 0.4){
+      new OutputRollers(0.5, "cone");
+    }
   }
 
   @Override
