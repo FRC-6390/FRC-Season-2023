@@ -1,6 +1,8 @@
 package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.OutputRollers;
 import frc.robot.commands.SpinWasher;
 import frc.robot.subsystems.Arm;
@@ -24,13 +26,20 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
        //intaking system TRIGGERS
-    if(RobotContainer.controller.leftTrigger.getAsDouble() > 0.4){
-      new SpinWasher(0.5, 1.0);
-      new OutputRollers(0.5, "cube");
-    }
-    if(RobotContainer.controller.rightTrigger.getAsDouble() > 0.4){
-      new OutputRollers(0.5, "cone");
-    }
+    // if(RobotContainer.controller.leftTrigger(0.4) > 0.4){
+    //   Commands.parallel(
+    //   new SpinWasher(0.5, 1.0),
+    //   new OutputRollers(0.5, "cube"));
+    // }
+    // if(RobotContainer.controller.rightTrigger.getAsDouble() > 0.4){
+    //   new OutputRollers(0.5, "cone");
+    // }
+
+    // System.out.println(RobotContainer.controller.leftTriggerB.getAsBoolean());
+    // RobotContainer.controller.leftTrigger.whileTrue(
+    // new SequentialCommandGroup(
+    //     new SpinWasher(0.5, 1.0),
+    //     new OutputRollers(0.5, "cube")));
   }
 
   @Override

@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.WashingMachine;
@@ -30,15 +31,19 @@ public class SpinWasher extends CommandBase {
 
   @Override
   public void execute() {
-    System.out.println(Intake.getPosition());
+    System.out.println(Intake.getRollerCurrent());
 
     if(Intake.getPosition() < -50){
-      Intake.setRollers(intakeSpeed);
+      if(Intake.getRollerCurrent() > 50){
+        new WaitCommand(1);
+      } else{
+        Intake.setRollers(intakeSpeed);
+      }
     }
 
     //moving grippers
     WashingMachine.setGrippers(0.5);
-    if(WashingMachine.getGripperPosition() < -20000){
+    // if(WashingMachine.getGripperPosition() < -20000){
 
       //Turns on the washer after 1 second
       WashingMachine.setWasher(washerSpeed);
@@ -47,7 +52,7 @@ public class SpinWasher extends CommandBase {
         WashingMachine.reset();
         washerSpeed *= -1;
       } 
-    }
+    // }
 
     // if(Arm.getRollersVoltage() < 10){
     //   Arm.setRoller(-0.5);

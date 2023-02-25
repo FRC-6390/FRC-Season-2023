@@ -17,9 +17,9 @@ public class IntakeRollers extends CommandBase {
   @Override
   public void execute() {
     //as long as the intake is on its way down, it will allow it to spin
-    if(Intake.getPosition() < -50){
-      Intake.setRollers(speed);
-    }
+    System.out.println(Intake.getRollerCurrent());
+    Intake.setRollers(speed);
+    
   }
 
   @Override

@@ -1,5 +1,7 @@
 package frc.robot.utilities.controller;
 
+import java.util.ResourceBundle.Control;
+
 import edu.wpi.first.wpilibj.XboxController;
 
 public class DebouncedController extends XboxController {
@@ -73,7 +75,9 @@ public class DebouncedController extends XboxController {
      right = new DebouncedButton(this, BUTTONS.RIGHT.get()),
      left = new DebouncedButton(this, BUTTONS.LEFT.get()),
      back = new DebouncedButton(this, BUTTONS.BACK.get()),
-     start = new DebouncedButton(this, BUTTONS.START.get());
+     start = new DebouncedButton(this, BUTTONS.START.get()), 
+     rightTriggerB = new DebouncedButton(this, AXIS.RIGHT_TRIGGER.get()),
+     leftTriggerB = new DebouncedButton(this, AXIS.LEFT_TRIGGER.get());
      
      public ModifiedAxis leftX = new ModifiedAxis(this, AXIS.LEFT_X.get()),
      leftY = new ModifiedAxis(this, AXIS.LEFT_Y.get()),
@@ -87,4 +91,5 @@ public class DebouncedController extends XboxController {
     public DebouncedController(int port) {
         super(port);
     }
+
 }

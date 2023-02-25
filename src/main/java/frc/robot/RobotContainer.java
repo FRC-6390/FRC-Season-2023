@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.ArmDown;
 import frc.robot.commands.ArmUp;
 import frc.robot.commands.DriverControl;
@@ -48,8 +49,6 @@ public class RobotContainer {
     Shuffleboard.getTab("Auto").add(autoChooser);
     Shuffleboard.getTab("Auto Path Planner").add(autoPathChooser);
 
- 
-
     configureBindings();
   }
 
@@ -66,18 +65,23 @@ public class RobotContainer {
     controller.b.onTrue(new GoingMid());
     controller.y.onTrue(new GoingHigh());
 
-
     
 
 
-    controller.leftBumper.onTrue(new IntakeDown());
+    // controller.leftBumper.onTrue();
     controller.rightBumper.onTrue(new IntakeUp());
 
+    controller.leftBumper.whileTrue(new ParallelCommandGroup(new IntakeDown(), new SpinWasher(0.5, 0.9)));
+
+    controller.leftStick.whileTrue(new OutputRollers(0.5, "cone"));
+    controller.rightStick.whileTrue(new OutputRollers(0.5, "cube"));
+
     //secondary driver controls on Logitech Controller
-    joystick.seven.whileTrue(new OutputRollers(0.5, "cube"));
-    joystick.nine.whileTrue(new OutputRollers(0.5, "cone"));
-    joystick.seven.whileTrue(new SpinWasher(0.5, 1.0));
-    joystick.nine.whileTrue(new SpinWasher(0.5, 1));
+    joystick.seven.whileTrue(new ParallelCommandGroup(new OutputRollers(0.5, "cube"), new SpinWasher(0.5, 0)));
+    joystick.eight.whileTrue(new ParallelCommandGroup(new OutputRollers(0.5, "cone"),  new SpinWasher(0.5, 0)));
+
+    //outfeeding intake
+    joystick.eleven.whileTrue(new IntakeRollers(-0.5));
 
   }
 

@@ -46,6 +46,8 @@ public class ModifiedAxis implements DoubleSupplier {
         double value = applyDeadband(input.getAsDouble());
         return doSquaring ? sqaureAxis(value) : value;
     }
+
+    
       
 
 }

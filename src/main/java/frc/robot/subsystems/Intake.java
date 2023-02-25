@@ -52,6 +52,10 @@ public class Intake extends SubsystemBase {
     return intakeRoller.getSelectedSensorPosition();
   }
 
+  public static double getRollerCurrent(){
+    return intakeRoller.getSupplyCurrent();
+  }
+
   //Resets lift encoder
   public static void resetEncoder(){
     liftEncoder.setPosition(0);
