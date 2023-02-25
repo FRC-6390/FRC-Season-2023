@@ -36,8 +36,8 @@ public interface Constants {
         int LIMIT_SWITCH = 1;
 
         //encoder setpoint values
-        double SETPOINT_HIGH = 5000;
-        double SETPOINT_MID = 2900;
+        double SETPOINT_HIGH = 4950;
+        double SETPOINT_MID = 1500;
         double SETPOINT_LOW = 0;
     }
 

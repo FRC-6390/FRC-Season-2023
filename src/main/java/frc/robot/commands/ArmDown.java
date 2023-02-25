@@ -23,7 +23,7 @@ public class ArmDown extends CommandBase {
     isDone = false;
     ArmUp.isDone = true;
     CommandScheduler.getInstance().cancel(new ArmUp());
-    pid = new PIDController(0.014, 0.001, 0);
+    pid = new PIDController(0.015, 0.001, 0);
   }
 
   @Override

@@ -7,8 +7,7 @@ import frc.robot.Constants;
 public class GoingLow extends SequentialCommandGroup {
   
   public GoingLow() {
-    
     CommandScheduler.getInstance().cancelAll();
-    addCommands(new ElevatorCommand(Constants.ELEVATOR.SETPOINT_LOW), new ArmDown());
+    addCommands(new ArmUp(), new ElevatorCommand(Constants.ELEVATOR.SETPOINT_LOW), new ArmDown());
   }
 }

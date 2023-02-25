@@ -16,9 +16,7 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "Intake Up"
-        ],
+        "names": [],
         "executionBehavior": "parallelDeadline",
         "waitBehavior": "none",
         "waitTime": 0
@@ -70,7 +68,10 @@
       "isLocked": false,
       "isStopPoint": true,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "Spin Washer",
+          "Side Roller In"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -133,7 +134,8 @@
     {
       "position": 0.9890909090908481,
       "names": [
-        "Intake Down"
+        "Intake Down",
+        "Spin Washer"
       ]
     },
     {

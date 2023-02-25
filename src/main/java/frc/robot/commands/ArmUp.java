@@ -21,7 +21,7 @@ public class ArmUp extends CommandBase {
   public void initialize() {
     isDone = false;
     ArmDown.isDone = true;
-    pid = new PIDController(0.014, 0.0019, 0);
+    pid = new PIDController(0.02, 0.005, 0);
   }
 
   @Override
@@ -37,7 +37,7 @@ public class ArmUp extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    Arm.setLift(0);
+    Arm.setLift(0.055);
   }
 
   @Override

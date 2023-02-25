@@ -18,7 +18,7 @@ public class ElevatorCommand extends CommandBase {
   @Override
   public void initialize() {
     isDone = false;
-    pid = new PIDController(0.001, 0.00012, 0);
+    pid = new PIDController(0.00035, 0.0002, 0);
   }
 
   @Override
