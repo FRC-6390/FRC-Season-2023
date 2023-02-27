@@ -1,10 +1,6 @@
 package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.OutputRollers;
-import frc.robot.commands.SpinWasher;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
@@ -20,6 +16,7 @@ public class Robot extends TimedRobot {
     Intake.liftEncoder.setPosition(0);
     Arm.armEncoder.setPosition(0);
     Elevator.setPosition(0);
+    Arm.resetOutputRollerPosition();
   }
 
   @Override

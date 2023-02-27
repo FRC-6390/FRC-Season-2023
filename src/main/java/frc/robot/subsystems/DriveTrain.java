@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import java.util.ArrayList;
 
-import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.sensors.Pigeon2;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -20,7 +19,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.DRIVETRAIN;
 import frc.robot.Constants.ROBOT;
 import frc.robot.Constants.SWERVEMODULE;
@@ -108,6 +106,10 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
   public void zeroHeading(){
     gyro.setYaw(0);
     resetOdometry(pose);
+  }
+
+  public static void resetHeading(){
+    gyro.setYaw(0);
   }
 
   public double getRoll(){

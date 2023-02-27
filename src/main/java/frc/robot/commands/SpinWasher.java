@@ -1,8 +1,6 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
@@ -12,7 +10,6 @@ public class SpinWasher extends CommandBase {
 
   public boolean isDone;
   public double washerSpeed, intakeSpeed;
-  // private Timer timer;
 
   //Sets up speed parameter
   public SpinWasher(double washerSpeed, double intakeSpeed) {
@@ -22,9 +19,6 @@ public class SpinWasher extends CommandBase {
   
   @Override
   public void initialize() {
-    // timer = new Timer();
-    // timer.reset();
-    // timer.start();
     isDone = false;
     WashingMachine.resetGripperEncoder();
   }

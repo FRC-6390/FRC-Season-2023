@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Elevator;
 
 public class ElevatorCommand extends CommandBase {
@@ -18,11 +19,17 @@ public class ElevatorCommand extends CommandBase {
   @Override
   public void initialize() {
     isDone = false;
-    pid = new PIDController(0.00035, 0.0002, 0);
+    pid = new PIDController(0.0003, 0.0002, 0);
   }
 
   @Override
   public void execute() {   
+    if(setpoint == Constants.ELEVATOR.SETPOINT_HIGH){
+      if((Elevator.getPosition() > setpoint -50) && (Elevator.getPosition() < setpoint + 50)){
+        isDone = true;
+        System.out.println("Done");
+      }
+    }
     if((Elevator.getPosition() > setpoint -2) && (Elevator.getPosition() < setpoint +2)){
       isDone = true;
       System.out.println("Done");
@@ -34,6 +41,10 @@ public class ElevatorCommand extends CommandBase {
         isDone = true;
       }
     }
+  }
+
+  public static void reset(){
+    isDone = true;
   }
 
   @Override

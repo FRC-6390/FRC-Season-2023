@@ -5,32 +5,35 @@ import com.ctre.phoenix.led.CANdle;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.DriveTrain;
 
 public class OutputRollers extends CommandBase {
  
   public double speed;
-  public boolean isDone = false;
+  public boolean isDone;
   public String gamePiece;
+  public double rotations;
 
-  public OutputRollers(double speed, String gamePiece) {
+  public OutputRollers(double speed, String gamePiece, double rotations) {
     this.speed = speed;
     this.gamePiece = gamePiece;
+    this.rotations = rotations;
   }
 
   
   @Override
   public void initialize() {
+    isDone = false;
   }
 
   
   @Override
   public void execute() {
-    // if(Arm.getRollersVoltage() > 4){
-    //   Arm.setRoller(0);
-    //   isDone = true;
-    // } 
-    // else {
+    System.out.println(Math.abs(Arm.getOutputRollerPosition()));
+    if(rotations != 0){
+      if(Math.abs(Arm.getOutputRollerPosition()) > rotations){
+        isDone = true;
+      } 
+    }
       
       // System.out.println(Arm.getRollersVoltage());
       if(gamePiece == "Cube" || gamePiece == "cube"){
@@ -44,7 +47,7 @@ public class OutputRollers extends CommandBase {
         led.setLEDs(255, 188, 5);
         Arm.setRoller(-speed);
       }
-    // }
+    
   }
 
   

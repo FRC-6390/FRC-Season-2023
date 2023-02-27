@@ -3,11 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
-
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 import frc.robot.Constants;
 
 
@@ -26,6 +22,16 @@ public class Arm extends SubsystemBase {
   public static double getPosition(){
     return armEncoder.getPosition();
   }
+
+  //Gets lift position
+  public static double getOutputRollerPosition(){
+    return outputRoller.getSelectedSensorPosition();
+  }
+
+  public static void resetOutputRollerPosition(){
+    outputRoller.setSelectedSensorPosition(0);
+  }
+
 
   //Resets lift encoder
   public static void resetEncoder(){
