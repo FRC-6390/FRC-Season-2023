@@ -16,6 +16,7 @@ import frc.robot.commands.IntakeDown;
 import frc.robot.commands.IntakeRollers;
 import frc.robot.commands.IntakeUp;
 import frc.robot.commands.SpinWasher;
+import frc.robot.commands.TapeVission;
 import frc.robot.commands.auto.AutoBalance;
 import frc.robot.commands.auto.AutoPathPlanner;
 import frc.robot.subsystems.DriveTrain;
@@ -60,7 +61,7 @@ public class RobotContainer {
 
     // controller.a.whileTrue(new AprilTagVission(driveTrain, driveTrain.getLimelight(), Constants.AUTO.XY_PID_CONFIG, Constants.AUTO.THETA_PID_CONFIG));
     // controller.b.whileTrue(new AutoAlign(driveTrain, driveTrain.getLimelight(), driveTrain.getBlinkin(), Constants.AUTO.ALIGN_XY_PID_CONFIG, Constants.AUTO.ALIGN_THETA_PID_CONFIG));
-
+    controller.x.whileTrue(new TapeVission(driveTrain, driveTrain.getLimelight(), Constants.AUTO.XY_PID_CONFIG, Constants.AUTO.THETA_PID_CONFIG));
 
     controller.a.onTrue(new GoingDown());
     controller.b.onTrue(new GoingMid());
