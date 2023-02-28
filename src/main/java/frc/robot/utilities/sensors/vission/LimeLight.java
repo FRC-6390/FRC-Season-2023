@@ -13,7 +13,29 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 public class LimeLight {
     private LimelightConfig config;
     private NetworkTable limelightTable;
-    public NetworkTableEntry tv, tx, ty, ta, ts, tl, tshort, tlong, thor, getpipe, camtran, tid, json, botpose, tclass, tc, ledMode, camMode, pipeline, stream, snapshot, crop, tx0, ty0, ta0, ts0, tx1, ty1, ta1, ts1, tx2, ty2, ta2, ts2, cx0, cy0, cx1, cy1;
+    public NetworkTableEntry tv, tx, ty, ta, ts, tl, tshort, tlong, thor, getpipe, camtran, tid, json, botpose, tclass, tc;
+    public static NetworkTableEntry ledMode;
+    public NetworkTableEntry camMode;
+    public NetworkTableEntry pipeline;
+    public NetworkTableEntry stream;
+    public NetworkTableEntry snapshot;
+    public NetworkTableEntry crop;
+    public NetworkTableEntry tx0;
+    public NetworkTableEntry ty0;
+    public NetworkTableEntry ta0;
+    public NetworkTableEntry ts0;
+    public NetworkTableEntry tx1;
+    public NetworkTableEntry ty1;
+    public NetworkTableEntry ta1;
+    public NetworkTableEntry ts1;
+    public NetworkTableEntry tx2;
+    public NetworkTableEntry ty2;
+    public NetworkTableEntry ta2;
+    public NetworkTableEntry ts2;
+    public NetworkTableEntry cx0;
+    public NetworkTableEntry cy0;
+    public NetworkTableEntry cx1;
+    public NetworkTableEntry cy1;
 
     public enum LedMode{
         PIPELINE(0),
@@ -264,7 +286,7 @@ public class LimeLight {
     /**
      *  Sets limelight’s LED state
      */
-    public void setLedMode(LedMode mode){
+    public static void setLedMode(LedMode mode){
         ledMode.setNumber(mode.get());
     }
 

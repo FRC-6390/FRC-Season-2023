@@ -10,7 +10,7 @@ import frc.robot.subsystems.Arm;
 public class ArmUp extends CommandBase {
 
   //Dummy number
-  public double setpoint = 175;
+  public double setpoint = 160;
   public static PIDController pid;
   public static boolean isDone;
 
