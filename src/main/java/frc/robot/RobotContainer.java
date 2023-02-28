@@ -87,7 +87,6 @@ public class RobotContainer {
 
     //outfeeding intake
     joystick.eleven.whileTrue(new IntakeRollers(-0.5));
-    joystick.twelve.whileTrue(new InstantCommand(ElevatorCommand::reset));
 
   }
 
