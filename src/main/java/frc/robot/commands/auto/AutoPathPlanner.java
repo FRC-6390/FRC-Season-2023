@@ -40,6 +40,7 @@ public final class AutoPathPlanner {
         Map.entry("Intake Up", new IntakeUp()),
         Map.entry("Intake Down", new IntakeDown()),
         Map.entry("Intake In", new IntakeRollers(0.9)),
+        Map.entry("Intake Stop", new IntakeRollers(0.0)),
         Map.entry("Cube", new OutputRollers(0.3, "cube", 15000)),
         Map.entry("Cone", new OutputRollers(0.3, "cone", 15000)),
         Map.entry("L1", new GoingLow()),
@@ -61,6 +62,6 @@ public final class AutoPathPlanner {
     );
 
     public static CommandBase runAuto(String autoSelector) {
-        return autoBuilder.fullAuto(PathPlanner.loadPathGroup(autoSelector, new PathConstraints(3, 1.5)));
+        return autoBuilder.fullAuto(PathPlanner.loadPathGroup(autoSelector, new PathConstraints(1.5, 0.8)));
     }
 }

@@ -5,6 +5,8 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
+import frc.robot.utilities.sensors.vission.LimeLight;
+import frc.robot.utilities.sensors.vission.LimeLight.LedMode;
 
 public class Robot extends TimedRobot {
 
@@ -17,27 +19,12 @@ public class Robot extends TimedRobot {
     Arm.armEncoder.setPosition(0);
     Elevator.setPosition(0);
     Arm.resetOutputRollerPosition();
+    LimeLight.setLedMode(LedMode.OFF);
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-
-       //intaking system TRIGGERS
-    // if(RobotContainer.controller.leftTrigger(0.4) > 0.4){
-    //   Commands.parallel(
-    //   new SpinWasher(0.5, 1.0),
-    //   new OutputRollers(0.5, "cube"));
-    // }
-    // if(RobotContainer.controller.rightTrigger.getAsDouble() > 0.4){
-    //   new OutputRollers(0.5, "cone");
-    // }
-
-    // System.out.println(RobotContainer.controller.leftTriggerB.getAsBoolean());
-    // RobotContainer.controller.leftTrigger.whileTrue(
-    // new SequentialCommandGroup(
-    //     new SpinWasher(0.5, 1.0),
-    //     new OutputRollers(0.5, "cube")));
   }
 
   @Override
@@ -51,6 +38,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_robotContainer.getAutonomousCommand().schedule();
+    Arm.resetOutputRollerPosition();
   }
 
   @Override

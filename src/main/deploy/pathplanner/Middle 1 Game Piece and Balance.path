@@ -19,7 +19,6 @@
         "names": [
           "L3",
           "Cube",
-          "Wait",
           "L0"
         ],
         "executionBehavior": "sequential",
@@ -29,27 +28,24 @@
     },
     {
       "anchorPoint": {
-        "x": 6.466598933197867,
+        "x": 3.8899452084618455,
         "y": 2.719801153888022
       },
       "prevControl": {
-        "x": 5.830921186816769,
+        "x": 3.253561061907938,
         "y": 2.719801153888022
       },
       "nextControl": {
-        "x": 7.1022766795789645,
+        "x": 4.526329355015752,
         "y": 2.719801153888022
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
-      "velOverride": 1.0,
+      "velOverride": null,
       "isLocked": false,
-      "isStopPoint": true,
+      "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "Intake In",
-          "Wait"
-        ],
+        "names": [],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -57,11 +53,36 @@
     },
     {
       "anchorPoint": {
-        "x": 4.247813781341849,
+        "x": 6.91035596356907,
+        "y": 2.6911716680576223
+      },
+      "prevControl": {
+        "x": 6.274678217187972,
+        "y": 2.6911716680576223
+      },
+      "nextControl": {
+        "x": 7.5460337099501675,
+        "y": 2.6911716680576223
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": 1.0,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 4.40527595340905,
         "y": 2.719801153888022
       },
       "prevControl": {
-        "x": 4.791774012119453,
+        "x": 4.949236184186654,
         "y": 2.719801153888022
       },
       "nextControl": null,
@@ -80,20 +101,22 @@
       }
     }
   ],
-  "maxVelocity": 1.0,
-  "maxAcceleration": 1.0,
+  "maxVelocity": 1.5,
+  "maxAcceleration": 0.75,
   "isReversed": null,
   "markers": [
     {
-      "position": 0.6727272727272728,
+      "position": 1.5000000000000004,
       "names": [
-        "Intake Down"
+        "Intake Down",
+        "Intake In"
       ]
     },
     {
-      "position": 1.599999999999997,
+      "position": 2.454545454545449,
       "names": [
-        "Intake Up"
+        "Intake Up",
+        "Intake Stop"
       ]
     }
   ]
