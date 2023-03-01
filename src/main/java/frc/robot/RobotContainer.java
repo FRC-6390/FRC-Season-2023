@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.DriverControl;
-import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.GoingDown;
 import frc.robot.commands.GoingHigh;
 import frc.robot.commands.GoingLow;
@@ -59,8 +58,6 @@ public class RobotContainer {
     controller.start.whileTrue(new InstantCommand(driveTrain::zeroHeading));
     controller.back.whileTrue(new AutoBalance(driveTrain));
 
-    // controller.a.whileTrue(new AprilTagVission(driveTrain, driveTrain.getLimelight(), Constants.AUTO.XY_PID_CONFIG, Constants.AUTO.THETA_PID_CONFIG));
-    // controller.b.whileTrue(new AutoAlign(driveTrain, driveTrain.getLimelight(), driveTrain.getBlinkin(), Constants.AUTO.ALIGN_XY_PID_CONFIG, Constants.AUTO.ALIGN_THETA_PID_CONFIG));
     controller.x.whileTrue(new TapeVission(driveTrain, driveTrain.getLimelight(), Constants.AUTO.XY_PID_CONFIG, Constants.AUTO.THETA_PID_CONFIG));
 
     controller.a.onTrue(new GoingDown());
@@ -73,10 +70,10 @@ public class RobotContainer {
     // controller.leftBumper.onTrue();
     controller.rightBumper.onTrue(new IntakeUp());
 
-    controller.leftBumper.whileTrue(new ParallelCommandGroup(new IntakeDown(), new SpinWasher(0.5, 0.9)));
+    controller.leftBumper.whileTrue(new ParallelCommandGroup(new IntakeDown(), new IntakeRollers(0.8)));
 
-    controller.leftStick.whileTrue(new OutputRollers(0.5, "cone", 0));
-    controller.rightStick.whileTrue(new OutputRollers(0.5, "cube", 0));
+    controller.leftStick.whileTrue(new OutputRollers(0.65, "cone", 0));
+    controller.rightStick.whileTrue(new OutputRollers(0.65, "cube", 0));
 
     //secondary driver controls on Logitech Controller
     joystick.seven.whileTrue(new ParallelCommandGroup(new OutputRollers(0.5, "cube", 0), new SpinWasher(0.5, 0)));
@@ -91,7 +88,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand(){
-    return AutoPathPlanner.runAuto(autoPathChooser.getSelected());
+    return AutoPathPlanner.runAuto("Middle 1 Game Piece and Balance");
+    //autoPathChooser.getSelected()
   }
 
 
