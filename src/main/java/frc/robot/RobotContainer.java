@@ -70,7 +70,7 @@ public class RobotContainer {
     // controller.leftBumper.onTrue();
     controller.rightBumper.onTrue(new IntakeUp());
 
-    controller.leftBumper.whileTrue(new ParallelCommandGroup(new IntakeDown(), new IntakeRollers(0.8)));
+    controller.leftBumper.whileTrue(new ParallelCommandGroup(new IntakeDown(), new IntakeRollers(1.0)));
 
     controller.leftStick.whileTrue(new OutputRollers(0.65, "cone", 0));
     controller.rightStick.whileTrue(new OutputRollers(0.65, "cube", 0));
@@ -82,9 +82,14 @@ public class RobotContainer {
     joystick.nine.onTrue(new GoingLow());
     joystick.ten.onTrue(new GoingDown());
 
+    
+    joystick.three.onTrue(new InstantCommand(driveTrain::unlockWheels));
+    joystick.four.onTrue(new InstantCommand(driveTrain::lockWheels));
+
     //outfeeding intake
     joystick.eleven.whileTrue(new IntakeRollers(-0.5));
 
+    
   }
 
   public Command getAutonomousCommand(){

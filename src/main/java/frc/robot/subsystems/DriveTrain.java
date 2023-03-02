@@ -76,6 +76,7 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     rotationPidController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
+
   public void shuffleboard(){
     tab.addDouble("Front Left Encoder", () -> swerveModules[0].getAbsolutePosition());
     tab.addDouble("Front Right Encoder", () -> swerveModules[1].getAbsolutePosition());
@@ -222,7 +223,7 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     double thetaSpeed = chassisSpeeds.omegaRadiansPerSecond + feedbackSpeeds.omegaRadiansPerSecond;
     ChassisSpeeds speed = new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
 
-    driftCorrection(speed);
+   // driftCorrection(speed);
 
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speed);
     

@@ -17,6 +17,7 @@ import frc.robot.commands.OutputRollers;
 import frc.robot.commands.SpinWasher;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import java.util.HashMap;
@@ -35,6 +36,7 @@ public final class AutoPathPlanner {
 
     //events to trigger commands while in autonomous
     private static final Map<String, Command> eventMap = new HashMap<>(Map.ofEntries(
+        Map.entry("Reset", new InstantCommand(RobotContainer.driveTrain::zeroHeading)),
         Map.entry("Wait", new WaitCommand(1)),
         Map.entry("Spin Washer", new SpinWasher(0.5, 0.9)),
         Map.entry("Intake Up", new IntakeUp()),

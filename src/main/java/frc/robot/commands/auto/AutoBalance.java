@@ -9,8 +9,8 @@ public class AutoBalance extends CommandBase {
 
   DriveTrain driveTrain;
   ChassisSpeeds speeds;
-  PIDController xController = new PIDController(0.06, 0.001, 0);
-  PIDController yController = new PIDController(0.06, 0.001, 0);
+  PIDController xController = new PIDController(0.05, 0.001, 0);
+  PIDController yController = new PIDController(0.05, 0.001, 0);
   double pitchSpeed, rollSpeed;
   boolean isDone;
 
