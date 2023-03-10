@@ -8,6 +8,6 @@ public class GoingMid extends SequentialCommandGroup {
   
   public GoingMid() {
     ElevatorCommand.isDone = true;
-    addCommands(new InstantCommand(ElevatorCommand::reset), new ArmUp(), new ElevatorCommand(Constants.ELEVATOR.SETPOINT_MID));
+    // addCommands(new InstantCommand(ElevatorCommand::reset), new ArmUp(), new ElevatorCommand(Constants.ELEVATOR.SETPOINT_MID));
   }
 }

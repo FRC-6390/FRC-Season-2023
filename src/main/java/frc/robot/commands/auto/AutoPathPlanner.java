@@ -6,6 +6,8 @@ import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
+import frc.robot.commands.ArmDown;
+import frc.robot.commands.ArmUp;
 import frc.robot.commands.GoingDown;
 import frc.robot.commands.GoingHigh;
 import frc.robot.commands.GoingLow;
@@ -42,13 +44,17 @@ public final class AutoPathPlanner {
         Map.entry("Intake Up", new IntakeUp()),
         Map.entry("Intake Down", new IntakeDown()),
         Map.entry("Intake In", new IntakeRollers(0.9)),
+        Map.entry("Intake Out", new IntakeRollers(-0.9)),
         Map.entry("Intake Stop", new IntakeRollers(0.0)),
         Map.entry("Cube", new OutputRollers(0.3, "cube", 15000)),
         Map.entry("Cone", new OutputRollers(0.3, "cone", 15000)),
-        Map.entry("L1", new GoingLow()),
-        Map.entry("L2", new GoingMid()),
-        Map.entry("L3", new GoingHigh()),
-        Map.entry("L0", new GoingDown()),
+        // Map.entry("L1", new GoingLow()),
+        // Map.entry("L2", new GoingMid()),
+        // Map.entry("L3", new GoingHigh()),
+        // Map.entry("L0", new GoingDown()),
+        
+        Map.entry("L2", new ArmUp(50)),
+        Map.entry("L0", new ArmDown()),
         Map.entry("Auto Balance", new AutoBalance(RobotContainer.driveTrain)) 
     ));
 
@@ -64,6 +70,7 @@ public final class AutoPathPlanner {
     );
 
     public static CommandBase runAuto(String autoSelector) {
-        return autoBuilder.fullAuto(PathPlanner.loadPathGroup(autoSelector, new PathConstraints(1.5, 0.8)));
+        //1.5   0.8
+        return autoBuilder.fullAuto(PathPlanner.loadPathGroup(autoSelector, new PathConstraints(1.3, 0.8)));
     }
 }

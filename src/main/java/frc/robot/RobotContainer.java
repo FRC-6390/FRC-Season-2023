@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.commands.ArmDown;
+import frc.robot.commands.ArmUp;
 import frc.robot.commands.DriverControl;
 import frc.robot.commands.GoingDown;
 import frc.robot.commands.GoingHigh;
@@ -60,27 +62,33 @@ public class RobotContainer {
 
     controller.x.whileTrue(new TapeVission(driveTrain, driveTrain.getLimelight(), Constants.AUTO.XY_PID_CONFIG, Constants.AUTO.THETA_PID_CONFIG));
 
-    controller.a.onTrue(new GoingDown());
-    controller.b.onTrue(new GoingMid());
-    controller.y.onTrue(new GoingHigh());
+    // controller.a.onTrue(new GoingDown());
+    // controller.b.onTrue(new GoingMid());
+    // controller.y.onTrue(new GoingHigh());
+
+    controller.a.onTrue(new ArmDown());
+    controller.b.onTrue(new ArmUp(140));
+    controller.y.onTrue(new ArmUp(220));
+
 
     
-
-
-    // controller.leftBumper.onTrue();
     controller.rightBumper.onTrue(new IntakeUp());
 
     controller.leftBumper.whileTrue(new ParallelCommandGroup(new IntakeDown(), new IntakeRollers(1.0)));
 
-    controller.leftStick.whileTrue(new OutputRollers(0.65, "cone", 0));
-    controller.rightStick.whileTrue(new OutputRollers(0.65, "cube", 0));
+    //0.65 speed
+    controller.leftStick.whileTrue(new OutputRollers(0.9, "cone", 0));
+    controller.rightStick.whileTrue(new OutputRollers(0.9, "cube", 0));
 
     //secondary driver controls on Logitech Controller
     joystick.seven.whileTrue(new ParallelCommandGroup(new OutputRollers(0.5, "cube", 0), new SpinWasher(0.5, 0)));
     joystick.eight.whileTrue(new ParallelCommandGroup(new OutputRollers(0.5, "cone", 0),  new SpinWasher(0.5, 0)));
 
-    joystick.nine.onTrue(new GoingLow());
-    joystick.ten.onTrue(new GoingDown());
+    // joystick.nine.onTrue(new GoingLow());
+    // joystick.ten.onTrue(new GoingDown());
+    joystick.nine.onTrue(new ArmUp(120));
+    joystick.ten.onTrue(new ArmDown());
+    
 
     
     joystick.three.onTrue(new InstantCommand(driveTrain::unlockWheels));
@@ -93,6 +101,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand(){
+    //"Middle 1 Game Piece and Balance"
     return AutoPathPlanner.runAuto("Middle 1 Game Piece and Balance");
     //autoPathChooser.getSelected()
   }

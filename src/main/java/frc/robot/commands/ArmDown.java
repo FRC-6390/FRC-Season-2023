@@ -22,7 +22,8 @@ public class ArmDown extends CommandBase {
   public void initialize() {
     isDone = false;
     ArmUp.isDone = true;
-    CommandScheduler.getInstance().cancel(new ArmUp());
+    CommandScheduler.getInstance().cancel(new ArmUp(120));
+    CommandScheduler.getInstance().cancel(new ArmUp(190));
     pid = new PIDController(0.015, 0.001, 0);
   }
 

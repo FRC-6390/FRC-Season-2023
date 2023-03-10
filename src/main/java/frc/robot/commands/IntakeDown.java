@@ -11,7 +11,7 @@ import frc.robot.subsystems.Intake;
 public class IntakeDown extends CommandBase {
 
   //dummy number for encoder
-  public double setpoint = -105;
+  public double setpoint = -13000;
   public PIDController pid;
   public static boolean isDone;
 
@@ -24,14 +24,14 @@ public class IntakeDown extends CommandBase {
     isDone = false;
     IntakeUp.isDone = true;
     Intake.intakeLift.setNeutralMode(NeutralMode.Brake);
-    pid = new PIDController(0.0035, 0.0, 0);
+    pid = new PIDController(0.000025, 0.0, 0);
   }
 
   @Override
   public void execute() {
     System.out.println(Intake.getPosition());
     //If within a certain range, end command, else run PID
-    if(Intake.getPosition() < -85){
+    if(Intake.getPosition() < -14200){
       isDone = true;
     } else{
       Intake.setLift(pid.calculate(Intake.getPosition(), setpoint));
@@ -45,6 +45,7 @@ public class IntakeDown extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return isDone;
+    // return isDone;
+    return false;
   }
 }

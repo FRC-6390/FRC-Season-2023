@@ -9,8 +9,8 @@ public class AutoBalance extends CommandBase {
 
   DriveTrain driveTrain;
   ChassisSpeeds speeds;
-  PIDController xController = new PIDController(0.05, 0.001, 0);
-  PIDController yController = new PIDController(0.05, 0.001, 0);
+  PIDController xController = new PIDController(0.042, 0.001, 0);
+  PIDController yController = new PIDController(0.042, 0.001, 0);
   double pitchSpeed, rollSpeed;
   boolean isDone;
 
@@ -49,11 +49,11 @@ public class AutoBalance extends CommandBase {
     }
 
     //false is when it is balanced
-    if(Math.abs(driveTrain.getPitch()) < 0.6 && Math.abs(driveTrain.getRoll()) < 0.6){
-      isDone = true;
-    } else{
+    // if(Math.abs(driveTrain.getPitch()) < 0.6 && Math.abs(driveTrain.getRoll()) < 0.6){
+      // isDone = true;
+    // } else{
       driveTrain.drive(speeds);
-    }
+    // }
     System.out.println(isDone);
   }
 

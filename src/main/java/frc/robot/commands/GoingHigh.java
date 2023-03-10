@@ -8,6 +8,6 @@ public class GoingHigh extends SequentialCommandGroup {
   
   public GoingHigh() {
     ElevatorCommand.isDone = true;
-    addCommands(new InstantCommand(ElevatorCommand::reset), new ArmUp(), new ElevatorCommand(Constants.ELEVATOR.SETPOINT_HIGH));
+    // addCommands(new InstantCommand(ElevatorCommand::reset), new ArmUp(), new ElevatorCommand(Constants.ELEVATOR.SETPOINT_HIGH));
   }
 }
