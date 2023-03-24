@@ -19,6 +19,12 @@ public interface Constants {
         int ARM_MOTOR = 18;
         int ARM_ENCODER = 19;
         int OUTPUT_ROLLER = 17;
+
+        
+        int SETPOINT_SCORE = 154;
+        int SETPOINT_SHELF_1 = 135;
+        int SETPOINT_SHELF_2 = 181;
+        int SETPOINT_DOWN = 0;
     }
 
     public interface GRIPPER {
@@ -36,7 +42,8 @@ public interface Constants {
         int LIMIT_SWITCH = 1;
 
         //encoder setpoint values
-        double SETPOINT_HIGH = 5950;
+        double SETPOINT_HIGH = 5150;
+        double SETPOINT_SHELF = 3000;
         double SETPOINT_MID = 1790;
         double SETPOINT_LOW = 0;
         double SETPOINT_DOWN = 0;
@@ -51,6 +58,9 @@ public interface Constants {
         double GEARBOX_RATIO = 1d/10d;
         PIDConfig pidConfig = new PIDConfig(0, 0, 0);
         MotionProfileConfig config = new MotionProfileConfig(0.1, 0.04, pidConfig);
+
+        int SETPOINT_DOWN = -110;
+        int SETPOINT_UP = -2;
     }
 
     public interface DRIVETRAIN{

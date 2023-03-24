@@ -38,7 +38,7 @@ public class LimeLight {
     public NetworkTableEntry cy1;
 
     public enum LedMode{
-        PIPELINE(0),
+        PIPELINE(1),
         OFF(1),
         BLINK(2),
         ON(3);

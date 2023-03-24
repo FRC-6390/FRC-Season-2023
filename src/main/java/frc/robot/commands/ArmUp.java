@@ -9,7 +9,6 @@ import frc.robot.subsystems.Arm;
 
 public class ArmUp extends CommandBase {
 
-  //Dummy number 190 high 120 normal
   public double setpoint;
   public static PIDController pid;
   public static boolean isDone;
@@ -22,7 +21,7 @@ public class ArmUp extends CommandBase {
   public void initialize() {
     isDone = false;
     ArmDown.isDone = true;
-    pid = new PIDController(0.024, 0.0075, 0);
+    pid = new PIDController(0.015, 0.005, 0);
   }
 
   @Override

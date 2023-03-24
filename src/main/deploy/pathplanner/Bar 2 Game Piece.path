@@ -2,40 +2,71 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.8,
-        "y": 2.7330744533101043
+        "x": 1.8092227910561378,
+        "y": 0.4688537765092641
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5090906091839362,
-        "y": 2.7330744533101043
+        "x": 2.530452653888413,
+        "y": 0.4688537765092641
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
-      "velOverride": 1.0,
+      "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Cube"
+          "L3",
+          "Cube",
+          "L0"
         ],
-        "executionBehavior": "sequential",
+        "executionBehavior": "parallel",
         "waitBehavior": "none",
-        "waitTime": 1.0
+        "waitTime": 0
       }
     },
     {
       "anchorPoint": {
-        "x": 3.8899452084618455,
-        "y": 2.719801153888022
+        "x": 7.000920706548974,
+        "y": 0.9491430109821704
       },
       "prevControl": {
-        "x": 3.253561061907938,
-        "y": 2.719801153888022
+        "x": 6.819682265254629,
+        "y": 0.9491430109821704
       },
       "nextControl": {
-        "x": 4.526329355015752,
-        "y": 2.719801153888022
+        "x": 7.182159147843318,
+        "y": 0.9491430109821704
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "Spin Washer",
+          "Intake In",
+          "Cone"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 3.570283317456792,
+        "y": 0.8233529733821224
+      },
+      "prevControl": {
+        "x": 3.7451991810197525,
+        "y": 0.8254860936694755
+      },
+      "nextControl": {
+        "x": 2.6325757644382612,
+        "y": 0.8119175154184826
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -51,71 +82,49 @@
     },
     {
       "anchorPoint": {
-        "x": 6.9456330365652175,
-        "y": 2.740600352995578
+        "x": 1.9350128286561847,
+        "y": 1.0177557587640131
       },
       "prevControl": {
-        "x": 6.30995529018412,
-        "y": 2.740600352995578
-      },
-      "nextControl": {
-        "x": 7.581310782946315,
-        "y": 2.740600352995578
-      },
-      "holonomicAngle": 180.0,
-      "isReversal": false,
-      "velOverride": 1.0,
-      "isLocked": false,
-      "isStopPoint": true,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 3.9538109845450458,
-        "y": 2.7177620167206156
-      },
-      "prevControl": {
-        "x": 4.49777121532265,
-        "y": 2.7177620167206156
+        "x": 2.8384140077837925,
+        "y": 0.7661756835639195
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
       "isReversal": false,
-      "velOverride": 1.0,
+      "velOverride": null,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Reset",
-          "Auto Balance"
+          "L3",
+          "Cone",
+          "L0"
         ],
-        "executionBehavior": "sequential",
+        "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
       }
     }
   ],
-  "maxVelocity": 1.5,
-  "maxAcceleration": 0.75,
-  "isReversed": null,
+  "maxVelocity": 2.0,
+  "maxAcceleration": 1.0,
+  "isReversed": false,
   "markers": [
     {
-      "position": 1.4400000000000046,
+      "position": 0.4072727272727163,
       "names": [
         "Intake Down",
         "Intake In"
       ]
     },
     {
-      "position": 2.454545454545449,
+      "position": 1.4836363636363117,
       "names": [
         "Intake Up",
-        "Intake Stop"
+        "Spin Washer",
+        "Intake In",
+        "Cone"
       ]
     }
   ]

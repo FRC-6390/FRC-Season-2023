@@ -35,19 +35,18 @@ public class OutputRollers extends CommandBase {
       } 
     }
       
-      // System.out.println(Arm.getRollersVoltage());
-      if(gamePiece == "Cube" || gamePiece == "cube"){
-        CANdle led = new CANdle(Constants.ROBOT.CANDLE_ID, "can");
-        led.setLEDs(125, 35, 250);
-        Arm.setRoller(speed);
-      } 
-  
-      if(gamePiece == "Cone" || gamePiece == "cone"){
-        CANdle led = new CANdle(Constants.ROBOT.CANDLE_ID, "can");
-        led.setLEDs(255, 188, 5);
-        Arm.setRoller(-speed);
-      }
-    
+    // System.out.println(Arm.getRollersVoltage());
+    if(gamePiece == "Cube" || gamePiece == "cube"){
+      CANdle led = new CANdle(Constants.ROBOT.CANDLE_ID, "can");
+      led.setLEDs(125, 35, 250);
+      Arm.setRoller(speed);
+    } 
+
+    if(gamePiece == "Cone" || gamePiece == "cone"){
+      CANdle led = new CANdle(Constants.ROBOT.CANDLE_ID, "can");
+      led.setLEDs(255, 188, 5);
+      Arm.setRoller(-speed);
+    } 
   }
 
   

@@ -9,9 +9,11 @@ import frc.robot.commands.ArmDown;
 import frc.robot.commands.ArmUp;
 import frc.robot.commands.DriverControl;
 import frc.robot.commands.GoingDown;
+import frc.robot.commands.GoingDownNoArm;
 import frc.robot.commands.GoingHigh;
 import frc.robot.commands.GoingLow;
 import frc.robot.commands.GoingMid;
+import frc.robot.commands.GoingShelf;
 import frc.robot.commands.OutputRollers;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.IntakeRollers;
@@ -62,37 +64,32 @@ public class RobotContainer {
 
     controller.x.whileTrue(new TapeVission(driveTrain, driveTrain.getLimelight(), Constants.AUTO.XY_PID_CONFIG, Constants.AUTO.THETA_PID_CONFIG));
 
-    // controller.a.onTrue(new GoingDown());
-    // controller.b.onTrue(new GoingMid());
-    // controller.y.onTrue(new GoingHigh());
-
-    controller.a.onTrue(new ArmDown());
-    controller.b.onTrue(new ArmUp(140));
-    controller.y.onTrue(new ArmUp(220));
-
-
+    controller.a.onTrue(new GoingDown());
+    controller.b.onTrue(new GoingMid());
+    controller.y.onTrue(new GoingHigh());
     
-    controller.rightBumper.onTrue(new IntakeUp());
-
+    controller.rightBumper.whileTrue(new ParallelCommandGroup(new IntakeUp(), new IntakeRollers(1.0)));
     controller.leftBumper.whileTrue(new ParallelCommandGroup(new IntakeDown(), new IntakeRollers(1.0)));
 
-    //0.65 speed
     controller.leftStick.whileTrue(new OutputRollers(0.9, "cone", 0));
     controller.rightStick.whileTrue(new OutputRollers(0.9, "cube", 0));
 
+
+    
     //secondary driver controls on Logitech Controller
     joystick.seven.whileTrue(new ParallelCommandGroup(new OutputRollers(0.5, "cube", 0), new SpinWasher(0.5, 0)));
     joystick.eight.whileTrue(new ParallelCommandGroup(new OutputRollers(0.5, "cone", 0),  new SpinWasher(0.5, 0)));
 
-    // joystick.nine.onTrue(new GoingLow());
-    // joystick.ten.onTrue(new GoingDown());
-    joystick.nine.onTrue(new ArmUp(120));
-    joystick.ten.onTrue(new ArmDown());
-    
+    joystick.nine.onTrue(new GoingLow());
+    joystick.ten.onTrue(new GoingDown());
 
+    joystick.one.onTrue(new ArmUp(Constants.ARM.SETPOINT_SHELF_2));
+    joystick.one.whileTrue(new OutputRollers(0.9, "cone", 0));
+    joystick.two.onTrue(new ArmDown());
     
-    joystick.three.onTrue(new InstantCommand(driveTrain::unlockWheels));
-    joystick.four.onTrue(new InstantCommand(driveTrain::lockWheels));
+    //not working ignore for now
+    // joystick.three.onTrue(new InstantCommand(driveTrain::unlockWheels));
+    // joystick.four.onTrue(new InstantCommand(driveTrain::lockWheels));
 
     //outfeeding intake
     joystick.eleven.whileTrue(new IntakeRollers(-0.5));
@@ -107,8 +104,4 @@ public class RobotContainer {
   }
 
 
-
-  // public void createSystemTestButtonBinding(){
-  //   controller.a.toggleOnTrue(new TestSystems(controller.top, controller.bottom, controller.leftY, driveTrain));
-  // }
 }

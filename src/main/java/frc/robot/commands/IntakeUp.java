@@ -5,11 +5,12 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
 
 public class IntakeUp extends CommandBase {
 
-  public double setpoint = 900;
+  public double setpoint = Constants.INTAKE.SETPOINT_UP;
   public static PIDController pid;
   public static boolean isDone;
 
@@ -21,7 +22,7 @@ public class IntakeUp extends CommandBase {
     isDone = false;
     IntakeDown.isDone = true;
     Intake.intakeLift.setNeutralMode(NeutralMode.Brake);
-    pid = new PIDController(0.000035, 0.0, 0);
+    pid = new PIDController(0.0061, 0.0, 0);
   }
 
   @Override
@@ -29,7 +30,7 @@ public class IntakeUp extends CommandBase {
     
     System.out.println(Intake.getPosition());
     //as long as the limit switch is not triggered run the PID
-    if(Intake.getPosition() < setpoint - 100){
+    if(Intake.getPosition() < setpoint - 2){
       Intake.setLift(pid.calculate(Intake.getPosition(), setpoint));
       System.out.println("GOING UP");
     } 
@@ -37,7 +38,8 @@ public class IntakeUp extends CommandBase {
     if(Intake.getLimitSwitch() == false){
       System.out.println("RESET");
       Intake.liftEncoder.setPosition(0);
-      // isDone = true;
+      Intake.setLift(0);
+      // isDone = true; CHECK IF NEEDED
     }
   }
 
