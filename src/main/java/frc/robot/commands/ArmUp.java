@@ -12,16 +12,22 @@ public class ArmUp extends CommandBase {
   public double setpoint;
   public static PIDController pid;
   public static boolean isDone;
+  public static boolean overidePID;
 
-  public ArmUp(double setpoint) {
+  public ArmUp(double setpoint, boolean overidePID) {
     this.setpoint = setpoint;
+    this.overidePID = overidePID;
   }
 
   @Override
   public void initialize() {
     isDone = false;
     ArmDown.isDone = true;
-    pid = new PIDController(0.015, 0.005, 0);
+    if(overidePID == true){
+      pid = new PIDController(0.03, 0.02, 0);
+    } else {
+      pid = new PIDController(0.015, 0.005, 0);
+    }
   }
 
   @Override
