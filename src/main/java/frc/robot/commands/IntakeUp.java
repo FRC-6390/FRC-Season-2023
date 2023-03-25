@@ -22,7 +22,7 @@ public class IntakeUp extends CommandBase {
     isDone = false;
     IntakeDown.isDone = true;
     Intake.intakeLift.setNeutralMode(NeutralMode.Brake);
-    pid = new PIDController(0.0061, 0.0, 0);
+    pid = new PIDController(0.003, 0.0, 0);
   }
 
   @Override
@@ -30,7 +30,7 @@ public class IntakeUp extends CommandBase {
     
     System.out.println(Intake.getPosition());
     //as long as the limit switch is not triggered run the PID
-    if(Intake.getPosition() < setpoint - 2){
+    if(Intake.getPosition() < setpoint - 5){
       Intake.setLift(pid.calculate(Intake.getPosition(), setpoint));
       System.out.println("GOING UP");
     } 

@@ -8,6 +8,6 @@ public class GoingShelf extends SequentialCommandGroup {
   
   public GoingShelf(){
     ElevatorCommand.isDone = true;
-    addCommands(new InstantCommand(ElevatorCommand::reset), new ArmUp(Constants.ARM.SETPOINT_SHELF_2)/* , new ElevatorCommand(Constants.ELEVATOR.SETPOINT_HIGH)*/);
+    addCommands(new InstantCommand(ElevatorCommand::reset), new ArmUp(Constants.ARM.SETPOINT_SHELF_2,false)/* , new ElevatorCommand(Constants.ELEVATOR.SETPOINT_HIGH)*/);
   }
 }

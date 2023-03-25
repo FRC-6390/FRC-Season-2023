@@ -23,6 +23,7 @@ public class OutputRollers extends CommandBase {
   @Override
   public void initialize() {
     isDone = false;
+    Arm.resetOutputRollerPosition();
   }
 
   

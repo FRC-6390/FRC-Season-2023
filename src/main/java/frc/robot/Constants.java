@@ -59,7 +59,7 @@ public interface Constants {
         PIDConfig pidConfig = new PIDConfig(0, 0, 0);
         MotionProfileConfig config = new MotionProfileConfig(0.1, 0.04, pidConfig);
 
-        int SETPOINT_DOWN = -110;
+        int SETPOINT_DOWN = -90;
         int SETPOINT_UP = -2;
     }
 

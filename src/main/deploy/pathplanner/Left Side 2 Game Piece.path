@@ -21,23 +21,23 @@
           "Cube",
           "L0"
         ],
-        "executionBehavior": "parallel",
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }
     },
     {
       "anchorPoint": {
-        "x": 6.899956364015293,
-        "y": 4.579086423130112
+        "x": 7.000920706548974,
+        "y": 4.53987681156532
       },
       "prevControl": {
-        "x": 5.228970245104349,
-        "y": 4.579086423130112
+        "x": 5.3299345876380295,
+        "y": 4.53987681156532
       },
       "nextControl": {
-        "x": 5.228970245104349,
-        "y": 4.579086423130112
+        "x": 5.3299345876380295,
+        "y": 4.53987681156532
       },
       "holonomicAngle": 180.0,
       "isReversal": true,
@@ -107,8 +107,37 @@
         "y": 4.436957689892555
       },
       "prevControl": {
-        "x": 2.461043894983652,
-        "y": 4.4026513160016325
+        "x": 2.4622391762156113,
+        "y": 4.436957689892555
+      },
+      "nextControl": {
+        "x": 1.9121419127289037,
+        "y": 4.436957689892555
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "L3",
+          "Cube",
+          "L0"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 3.7075088130204783,
+        "y": 3.1904927718557285
+      },
+      "prevControl": {
+        "x": 2.563963016656418,
+        "y": 2.8817354068374326
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -118,9 +147,8 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Wait",
-          "L3",
-          "Cone"
+          "Reset",
+          "Balance"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
@@ -143,8 +171,7 @@
       "position": 1.658181818181803,
       "names": [
         "Intake Up",
-        "Spin Washer",
-        "Cube"
+        "Spin Washer"
       ]
     }
   ]

@@ -8,6 +8,6 @@ public class GoingLow extends SequentialCommandGroup {
   
   public GoingLow() {
     ElevatorCommand.isDone = true;
-    addCommands(new InstantCommand(ElevatorCommand::reset), new ArmUp(Constants.ARM.SETPOINT_SCORE), new ElevatorCommand(Constants.ELEVATOR.SETPOINT_LOW));
+    addCommands(new InstantCommand(ElevatorCommand::reset), new ArmUp(Constants.ARM.SETPOINT_SCORE, false), new ElevatorCommand(Constants.ELEVATOR.SETPOINT_LOW));
   }
 }

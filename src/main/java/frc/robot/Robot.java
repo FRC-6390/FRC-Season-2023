@@ -30,7 +30,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    Elevator.setPosition(0);
   }
 
   @Override

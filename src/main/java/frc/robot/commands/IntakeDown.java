@@ -25,14 +25,14 @@ public class IntakeDown extends CommandBase {
     isDone = false;
     IntakeUp.isDone = true;
     Intake.intakeLift.setNeutralMode(NeutralMode.Brake);
-    pid = new PIDController(0.0035, 0.0, 0);
+    pid = new PIDController(0.0045, 0.0, 0);
   }
 
   @Override
   public void execute() {
     System.out.println(Intake.getPosition());
     //If within a certain range, end command, else run PID
-    if(Intake.getPosition() < setpoint + 20){
+    if(Intake.getPosition() < setpoint){
       isDone = true;
     } else{
       System.out.println("Going Down");

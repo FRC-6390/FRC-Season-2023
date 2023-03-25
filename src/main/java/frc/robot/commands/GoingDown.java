@@ -9,6 +9,6 @@ public class GoingDown extends SequentialCommandGroup {
   public GoingDown() {
     ElevatorCommand.isDone = true;
     System.out.println("___________________________" + ElevatorCommand.isDone);
-    addCommands(new InstantCommand(ElevatorCommand::reset), new ArmUp(Constants.ARM.SETPOINT_SCORE), new ElevatorCommand(Constants.ELEVATOR.SETPOINT_DOWN), new ArmDown());
+    addCommands(new InstantCommand(ElevatorCommand::reset), new ArmUp(Constants.ARM.SETPOINT_SCORE, true), new ElevatorCommand(Constants.ELEVATOR.SETPOINT_DOWN), new ArmDown());
   }
 }
