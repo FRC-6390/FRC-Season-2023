@@ -24,7 +24,7 @@ public class ArmUp extends CommandBase {
     isDone = false;
     ArmDown.isDone = true;
     if(overidePID == true){
-      pid = new PIDController(0.03, 0.02, 0);
+      pid = new PIDController(0.1, 0.07, 0);
     } else {
       pid = new PIDController(0.015, 0.005, 0);
     }
