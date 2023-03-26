@@ -15,9 +15,9 @@ public class LimeLight {
     private NetworkTable limelightTable;
     public NetworkTableEntry tv, tx, ty, ta, ts, tl, tshort, tlong, thor, getpipe, camtran, tid, json, botpose, tclass, tc;
     public static NetworkTableEntry ledMode;
-    public NetworkTableEntry camMode;
-    public NetworkTableEntry pipeline;
-    public NetworkTableEntry stream;
+    public static NetworkTableEntry camMode;
+    public static NetworkTableEntry pipeline;
+    public static NetworkTableEntry stream;
     public NetworkTableEntry snapshot;
     public NetworkTableEntry crop;
     public NetworkTableEntry tx0;
@@ -38,7 +38,7 @@ public class LimeLight {
     public NetworkTableEntry cy1;
 
     public enum LedMode{
-        PIPELINE(1),
+        PIPELINE(0),
         OFF(1),
         BLINK(2),
         ON(3);
@@ -293,21 +293,21 @@ public class LimeLight {
     /**
      *  Sets limelight’s operation mode
      */
-    public void setCameraMode(CameraMode mode){
+    public static void setCameraMode(CameraMode mode){
         camMode.setNumber(mode.get());
     }
 
     /**
      *  Sets limelight’s streaming mode
      */
-    public void setStream(StreamMode mode){
+    public static void setStream(StreamMode mode){
         stream.setNumber(mode.get());
     }
 
      /**
      *  Sets limelight’s current pipeline (0-9)
      */
-    public void setStream(int mode){
+    public static void setPipeline(int mode){
         pipeline.setNumber(mode);
     }
 

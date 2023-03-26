@@ -81,7 +81,7 @@ public class RobotContainer {
     joystick.eight.whileTrue(new ParallelCommandGroup(new OutputRollers(0.5, "cone", 0),  new SpinWasher(0.5, 0)));
 
     joystick.nine.onTrue(new GoingLow());
-    joystick.ten.onTrue(new GoingDown());
+    joystick.ten.onTrue(new GoingDownNoArm());
 
     joystick.one.onTrue(new ArmUp(Constants.ARM.SETPOINT_SHELF_2, false));
     joystick.one.whileTrue(new OutputRollers(0.9, "cone", 0));

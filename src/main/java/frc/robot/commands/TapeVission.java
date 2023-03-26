@@ -9,7 +9,9 @@ import frc.robot.Constants.SWERVEMODULE;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.utilities.controlloop.PIDConfig;
 import frc.robot.utilities.sensors.vission.LimeLight;
+import frc.robot.utilities.sensors.vission.LimeLight.CameraMode;
 import frc.robot.utilities.sensors.vission.LimeLight.LedMode;
+import frc.robot.utilities.sensors.vission.LimeLight.StreamMode;
 
 public class TapeVission extends CommandBase {
 
@@ -36,7 +38,8 @@ public class TapeVission extends CommandBase {
     @Override
     public void initialize() {
       pid = new PIDController(0.05, 0.007, 0);
-      LimeLight.setLedMode(LedMode.ON);
+      
+      LimeLight.setPipeline(0);
     }
   
     @Override
@@ -69,7 +72,6 @@ public class TapeVission extends CommandBase {
   
     @Override
     public void end(boolean interrupted) {
-      LimeLight.setLedMode(LedMode.OFF);
     }
   
 

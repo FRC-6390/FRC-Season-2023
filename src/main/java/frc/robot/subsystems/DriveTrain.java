@@ -177,10 +177,6 @@ public class DriveTrain extends SubsystemBase implements SystemTest{
     for (int i = 0; i < swerveModules.length; i++) {
       swerveModules[i].lock();
     }
-    swerveModules[0].setToAngle(Math.toRadians(45));
-    swerveModules[1].setToAngle(Math.toRadians(135));
-    swerveModules[2].setToAngle(Math.toRadians(-45));
-    swerveModules[3].setToAngle(Math.toRadians(-135));
   }
 
   public void unlockWheels(){
