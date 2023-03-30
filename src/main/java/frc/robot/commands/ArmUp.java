@@ -12,7 +12,7 @@ public class ArmUp extends CommandBase {
   public double setpoint;
   public static PIDController pid;
   public static boolean isDone;
-  public static boolean overidePID;
+  public boolean overidePID;
 
   public ArmUp(double setpoint, boolean overidePID) {
     this.setpoint = setpoint;
@@ -24,7 +24,9 @@ public class ArmUp extends CommandBase {
     isDone = false;
     ArmDown.isDone = true;
     if(overidePID == true){
-      pid = new PIDController(0.1, 0.07, 0);
+      pid = new PIDController(0.1, 0.05, 0);
+      System.out.println("____________---------------____________----------------_____________");
+      System.out.println("------------_______________------------________________-------------");
     } else {
       pid = new PIDController(0.015, 0.005, 0);
     }

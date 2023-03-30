@@ -44,15 +44,16 @@ public final class AutoPathPlanner {
         Map.entry("Spin Washer", new SpinWasher(0.5, 0.9)),
         Map.entry("Intake Up", new IntakeUp()),
         Map.entry("Intake Down", new IntakeDown()),
-        Map.entry("Intake In", new IntakeRollers(0.9)),
+        Map.entry("Intake In", new IntakeRollers(0.69)),
         Map.entry("Intake Out", new IntakeRollers(-0.9)),
         Map.entry("Intake Stop", new IntakeRollers(0.0)),
         Map.entry("Cube", new OutputRollers(0.3, "cube", 15000)),
-        Map.entry("Cone", new OutputRollers(0.3, "cone", -15000)),
+        Map.entry("Cone", new OutputRollers(0.7, "cone", -15000)),
         Map.entry("L1", new GoingLow()),
         Map.entry("L2", new GoingMid()),
         Map.entry("L3", new GoingHigh()),
         Map.entry("L0", new GoingDown()),
+        Map.entry("LCube", new ArmUp(Constants.ARM.SETPOINT_CUBE, false)),
         Map.entry("Arm Up", new ArmUp(Constants.ARM.SETPOINT_SCORE, false)),
         Map.entry("Arm Down", new ArmDown()),
         Map.entry("Auto Balance", new AutoBalance(RobotContainer.driveTrain)) 
@@ -70,7 +71,7 @@ public final class AutoPathPlanner {
     );
 
     public static CommandBase runAuto(String autoSelector) {
-        //1.5   0.8
-        return autoBuilder.fullAuto(PathPlanner.loadPathGroup(autoSelector, new PathConstraints(3, 2)));
+        //4,3 for no bar              //1, 0.5 for bar side         //1.5, 0.8 for balance
+        return autoBuilder.fullAuto(PathPlanner.loadPathGroup(autoSelector, new PathConstraints(1, 0.5)));
     }
 }

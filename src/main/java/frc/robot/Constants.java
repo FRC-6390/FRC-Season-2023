@@ -24,6 +24,7 @@ public interface Constants {
         int SETPOINT_SCORE = 154;
         int SETPOINT_SHELF_1 = 135;
         int SETPOINT_SHELF_2 = 181;
+        int SETPOINT_CUBE = 200;
         int SETPOINT_DOWN = 0;
     }
 
@@ -44,10 +45,11 @@ public interface Constants {
         //encoder setpoint values
         double SETPOINT_HIGH = 5150;
         double SETPOINT_SHELF = 3000;
-        double SETPOINT_MID = 1790;
+        double SETPOINT_MID = 1590; //1790
         double SETPOINT_LOW = 0;
         double SETPOINT_DOWN = 0;
     }
+    
 
     public interface INTAKE {
         int ARM = 14;

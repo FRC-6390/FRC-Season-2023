@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -24,6 +25,7 @@ public class OutputRollers extends CommandBase {
   public void initialize() {
     isDone = false;
     Arm.resetOutputRollerPosition();
+    Arm.outputRoller.setNeutralMode(NeutralMode.Brake);
   }
 
   
@@ -31,7 +33,7 @@ public class OutputRollers extends CommandBase {
   public void execute() {
     System.out.println(Math.abs(Arm.getOutputRollerPosition()));
     if(rotations != 0){
-      if(Math.abs(Arm.getOutputRollerPosition()) > rotations){
+      if(Math.abs(Arm.getOutputRollerPosition()) > Math.abs(rotations)){
         isDone = true;
       } 
     }
@@ -56,6 +58,10 @@ public class OutputRollers extends CommandBase {
   public void end(boolean interrupted) {
     //Stops the motors
     Arm.setRoller(0);
+    Arm.resetOutputRollerPosition();
+    Arm.resetOutputRollerPosition();
+    Arm.resetOutputRollerPosition();
+    Arm.resetOutputRollerPosition();
   }
 
   

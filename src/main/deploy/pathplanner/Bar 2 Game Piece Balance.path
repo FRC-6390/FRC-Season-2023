@@ -32,12 +32,12 @@
         "y": 0.8690948052366854
       },
       "prevControl": {
-        "x": 6.907266627992169,
-        "y": 0.881737945975886
+        "x": 6.87674765668077,
+        "y": 0.7677838336012898
       },
       "nextControl": {
-        "x": 5.091199226620992,
-        "y": 0.7547402256002801
+        "x": 5.708713956657585,
+        "y": 1.5552222830551223
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -53,37 +53,12 @@
     },
     {
       "anchorPoint": {
-        "x": 4.439378122693478,
-        "y": 0.6518211039275126
+        "x": 3.879040682475088,
+        "y": 2.309962508655402
       },
       "prevControl": {
-        "x": 5.548617545166617,
-        "y": 0.7547402256002796
-      },
-      "nextControl": {
-        "x": 3.505611525650475,
-        "y": 0.5651829660575419
-      },
-      "holonomicAngle": 180.0,
-      "isReversal": false,
-      "velOverride": 2.0,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 1.832093706983419,
-        "y": 0.32019282298193635
-      },
-      "prevControl": {
-        "x": 3.501670569674947,
-        "y": 0.26301553316373344
+        "x": 6.131825901312288,
+        "y": 2.344268882546324
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -93,7 +68,8 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [
-          "Spin Washer"
+          "Reset",
+          "Balance"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
@@ -101,35 +77,25 @@
       }
     }
   ],
-  "maxVelocity": 2.0,
-  "maxAcceleration": 1.0,
-  "isReversed": false,
   "markers": [
     {
-      "position": 0.4072727272727163,
+      "position": 0.4509090909090533,
       "names": [
         "Intake Down",
-        "Intake In"
-      ]
-    },
-    {
-      "position": 1.6799999999999944,
-      "names": [
-        "Intake Up",
         "Intake In",
-        "LCube"
+        "Spin Washer"
       ]
     },
     {
-      "position": 1.0472727272727176,
+      "position": 1.6581818181817949,
+      "names": [
+        "Intake Up"
+      ]
+    },
+    {
+      "position": 1.047272727272679,
       "names": [
         "Intake In"
-      ]
-    },
-    {
-      "position": 2.705454545454426,
-      "names": [
-        "Spin Washer"
       ]
     }
   ]

@@ -87,6 +87,7 @@ public class RobotContainer {
     joystick.one.whileTrue(new OutputRollers(0.9, "cone", 0));
     joystick.two.onTrue(new ArmDown());
     
+    joystick.three.onTrue(new ArmUp(Constants.ARM.SETPOINT_CUBE, false));
     //not working ignore for now
     // joystick.three.onTrue(new InstantCommand(driveTrain::unlockWheels));
     // joystick.four.onTrue(new InstantCommand(driveTrain::lockWheels));
@@ -97,9 +98,11 @@ public class RobotContainer {
     
   }
 
+
+
   public Command getAutonomousCommand(){
-    //"Middle 1 Game Piece and Balance"
-    return AutoPathPlanner.runAuto("Left Side 2 Game Piece");
+    //"Middle 1 Game Piece and Balance" //Left Side 2 Game Piece //Bar 2 Game Piece
+    return AutoPathPlanner.runAuto("Left Side 2 Game Piece Far");
     //autoPathChooser.getSelected()
   }
 
