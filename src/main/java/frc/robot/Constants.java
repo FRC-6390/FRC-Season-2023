@@ -24,7 +24,7 @@ public interface Constants {
         int SETPOINT_SCORE = 154;
         int SETPOINT_SHELF_1 = 135;
         int SETPOINT_SHELF_2 = 181;
-        int SETPOINT_CUBE = 200;
+        int SETPOINT_CUBE = 210;
         int SETPOINT_DOWN = 0;
     }
 

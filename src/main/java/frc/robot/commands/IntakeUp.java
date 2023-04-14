@@ -39,7 +39,6 @@ public class IntakeUp extends CommandBase {
       System.out.println("RESET");
       Intake.liftEncoder.setPosition(0);
       Intake.setLift(0);
-      // isDone = true; CHECK IF NEEDED
     }
   }
 

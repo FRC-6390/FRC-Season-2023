@@ -69,7 +69,7 @@ public class RobotContainer {
     controller.y.onTrue(new GoingHigh());
     
     controller.rightBumper.whileTrue(new IntakeUp());
-    controller.leftBumper.whileTrue(new ParallelCommandGroup(new IntakeDown(), new IntakeRollers(1.0)));
+    controller.leftBumper.whileTrue(new ParallelCommandGroup(new IntakeDown(), new IntakeRollers(0.75)));
 
     controller.leftStick.whileTrue(new OutputRollers(0.9, "cone", 0));
     controller.rightStick.whileTrue(new OutputRollers(0.9, "cube", 0));
@@ -84,7 +84,7 @@ public class RobotContainer {
     joystick.ten.onTrue(new GoingDownNoArm());
 
     joystick.one.onTrue(new ArmUp(Constants.ARM.SETPOINT_SHELF_2, false));
-    joystick.one.whileTrue(new OutputRollers(0.9, "cone", 0));
+    joystick.one.whileTrue(new ParallelCommandGroup(new OutputRollers(0.9, "cone", 0), new SpinWasher(0.5, 0)));
     joystick.two.onTrue(new ArmDown());
     
     joystick.three.onTrue(new ArmUp(Constants.ARM.SETPOINT_CUBE, false));
@@ -102,7 +102,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand(){
     //"Middle 1 Game Piece and Balance" //Left Side 2 Game Piece //Bar 2 Game Piece
-    return AutoPathPlanner.runAuto("Left Side 2 Game Piece Far");
+    return AutoPathPlanner.runAuto("Bar 2 Game Piece");
     //autoPathChooser.getSelected()
   }
 
