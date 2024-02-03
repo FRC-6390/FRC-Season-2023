@@ -14,17 +14,18 @@ public class PID implements Sendable {
     private PIDConfig config;
     private double error, previousError, errorSum, previousTime;
     private boolean enabled = true;
+    private double threshold = 0.0; // Threshold for acceptable error
 
     public PID(PIDConfig config){
         this(null, 0, config);
     }
 
-    public PID(DoubleSupplier measuremnt, double setpoint, PIDConfig config){
-        this(measuremnt, ()->setpoint, config);
+    public PID(DoubleSupplier measurement, double setpoint, PIDConfig config){
+        this(measurement, ()->setpoint, config);
     }
     
-    public PID(DoubleSupplier measuremnt, DoubleSupplier setpoint, PIDConfig config){
-        this.measurement = measuremnt;
+    public PID(DoubleSupplier measurement, DoubleSupplier setpoint, PIDConfig config){
+        this.measurement = measurement;
         this.setpoint = setpoint;
         this.config = config;
         instances++;
@@ -38,17 +39,23 @@ public class PID implements Sendable {
 
     public double calculate(){
         error = config.getContinuous() ? calculateContinuousError() : calculateError();
+        // Check if the error is within the threshold
+        if(Math.abs(error) <= threshold) {
+            errorSum = 0; // Optionally reset the errorSum if you're within threshold
+            return 0; // Return 0 or a nominal value indicating no further adjustment needed
+        }
+
         double deltaTime = System.currentTimeMillis() - previousTime;
-        if(Math.abs(error) < config.getILimit()) errorSum += error *config.getI();
-        double errorRate = (error - previousError) / deltaTime;        
+        if(Math.abs(error) < config.getILimit()) errorSum += error * deltaTime;
+        double errorRate = deltaTime > 0 ? (error - previousError) / deltaTime : 0;        
         previousError = error;
         previousTime = System.currentTimeMillis();
 
-        double p = config.getP() > 0 ? config.getP()*error : 0;
-        double i = config.getI() > 0 ? config.getI()*errorSum : 0;
-        double d = config.getD() > 0 ? config.getD()*errorRate : 0;
-        double f = config.getF() > 0 ? config.getF() : 0 ;
-        return enabled ? p+i+d+f : 0;
+        double p = config.getP() * error;
+        double i = config.getI() * errorSum;
+        double d = config.getD() * errorRate;
+        double f = config.getF();
+        return enabled ? p + i + d + f : 0;
     }
 
     private double calculateError(){
@@ -57,6 +64,23 @@ public class PID implements Sendable {
 
     private double calculateContinuousError(){
        return MathUtil.inputModulus(calculateError(), -config.getErrorBand(), config.getErrorBand());
+    }
+
+    public PID setThreshold(double threshold) {
+        this.threshold = threshold;
+        return this;
+    }
+
+    public boolean isDone(double threshold){
+        return Math.abs(error) <= threshold;
+    }
+
+    public boolean isDone(){
+        return isDone(getThreshold());
+    }
+
+    public double getThreshold() {
+        return threshold;
     }
 
     public DoubleSupplier getSupplier(){

@@ -29,14 +29,14 @@ public class JanusPath {
         states = calculateOptimalSpeedsAndTime(waypoints, config);
 
         for (JanusState js : states) {
-            System.out.println(js.toString());
+            // System.out.println(js.toString());
         }
 
         states = calculateAcclerationRamps(states);
 
         Collections.reverse(states);
         for (JanusState js : states) {
-            System.out.println(js.toString());
+            // System.out.println(js.toString());
         }
         
     }
@@ -83,7 +83,7 @@ public class JanusPath {
         JanusVector vf = JanusVector.fromResultant(Math.pow(Math.pow(vi,2) + 2*a*d,0.5), angle);
         xComp.vf = vf.xComp();
         yComp.vf = vf.yComp();
-        System.out.println(vf + " " + angle);
+        // System.out.println(vf + " " + angle);
 
         double thetaVf = Math.pow(Math.pow(thetaVi,2) + 2*thetaComp.a*thetaComp.d, 0.5);
         thetaComp.vf = thetaVf;
@@ -190,15 +190,15 @@ public class JanusPath {
 
     int isX = 0;
     public ArrayList<JanusComponent> getPathComponentValues(JanusComponent start, JanusComponent end){
-        String title = (isX == 0) ? "X" : (isX == 1) ? "Y" : "R";
-        System.out.println("======="+title+"=======");
+        // String title = (isX == 0) ? "X" : (isX == 1) ? "Y" : "R";
+        // System.out.println("======="+title+"=======");
         isX = isX >= 3 ? 0 : isX+1;
         ArrayList<JanusComponent> states = new ArrayList<>();
         double m1, m2;
         double b1, b2;
-        System.out.println("a:"+start.a);
-        System.out.println("vf:"+start.vf);
-        System.out.println("vi:"+start.vi);
+        // System.out.println("a:"+start.a);
+        // System.out.println("vf:"+start.vf);
+        // System.out.println("vi:"+start.vi);
         double t1 = Math.abs((start.vf - start.vi) / start.a);
 
         m1 = calculateSlope(0.0, t1, start.vi, start.vf);
@@ -207,10 +207,10 @@ public class JanusPath {
         double endvf = (start.vf * end.vf <= 0) ? 0 : end.vf;
         double t2 = Math.abs((endvf - start.vf) / start.a);
         double t3 = calculateTime(start.d, start.a, start.vi);
-        System.out.println("endvf:"+endvf);
-        System.out.println("t1:"+t1);
-        System.out.println("t2:"+t2);
-        System.out.println("t3:"+t3);
+        // System.out.println("endvf:"+endvf);
+        // System.out.println("t1:"+t1);
+        // System.out.println("t2:"+t2);
+        // System.out.println("t3:"+t3);
 
         m2 = calculateSlope(t3-t2, t3, start.vf, endvf);
         b2 = calculateSlopeYIntercept(t3-t2,start.vf, m2);
@@ -222,16 +222,16 @@ public class JanusPath {
         double yInt = calculateLineYIntercept(m1, b1, xInt);
         yInt = Double.isNaN(yInt) ? 0 : yInt;
 
-        System.out.println( "y="+m1 + "(x)+"+ b1 + "|y="+m2 + "(x)+"+ b2);
+        // System.out.println( "y="+m1 + "(x)+"+ b1 + "|y="+m2 + "(x)+"+ b2);
 
-        System.out.println("yint:"+yInt);
+        // System.out.println("yint:"+yInt);
 
         if(distanceAtMaxSpeed(start.vi, yInt, xInt)  > Math.abs(start.d)){
             double vf2 = Math.pow(start.vi, 2) + 2*m1*start.d;
             yInt = Math.pow(vf2, 0.5);
            
         }
-        System.out.println("yint:"+yInt);
+        // System.out.println("yint:"+yInt);
         if(Math.abs(yInt) >= Math.abs(start.vf)){
             yInt = start.vf;
         }
@@ -239,27 +239,27 @@ public class JanusPath {
         if(Math.abs(endvf) >= Math.abs(yInt)){
             endvf = yInt;
         }
-        System.out.println("endvf:"+endvf);
-        System.out.println("yint:"+yInt);
+        // System.out.println("endvf:"+endvf);
+        // System.out.println("yint:"+yInt);
 
         JanusComponent forward;
         JanusComponent sustained;
         JanusComponent reverse;
 
         double tf = Math.abs(timeAtMaxSpeed(yInt, start.a, start.vi));
-        System.out.println("tf:"+tf);
-        System.out.println("a:"+start.a);
-        System.out.println("vi:"+start.vi);
-        System.out.println("d:"+start.d);
+        // System.out.println("tf:"+tf);
+        // System.out.println("a:"+start.a);
+        // System.out.println("vi:"+start.vi);
+        // System.out.println("d:"+start.d);
         double df = distanceAtMaxSpeed(start.vi, yInt, tf);
         if(df != 0){
             yInt = calculateFinalVelocity(start.vi, df, tf);
         }
         forward = new JanusComponent(0, 0, df, 0, tf, start.vi, yInt);
         states.add(forward);
-        System.out.println("yint:" +yInt);
+        // System.out.println("yint:" +yInt);
         double ds = start.d - df;
-        System.out.println("ds:" +ds);
+        // System.out.println("ds:" +ds);
         
         if(Math.abs(ds) > 0.001){
             double tr = Math.abs(timeAtMaxSpeed(endvf, start.a, yInt));
@@ -320,9 +320,30 @@ public class JanusPath {
     }
 
     public boolean endOfPath(Pose2d pose){
-        if(isCommand()) return waypoints.get(0).getCommand().isFinished();
-        return false;
+        if(isCommand) return waypoints.get(0).getCommand().isFinished();
+    
+        // Check if the list of waypoints is empty or if there's only a command without a path
+        if(waypoints.isEmpty() || (waypoints.size() == 1 && isCommand)) return true;
+    
+        // Get the last waypoint in the list
+        JanusWaypoint lastWaypoint = waypoints.get(waypoints.size() - 1);
+    
+        // Check if the last waypoint is a command that should keep moving
+        if(lastWaypoint.isCommand() && lastWaypoint.keepMoving) return false;
+    
+        // Calculate the distance and angle difference between the current pose and the last waypoint's pose
+        Pose2d lastWaypointPose = new Pose2d(lastWaypoint.getX(), lastWaypoint.getY(), new Rotation2d(lastWaypoint.getTheta()));
+        double distance = lastWaypointPose.getTranslation().getDistance(pose.getTranslation());
+        double angleDifference = Math.abs(lastWaypointPose.getRotation().getDegrees() - pose.getRotation().getDegrees());
+    
+        // Define tolerances for when the robot is considered to have reached the end of the path
+        final double distanceTolerance = 0.1; // meters
+        final double angleTolerance = 5.0; // degrees
+    
+        // Determine if the robot is within tolerances of the last waypoint
+        return distance <= distanceTolerance && angleDifference <= angleTolerance;
     }
+    
 
     private JanusState findRelaventState(double time){
         for (int i = 0; i < states.size(); i++) {

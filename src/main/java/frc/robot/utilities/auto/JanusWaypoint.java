@@ -11,7 +11,7 @@ public class JanusWaypoint {
     
     private double x, y, theta;
     private Command command;
-    private boolean keepMoving;
+    public boolean keepMoving;
 
     public JanusWaypoint(double x, double y, double theta){
         this.x = x;
@@ -41,7 +41,7 @@ public class JanusWaypoint {
     }
 
     public void setTheta(double theta) {
-        this.theta = theta;
+        this.theta = Math.atan2(Math.sin(theta), Math.cos(theta));
     }
 
     public void setX(double x) {
