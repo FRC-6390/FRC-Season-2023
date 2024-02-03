@@ -53,52 +53,42 @@ public class JanusPath {
     }
 
     public JanusState calculateState(JanusWaypoint start, JanusWaypoint end){
-        // Calculate straight-line distance and angle between start and end points
-        double distance = Math.hypot(end.getX() - start.getX(), end.getY() - start.getY());
-        double angle = Math.atan2(end.getY() - start.getY(), end.getX() - start.getX());
-        
-        // Calculate the required velocity to reach the halfway point, assuming constant acceleration
-        double vf = Math.sqrt(2 * config.maxAccelerationMeters() * (distance / 2));
-        
-        // Correctly assign the components based on the calculated distance and velocity
-        JanusComponent xComp = new JanusComponent(0, 0, distance * Math.cos(angle), config.maxAccelerationMeters(), 0, 0, vf * Math.cos(angle));
-        JanusComponent yComp = new JanusComponent(0, 0, distance * Math.sin(angle), config.maxAccelerationMeters(), 0, 0, vf * Math.sin(angle));
-        
-        // Assuming thetaD represents rotational movement, calculate the angular difference
-        double thetaD = Math.IEEEremainder(end.getTheta() - start.getTheta(), 2 * Math.PI);
-        
-        // Calculate required angular velocity, assuming constant angular acceleration
-        double thetaVf = Math.sqrt(2 * config.maxAngularAccelerationMeters() * Math.abs(thetaD));
-        
-        JanusComponent thetaComp = new JanusComponent(0, 0, thetaD, config.maxAngularAccelerationMeters(), 0, 0, thetaVf);
-    
-        return new JanusState(xComp, yComp, thetaComp, angle);
+        double angle = start.angleFrom(end);
+        JanusVector d = JanusVector.fromResultant(start.distanceFrom(end), angle);
+        JanusVector a = JanusVector.fromResultant(config.maxAccelerationMeters(), angle);
+
+        JanusVector vf = JanusVector.fromResultant(Math.pow(2*a.resultant()*d.resultant(), 0.5), angle);
+        JanusComponent xComp = new JanusComponent(0, 0, d.xComp(), a.xComp(), 0, 0, vf.xComp());
+        JanusComponent yComp = new JanusComponent(0, 0, d.yComp(), a.yComp(), 0, 0, vf.yComp());
+
+
+        double thetaD = end.getTheta() - start.getTheta();
+        double thetaA = config.maxAngularAccelerationMeters();
+        double thetaVf = Math.pow(2*thetaA*thetaD, 0.5);
+
+        JanusComponent thetaComp = new JanusComponent(0, 0, thetaD, thetaA, 0, 0, thetaVf);
+
+        return new JanusState(xComp, yComp, thetaComp, angle); 
     }
-    
 
     public JanusState recalculateState(JanusComponent xComp, JanusComponent yComp, JanusComponent thetaComp, double xVi, double yVi, double thetaVi, double angle){
-        // Directly use the provided velocities and calculate the final state based on them
-        // This approach assumes intermediate recalculations are necessary for dynamic adjustments
-        
-        // Ensure consistent application of acceleration to correct for any deviations
-        double d = Math.hypot(xComp.d, yComp.d); // Re-calculate the distance if needed
-        double a = config.maxAccelerationMeters(); // Assuming uniform acceleration
-        
-        // Use actual initial velocities and distances to adjust final velocities
-        double vfX = Math.sqrt(xVi*xVi + 2*a*d*Math.cos(angle));
-        double vfY = Math.sqrt(yVi*yVi + 2*a*d*Math.sin(angle));
-        
-        // Update components with recalculated velocities
-        xComp.vf = vfX;
-        yComp.vf = vfY;
-        
-        // For theta, recalculate based on angular acceleration and distance
-        double thetaVf = Math.sqrt(thetaVi*thetaVi + 2*config.maxAngularAccelerationMeters()*Math.abs(thetaComp.d));
+        xComp.vi = xVi;
+        yComp.vi = yVi;
+        thetaComp.vi = thetaVi;
+
+        double vi = JanusVector.getResultant(xVi, yVi);
+        double a = JanusVector.getResultant(xComp.a, yComp.a);
+        double d = JanusVector.getResultant(xComp.d, yComp.d);
+
+        JanusVector vf = JanusVector.fromResultant(Math.pow(Math.pow(vi,2) + 2*a*d,0.5), angle);
+        xComp.vf = vf.xComp();
+        yComp.vf = vf.yComp();
+        // System.out.println(vf + " " + angle);
+
+        double thetaVf = Math.pow(Math.pow(thetaVi,2) + 2*thetaComp.a*thetaComp.d, 0.5);
         thetaComp.vf = thetaVf;
-    
         return new JanusState(xComp, yComp, thetaComp, angle);
     }
-    
 
     public JanusComponent timeStretch(JanusComponent comp, double time){
         double t = time - comp.timestamp;
